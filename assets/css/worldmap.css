@@ -1,0 +1,141 @@
+@charset "UTF-8";
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Nunito Regular'), local('Nunito-Regular'), url(https://fonts.gstatic.com/s/nunito/v9/XRXV3I6Li01BKofINeaE.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Nunito Bold'), local('Nunito-Bold'), url(https://fonts.gstatic.com/s/nunito/v9/XRXW3I6Li01BKofAjsOUYevN.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Nunito Black'), local('Nunito-Black'), url(https://fonts.gstatic.com/s/nunito/v9/XRXW3I6Li01BKofAtsGUYevN.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans Regular'), local('OpenSans-Regular'), url(https://fonts.gstatic.com/s/opensans/v15/mem8YaGs126MiZpBA-UFVZ0e.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 800;
+  src: local('Open Sans ExtraBold'), local('OpenSans-ExtraBold'), url(https://fonts.gstatic.com/s/opensans/v15/mem5YaGs126MiZpBA-UN8rsOUuhs.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Roboto Slab';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Slab Regular'), local('RobotoSlab-Regular'), url(https://fonts.gstatic.com/s/robotoslab/v7/BngMUXZYTXPIvIBgJJSb6ufN5qA.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Roboto Slab';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Roboto Slab Bold'), local('RobotoSlab-Bold'), url(https://fonts.gstatic.com/s/robotoslab/v7/BngRUXZYTXPIvIBgJJSb6u92w7CGwRg.ttf) format('truetype');
+}
+.test2 {
+  color: dodgerblue;
+  text-shadow: 2px 2px 0 #00002A;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body.worldmap {
+  overflow: hidden;
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+  line-height: 1.2;
+}
+body.worldmap div#mcmap {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  height: 100%;
+}
+body.worldmap div#mcmap div#NoJSWarning {
+  color: white;
+  background: black;
+  text-align: center;
+  max-width: 1000px;
+  padding: 1em;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+body.worldmap div#counts {
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 401;
+  color: black;
+  box-shadow: 0 0 1em rgba(0, 0, 0, 0.5);
+}
+body.worldmap div#counts p.tc-title,
+body.worldmap div#counts p.tc-count {
+  font-weight: bold;
+  text-align: center;
+}
+body.worldmap div#counts p.tc-title {
+  font-size: 1.2em;
+  margin-top: .5em;
+}
+body.worldmap div#counts p.tc-count {
+  margin-bottom: 1em;
+}
+body.worldmap div#counts p.tc-guild span {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: #ddd;
+  border-radius: 1em;
+  position: relative;
+  left: -3px;
+  top: 2px;
+}
+body.worldmap div.worldcontrol.leaflet-control{
+	display: none;
+}
+body.worldmap div.leaflet-bottom.leaflet-left{
+  width: 100%;
+}
+body.worldmap div.coordbox  {
+  position: absolute;
+  font-size: 1rem;
+  color: black;
+  margin: 0;
+  left: 50% !important;
+  bottom: 0rem !important;
+  transform: translateX(-50%);
+  border: solid;
+  border-image-slice: 26;
+  border-image-width: 32px;
+  border-image-repeat: repeat;
+  background: #C4AB79 content-box;
+  border-image-source: url("/assets/images/cb/default.png");
+  padding: .8em 1em 0.5em 1em;
+}
+body.worldmap div.gmnoprint + button + div {
+  display: none;
+}
+body.worldmap .gmnoprint.gm-bundled-control.gm-bundled-control-on-bottom {
+  bottom: 109px !important;
+  right: 31px !important;
+}
+body.worldmap .gmnoprint.gm-style-cc + button {
+  bottom: 15px !important;
+  top: auto !important;
+  transform: scale(1.12) !important;
+}

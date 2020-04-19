@@ -1,0 +1,69 @@
+html {
+	height: 100%;
+}
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	background-color: #000;
+	overflow: hidden;
+}
+#mcmap {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+#terr_box {
+	margin: auto;
+	background-color: white;
+	z-index: 1999;
+	top: 50%;
+	transform: translateY(-50%) translateY(25px);
+	position: absolute;
+	font-size: 16px;
+	padding: 4px;
+	color: #1f1f1f;
+}
+.leaflet-container .coordbox {
+	box-shadow: none;
+	font-size: 11px;
+	background: rgba(255, 255, 255, 0.7);
+	margin: 0;
+	padding: 0 5px;
+	color: #333;
+}
+img.compass.leaflet-control {
+	height: 48px;
+	width: 48px;
+	image-rendering: pixelated;
+}
+.worldcontrol.leaflet-control {
+	display: none;
+}
+span.dot {
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	border-radius: 12px;
+	position: relative;
+	top: 2.5px;
+	margin: 0 4px;
+}
+span.dot._hidden {
+	background-color: transparent !important;
+}
+p.terr_row {
+	margin: auto;
+}
+@media screen and (max-width: 400px) {
+	#terr_box {
+		margin: auto;
+		font-size: 14px;
+	}
+	span.dot {
+		width: 14px;
+		height: 14px;
+	}
+}
