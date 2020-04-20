@@ -26,7 +26,7 @@ function convertItem(rawItem) {
     };
     const {set, addedLore, sockets, name, tier, type,
         strength, dexterity, intelligence, defense, agility, level, quest, classRequirement,
-        attackSpeed,
+        attackSpeed, health,
         damage, earthDamage, thunderDamage, waterDamage, fireDamage, airDamage,
         strengthPoints, dexterityPoints, intelligencePoints, defensePoints, agilityPoints,
         earthDefense, thunderDefense, waterDefense, fireDefense, airDefense,
@@ -54,6 +54,7 @@ function convertItem(rawItem) {
     item.req.class = classRequirement;
 
     item.base.attackSpeed = attackSpeed;
+    item.base.health = health;
     item.base.damage.neutral = damage;
     item.base.damage.earth = earthDamage;
     item.base.damage.thunder = thunderDamage;
