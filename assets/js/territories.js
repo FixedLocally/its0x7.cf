@@ -302,7 +302,15 @@ function updateTooltips() {
 			});
 			label.redraw();
 		}
-		label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldDays} days, ${heldHours} hours, ${heldMinutes} minutes and ${heldSeconds} seconds`);
+		if (heldTime >= 86400000) {
+            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldDays} days, ${heldHours} hours, ${heldMinutes} minutes and ${heldSeconds} seconds`);
+        } else if (heldTime >= 3600000) {
+            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldHours} hours, ${heldMinutes} minutes and ${heldSeconds} seconds`);
+        } else if (heldTime >= 60000) {
+            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldMinutes} minutes and ${heldSeconds} seconds`);
+        } else {
+            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldSeconds} seconds`);
+        }
 		wasRed[i] = red;
 	}
 	setTimeout(updateTooltips, 1000);
