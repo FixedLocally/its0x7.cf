@@ -117,6 +117,8 @@ $(function () {
 
             realItems.push(realItem);
         }
+        // adjust health according to lvl req
+        totalBase.health += (totalReq.level || 1) * 5 + 5;
         return {
             identification: totalIdentifications,
             base: totalBase,
