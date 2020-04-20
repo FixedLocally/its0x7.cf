@@ -1,0 +1,7 @@
+# Should already in server config but whatever
+<Files .htaccess>
+Order allow,deny
+Deny from all
+</Files>
+Options -Indexes
+RedirectMatch 404 /\.git
