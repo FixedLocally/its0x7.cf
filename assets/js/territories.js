@@ -29,8 +29,9 @@ let guild_colours = {
 	'Lux Nova': 'a049b8', // updated
 };
 
-let name_labels = [];
-let terr_labels = [];
+let name_labels = {};
+let terr_labels = {};
+let was_red = {};
 let terr_counts = {};
 let show_terrs = [true, true]; // boxes, names
 let hidden_guilds = [];
@@ -161,7 +162,7 @@ function terr_count_row(guild, count, color) {
 	row.appendTo($('#terr_counts'));
 }
 
-function draw_terrs() { 
+function drawTerrs() {
 	fetch("https://api.wynncraft.com/public_api.php?action=territoryList").then(resp => resp.json()).then(function(resp) {
 		let terrs = resp.territories;
 		terr_counts = {};
@@ -169,32 +170,23 @@ function draw_terrs() {
 			if (!terrs.hasOwnProperty(key)) {
 				continue;
 			}
-			let paths = [];
 			let terr = terrs[key];
 			let color = '#' + (guild_colours[terr.guild] || generate_colour(terr.guild));
 			let name = terr.territory;
+			let acquiredInUglyForm = terr.acquired;
+			let acquiredDate = new Date;
+			acquiredDate.setFullYear(acquiredInUglyForm.substr(0, 4), acquiredInUglyForm.substr(5, 2) - 1, acquiredInUglyForm.substr(8, 2));
+			acquiredDate.setHours(acquiredInUglyForm.substr(11, 2));
+			acquiredDate.setMinutes(acquiredInUglyForm.substr(14, 2));
+			acquiredDate.setSeconds(acquiredInUglyForm.substr(17, 2));
+			acquiredDate.setMilliseconds(0);
+			let acquired = 1*acquiredDate + 14400000 - acquiredDate.getTimezoneOffset() * 60000;
+			let heldTime = 1*new Date - acquired;
+			was_red[name] = heldTime < 180000;
 			if (!terr_labels[name] || terr_labels[name].guild !== terr.guild) {
 				console.log(name, ':', (terr_labels[name] || {}).guild, '->', terr.guild);
 				if (!global_territories[name]) continue;
-				paths.push(getLatLng(global_territories[name].startX, global_territories[name].startZ));
-				paths.push(getLatLng(global_territories[name].endX, global_territories[name].startZ));
-				paths.push(getLatLng(global_territories[name].endX, global_territories[name].endZ));
-				paths.push(getLatLng(global_territories[name].startX, global_territories[name].endZ));
-				let polygon = L.polygon(paths, {
-					fillColor: color,
-					fillOpacity: 0.25,
-					color: color,
-					strokeOpacity: 0.8,
-					stroke: true,
-					fill: true,
-					interactive: true,
-					map: overviewer.map,
-					name: name
-				});
-				polygon.terr = name;
-				polygon.guild = terr.guild;
-				polygon.bindPopup(`${name}<br>Controlled by ${terr.guild}`);
-				polygon.on('click', label_onclick);
+				let polygon = constructPolygon(name, terr.guild, color, acquired);
 				terr_labels[name] && terr_labels[name].remove();
 				terr_labels[name] = polygon;
 
@@ -207,12 +199,11 @@ function draw_terrs() {
 				let nlm = L.marker(nlCoords, {icon:nameLabel, zIndexOffset: 204});
 				nlm.terr = name;
 				nlm.guild = terr.guild;
-				nlm.on('click', label_onclick);
+				nlm.on('click', labelOnclick);
 				name_labels[name] && name_labels[name].remove();
 				name_labels[name] = nlm;
 			}
 
-			
 			terr_counts[terr.guild] = (terr_counts[terr.guild] || 0) + 1;
 		}
 		if (show_terrs[0]) {
@@ -251,14 +242,71 @@ function draw_terrs() {
 		}
 		$('#guilds_with_terrs').html(count);
 	});
-	setTimeout(draw_terrs, 30000);
+	setTimeout(drawTerrs, 30000);
 }
 
-function label_onclick(evt) {
+function constructPolygon(name, guild, color, acquired) {
+	let paths = [];
+	let heldTime = 1*new Date - acquired;
+	paths.push(getLatLng(global_territories[name].startX, global_territories[name].startZ));
+	paths.push(getLatLng(global_territories[name].endX, global_territories[name].startZ));
+	paths.push(getLatLng(global_territories[name].endX, global_territories[name].endZ));
+	paths.push(getLatLng(global_territories[name].startX, global_territories[name].endZ));
+	let polygon = L.polygon(paths, {
+		fillColor: color,
+		fillOpacity: 0.25,
+		color: heldTime > 180000 ? color : '#ff8080',
+		dashArray: heldTime > 180000 ? null : '4',
+		strokeOpacity: 0.8,
+		stroke: true,
+		fill: true,
+		interactive: true,
+		map: overviewer.map,
+		name: name
+	});
+	polygon.terr = name;
+	polygon.guild = guild;
+	polygon.acquired = acquired;
+	polygon.color = color;
+	polygon.on('click', labelOnclick);
+	return polygon
+}
+
+function labelOnclick(evt) {
 	let terr = evt.target.terr;
 	let guild = evt.target.guild;
 	console.log(terr, guild);
-} 
+}
+
+function updateTooltips() {
+	for (let i in terr_labels) {
+		let label = terr_labels[i];
+		let heldTime = 1*new Date - label.acquired;
+		let heldDays = Math.floor(heldTime / 86400000);
+		let heldHours = Math.floor(heldTime / 3600000) % 24;
+		let heldMinutes = Math.floor(heldTime / 60000) % 60;
+		let heldSeconds = Math.floor(heldTime / 1000) % 60;
+		let red = heldTime < 180000;
+		if (red !== !!was_red[i]) {
+			label.setStyle({
+				fillColor: label.color,
+				fillOpacity: 0.25,
+				color: heldTime > 180000 ? label.color : '#ff8080',
+				dashArray: heldTime > 180000 ? null : '4',
+				strokeOpacity: 0.8,
+				stroke: true,
+				fill: true,
+				interactive: true,
+				map: overviewer.map,
+				name: name
+			});
+			label.redraw();
+		}
+		label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldDays} days, ${heldHours} hours, ${heldMinutes} minutes and ${heldSeconds} seconds`);
+		was_red[i] = red;
+	}
+	setTimeout(updateTooltips, 1000);
+}
 
 function zoomend() {
 	if (overviewer.map._zoom < 5) {
@@ -287,5 +335,6 @@ $(function() {
 	if (localStorage['hidden_guilds']) {
 		hidden_guilds = JSON.parse(localStorage['hidden_guilds']);
 	}
-	draw_terrs();
+	drawTerrs();
+	updateTooltips();
 });
