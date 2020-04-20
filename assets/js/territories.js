@@ -33,7 +33,7 @@ let nameLabels = {};
 let terrLabels = {};
 let wasRed = {};
 let terrCounts = {};
-let showTerrs = [true, true]; // boxes, names
+let showTerrs = [true, false]; // boxes, names
 let hiddenGuilds = [];
 let trackingGuild;
 
@@ -324,6 +324,15 @@ function zoomend() {
 	}
 }
 
+function initialLoad() {
+	if (overviewer.map) {
+		drawTerrs();
+		updateTooltips();
+	} else {
+		setTimeout(initialLoad, 100);
+	}
+}
+
 $(function() {
 	setTimeout(function() {
 		overviewer.map.on('zoomend', zoomend);
@@ -335,6 +344,5 @@ $(function() {
 	if (localStorage['hiddenGuilds']) {
 		hiddenGuilds = JSON.parse(localStorage['hiddenGuilds']);
 	}
-	drawTerrs();
-	updateTooltips();
+	initialLoad();
 });
