@@ -95,7 +95,7 @@ function terrCountRow(guild, count, color) {
 				dot.removeClass('_hidden');
 				hiddenGuilds = hiddenGuilds.filter(v => v !== guild);
 				if (!hiddenGuilds.length) {
-					$('#terrCounts > p > span.dot[data-guild="Show/Hide all"]').removeClass('_hidden');
+					$('#terr_counts > p > span.dot[data-guild="Show/Hide all"]').removeClass('_hidden');
 				}
 				if (showTerrs[0]) {
 					for (let i in terrLabels) {
@@ -115,7 +115,7 @@ function terrCountRow(guild, count, color) {
 				// hide
 				dot.addClass('_hidden');
 				hiddenGuilds.push(guild);
-				$('#terrCounts > p > span.dot[data-guild="Show/Hide all"]').addClass('_hidden');
+				$('#terr_counts > p > span.dot[data-guild="Show/Hide all"]').addClass('_hidden');
 				for (let i in nameLabels) {
 					if (nameLabels[i].guild === guild) {
 						nameLabels[i].remove();
@@ -127,7 +127,7 @@ function terrCountRow(guild, count, color) {
 					}
 				}
 			}
-			let nonHiddenDots = $('#terrCounts > p > span.dot').not('._hidden');
+			let nonHiddenDots = $('#terr_counts > p > span.dot').not('._hidden');
 			if (nonHiddenDots.length === 1) {
 				trackingGuild = nonHiddenDots.attr("data-guild");
 			} else {
@@ -145,11 +145,11 @@ function terrCountRow(guild, count, color) {
 				// show all
 				dot.removeClass('_hidden');
 				hiddenGuilds = [];
-				$('#terrCounts > p > span.dot._hidden').click();
+				$('#terr_counts > p > span.dot._hidden').click();
 			} else {
 				// hide all
 				dot.addClass('_hidden');
-				$('#terrCounts > p > span.dot').not('._hidden').click();
+				$('#terr_counts > p > span.dot').not('._hidden').click();
 			}
 		});
 		if (hiddenGuilds.length) {
@@ -159,7 +159,7 @@ function terrCountRow(guild, count, color) {
 	if (hiddenGuilds.includes(spanDot.attr("data-guild"))) {
 		spanDot.click();
 	}
-	row.appendTo($('#terrCounts'));
+	row.appendTo($('#terr_counts'));
 }
 
 function drawTerrs() {
@@ -225,7 +225,7 @@ function drawTerrs() {
 			_terrCounts.push({guild: i, count: terrCounts[i]});
 		}
 		_terrCounts.sort((a, b) => (b.count - a.count) || a.guild.localeCompare(b.guild));
-		$('#terrCounts').empty();
+		$('#terr_counts').empty();
 		for (let i in _terrCounts) {
 			let color = '#' + (guildColours[_terrCounts[i].guild] || generateColour(_terrCounts[i].guild));
 			terrCountRow(_terrCounts[i].guild, _terrCounts[i].count, color);
