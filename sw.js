@@ -3,8 +3,9 @@ const urlsToCache = [
     '/map/',
     '/build/',
     '/build/itemdb.json',
-    '/assets/js/common.js',
-    '/assets/js/items_v3.js',
+    '/assets/js/common.js?1548344983219',
+    '/assets/js/items_v3.js?1548344983219',
+    '/assets/js/chosen.jquery.min.js?1548344983219',
     '/assets/img/icons/build.png',
     '/assets/img/powders/air0.png',
     '/assets/img/powders/air1.png',
@@ -17,10 +18,10 @@ const urlsToCache = [
     '/assets/img/powders/water0.png',
     '/assets/img/powders/water1.png',
     '/assets/img/powders/empty.png',
-    '/assets/css/chosen.min.css',
+    '/assets/css/chosen.min.css?1548344983219',
     '/assets/css/chosen-sprite.png',
     '/assets/css/chosen-sprite@2x.png',
-    '/assets/css/main.css',
+    '/assets/css/main.css?1548344983219',
 ];
 
 self.addEventListener('install', function(event) {
@@ -34,34 +35,42 @@ self.addEventListener('install', function(event) {
                 return cache.addAll(urlsToCache);
             })
     );
+    console.log('[SW] ready.');
 });
 
 self.addEventListener('fetch', function(event) {
+    console.log('fetch', event.request);
     event.respondWith(
         caches.match(event.request)
             .then(function(response) {
                 // Cache hit - return response
                 if (response) {
+                    if (response.url.endsWith('/itemdb.json')) {
+                        console.log('itemdb loading detected');
+                        response.clone().json().then(json => {
+                            let version = json.version;
+                            console.log(version);
+                        });
+                    }
                     return response;
                 }
 
                 return fetch(event.request).then(
                     function(response) {
-                        // // Check if we received a valid response
-                        // if(!response || response.status !== 200 || response.type !== 'basic') {
-                        //     return response;
-                        // }
-                        //
-                        // // IMPORTANT: Clone the response. A response is a stream
-                        // // and because we want the browser to consume the response
-                        // // as well as the cache consuming the response, we need
-                        // // to clone it so we have two streams.
-                        // let responseToCache = response.clone();
-                        //
-                        // caches.open(CACHE_NAME)
-                        //     .then(function(cache) {
-                        //         cache.put(event.request, responseToCache);
-                        //     });
+                        // Check if we received a valid response
+                        if(!response || response.status !== 200 || response.type !== 'basic') {
+                            return response;
+                        }
+
+                        // the itemdb is what we want to cache cuz size
+                        if (response.url.endsWith('/itemdb.json')) {
+                            let responseToCache = response.clone();
+
+                            caches.open(CACHE_NAME)
+                                .then(function(cache) {
+                                    cache.put(event.request, responseToCache);
+                                });
+                        }
 
                         return response;
                     }

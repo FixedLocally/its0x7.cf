@@ -118,7 +118,6 @@ if (isset($_SERVER['QUERY_STRING'])) {
     <script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
     <script>window.bugsnagClient = bugsnag('2af5e91dd7b8ce9f4ce76efe9bc657ed')</script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-    <script src="/assets/js/md5.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="/assets/js/items_v3.js?1548344983219"></script>
     <script src="/assets/js/chosen.jquery.min.js?1548344983219"></script>
