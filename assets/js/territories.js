@@ -253,16 +253,16 @@ function constructPolygon(name, guild, color, acquired) {
 	paths.push(getLatLng(globalTerritories[name].endX, globalTerritories[name].endZ));
 	paths.push(getLatLng(globalTerritories[name].startX, globalTerritories[name].endZ));
 	let polygon = L.polygon(paths, {
-		fillColor: color,
+		color: color,
 		fillOpacity: 0.25,
-		color: heldTime > 180000 ? color : '#ff8080',
-		dashArray: heldTime > 180000 ? null : '4',
+		fillColor: heldTime > 180000 ? color : '#ff8080',
+		dashArray: heldTime > 180000 ? null : '7',
 		strokeOpacity: 0.8,
 		stroke: true,
 		fill: true,
 		interactive: true,
 		map: overviewer.map,
-		name: name
+		name: name,
 	});
 	polygon.terr = name;
 	polygon.guild = guild;
@@ -289,10 +289,10 @@ function updateTooltips() {
 		let red = heldTime < 180000;
 		if (red !== !!wasRed[i]) {
 			label.setStyle({
-				fillColor: label.color,
+				color: label.color,
 				fillOpacity: 0.25,
-				color: heldTime > 180000 ? label.color : '#ff8080',
-				dashArray: heldTime > 180000 ? null : '4',
+				fillColor: heldTime > 180000 ? label.color : '#ff8080',
+				dashArray: heldTime > 180000 ? null : '7',
 				strokeOpacity: 0.8,
 				stroke: true,
 				fill: true,
