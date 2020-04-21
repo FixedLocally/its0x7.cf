@@ -221,5 +221,26 @@ $(function () {
         return result;
     }
 
+    function nextPermutation(array) {
+        let i = array.length - 1;
+        let last = i;
+        while (array[i--] < array[i]);
+        if (!(i+1)) return false;
+        let n = array[i];
+        let m = array[i+1];
+        let mi = i+1;
+        for (let j = last; j > i; j--) {
+            let k = array[j];
+            if (k > n && k < m) {
+                m = k;
+                mi = j;
+            }
+        }
+        array[mi] = array[i];
+        array[i] = m;
+        array.push(...array.splice(i+1).reverse());
+        return true;
+    }
+
     window.calculateBuild = calculateBuild;
 });
