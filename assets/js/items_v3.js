@@ -24,13 +24,14 @@ $(function () {
     console.log('window ready');
     // load item db
     loadItemDb().then(itemDb => {
-        itemDb.forEach(item => globalItemDb[item.info.name] = item);
+        itemDb.forEach(item => globalItemDb[item.displayName || item.info.name] = item);
+        console.log(globalItemDb);
 
         // load into dropdown menus
         dropdowns.forEach((dropdown) => {
             let select = $('#' + dropdown[0] + ' > select');
             itemDb.filter(x => (x.info.type || x.accessoryType).toLowerCase() === dropdown[1] || x.category.toLowerCase() === dropdown[1])
-                .map(x => x.info.name).sort().forEach(name => {
+                .map(x => x.displayName || x.info.name).sort().forEach(name => {
                     select.append(`<option value="${name}">${name}</option>`);
                 });
             select.chosen({width: '100%'}).addClass('col-md-3 col-sm-4');
@@ -68,6 +69,7 @@ $(function () {
         for (let i = 0; i < 9; i++) {
             if (!items[i]) {
                 realItems.push(null);
+                console.warn("Item " + i + " not found");
                 continue;
             }
             let name = items[i].name;
@@ -103,6 +105,23 @@ $(function () {
                         lower += powder[0];
                         upper += powder[1];
                         realItem.base.damage[elemName] = lower + '-' + upper;
+                        switch (realItem.info.type) {
+                            case "Relik":
+                                realItem.req.class = "Shaman";
+                                break;
+                            case "Wand":
+                                realItem.req.class = "Mage";
+                                break;
+                            case "Spear":
+                                realItem.req.class = "Warrior";
+                                break;
+                            case "Bow":
+                                realItem.req.class = "Archer";
+                                break;
+                            case "Dagger":
+                                realItem.req.class = "Assassin";
+                                break;
+                        }
                     } else {
                         // non weapon, modify defense
                         realItem.base.defense[elemName] += powder[3];
@@ -167,6 +186,9 @@ $(function () {
 
     function max(left, right) {
         return combine(left, right, (x, y) => {
+            if (Array.isArray(x)) {
+                return x.concat(y);
+            }
             if (x !== undefined) {
                 return Math.max(x, y);
             } else {
@@ -184,6 +206,9 @@ $(function () {
             return right;
         }
         let result = JSON.parse(JSON.stringify(left));
+        if (typeof right === 'string') {
+            return combiner(left, right);
+        }
         for (let i in right) {
             if (right.hasOwnProperty(i)) {
                 if (typeof left[i] === 'object') {
