@@ -222,22 +222,46 @@ $(function () {
     }
 
     function nextPermutation(array) {
+        /* The algorithm: find the longest decreasing subsequence from the end, since we don't have a larger permutation
+        for such a sequence, then find the smallest number that is larger than the one before the decreasing
+        subsequence, and swap the smallest with the one before. That way we increment the whole sequence the least.
+        However this way the decreasing subsequence that we've found is still decreasing, so we reverse it to become an
+        increasing one, just like 39+1=40, the last digit is reset from the highest possible value to the lowest.
+        6 8 7 4 3 [(5) 2 1] -> 6 8 7 4 (5) [3 2 1] -> 6 8 7 4 5 1 2 3
+         */
+        // The last index of the array, our starting point.
         let i = array.length - 1;
         let last = i;
+        // `i--` returns the value before the decrement, so it is one larger than the decremented `i`.
+        // So this expands to `while (i--, array[i + 1] < array[i]);`, which continues iff the next item is is smaller
+        // than the last item i.e. true if the pair is decreasing.
+        // When `i` reaches -1, it's comparing undefined and a number, which gives false.
+        // When this completes, `i` is pointing at the index right before the longest decreasing subsequence from the end.
         while (array[i--] < array[i]);
+        // if `i` is -1, the whole sequence is decreasing. There's no next permutation.
         if (!(i+1)) return false;
+        // This is the number to be swapped out, 3 in the example. We are going to find a number in the subsequence that
+        // is slightly larger than this.
         let n = array[i];
+        // This is the starting point of our search for the slightly larger number.
         let m = array[i+1];
         let mi = i+1;
         for (let j = last; j > i; j--) {
             let k = array[j];
+            // This statements checks if the current item is larger than the number to be swapped out and smaller than
+            // the existing candidate because we want it to be as small as possible for minimum increment.
             if (k > n && k < m) {
                 m = k;
                 mi = j;
             }
         }
+        // Usual swapping.
         array[mi] = array[i];
         array[i] = m;
+        // Recall that `i` is pointing at the index right before the longest decreasing subsequence from the end. Plus
+        // one and it's the start of the decreasing sequence. Remove the subsequence from the array by using .splice(),
+        // reverse it and push it back to the array.
+        // [6 8 7 4 5 3 2 1] -> [6 8 7 4 5] [3 2 1] -> [6 8 7 4 5] [1 2 3] -> [6 8 7 4 5 1 2 3]
         array.push(...array.splice(i+1).reverse());
         return true;
     }
