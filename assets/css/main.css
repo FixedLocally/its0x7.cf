@@ -118,7 +118,7 @@ div.item, .mctext.gray {
 	color: #9e9e9e;
 	text-shadow: 1px 1px #222222;
 }
-.mctext.red {
+.item_name.fabled, .mctext.red {
 	color: #fc5454;
 	text-shadow: 1px 1px #3c1414;
 }
