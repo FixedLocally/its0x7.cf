@@ -164,6 +164,7 @@ $(function () {
             let name = items[i].name;
             let item = globalItemDb[name];
             if (!item) {
+                realItems.push(null);
                 console.warn("Item " + name + " not found");
                 continue;
             }
@@ -516,6 +517,7 @@ $(function () {
                 });
             }
             if (sum < currentMinSum) {
+                currentReq.order = currentOrder.slice(0);
                 currentMinSum = sum;
                 currentMin = currentReq;
                 if (valid) {
