@@ -88,12 +88,29 @@ $(function () {
     let elementList = ['earth', 'thunder', 'water', 'fire', 'air'];
     let skillList = ['strength', 'dexterity', 'intelligence', 'defense', 'agility'];
     let itemListBox = $('#item_list_box');
-    let currentReq; // for the wearables
+    let currentReq = {
+        req: {
+            strength: 0,
+            dexterity: 0,
+            intelligence: 0,
+            defense: 0,
+            agility: 0
+        },
+        bonus: {
+            strength: 0,
+            dexterity: 0,
+            intelligence: 0,
+            defense: 0,
+            agility: 0
+        },
+        order: []
+    }; // for the wearables
 
     console.log('window ready');
     // load item db
     loadItemDb().then(itemDb => {
         itemDb.forEach(item => globalItemDb[item.displayName || item.info.name] = item);
+        console.log(globalItemDb);
 
         // load into dropdown menus
         dropdowns.forEach((dropdown) => {
@@ -111,7 +128,10 @@ $(function () {
                 });
                 let calculatedBuild = calculateBuild(build);
                 let realReq = {req: {}};
-                if (e.target.parentElement.id !== 'weapon_select') {
+                let parentId = e.target.parentElement.id;
+                let type = parentId.replace('_select', '');
+                let index = ['helmet', 'chestplate', 'leggings', 'boots', 'ring0', 'ring1', 'bracelet', 'necklace', 'weapon'].indexOf(type);
+                if (type !== 'weapon') {
                     currentReq = findStatReq(calculatedBuild.items);
                     realReq = currentReq;
                 } else {
@@ -130,6 +150,12 @@ $(function () {
                         realReq.req[skill] = currentReq.req[skill] + diff;
                     });
                 }
+                let item = calculatedBuild.items[index];
+                let box = $(`#${type}_div`).empty();
+                if (item.info.sockets) {
+                    box.append(generateItemBox(item, false));
+                }
+                // $(`#${type}_div`).empty();
                 console.log(currentReq);
                 renderBuild(calculatedBuild, realReq);
             });
@@ -239,8 +265,15 @@ $(function () {
         };
     }
 
-    function renderBuild(build) {
-        console.log(build);
+    function renderBuild(build, realReq) {
+        console.log(build, realReq);
+        itemListBox.empty();
+        build.items.forEach(item => {
+            if (item != null) {
+                itemListBox.append(generateItemBox(item, true));
+            }
+        });
+        resetPos();
     }
 
     function generateItemBox(item, floatLeft) {
