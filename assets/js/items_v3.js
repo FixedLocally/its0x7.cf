@@ -103,13 +103,35 @@ $(function () {
                     select.append(`<option value="${name}">${name}</option>`);
                 });
             select.chosen({width: '100%'}).addClass('col-md-3 col-sm-4');
-            select.change(() => {
-                let build =  dropdowns.map(dropdown => {
+            select.change((e, o) => {
+                let build = dropdowns.map(dropdown => {
                     let select = $('#' + dropdown[0] + ' > select');
                     let name = select.val();
                     return {name};
                 });
-                renderBuild(calculateBuild(build));
+                let calculatedBuild = calculateBuild(build);
+                let realReq = {req: {}};
+                if (e.target.parentElement.id !== 'weapon_select') {
+                    currentReq = findStatReq(calculatedBuild.items);
+                    realReq = currentReq;
+                } else {
+                    // take the skills we have and see what else do we need
+                    let weaponItem = globalItemDb[o.selected];
+                    skillList.forEach(skill => {
+                        let ownedPoints = currentReq.req[skill] + currentReq.bonus[skill];
+                        let diff;
+                        if (!weaponItem.req[skill]) {
+                            diff = 0;
+                        } else if (weaponItem.req[skill] > ownedPoints) {
+                            diff = weaponItem.req[skill] - ownedPoints;
+                        } else {
+                            diff = 0;
+                        }
+                        realReq.req[skill] = currentReq.req[skill] + diff;
+                    });
+                }
+                console.log(currentReq);
+                renderBuild(calculatedBuild, realReq);
             });
         })
     });
@@ -477,7 +499,7 @@ $(function () {
                 bitSet |= 1 << currentOrder[i];
                 let build = combinations[bitSet];
                 let stageReq = build.req;
-                ['strength', 'dexterity', 'intelligence', 'defense', 'agility'].forEach(skill => {
+                skillList.forEach(skill => {
                     let ownedPoints = currentReq.req[skill] + currentReq.bonus[skill];
                     let diff;
                     if (!stageReq[skill]) {
