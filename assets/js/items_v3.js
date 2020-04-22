@@ -69,12 +69,12 @@ $(function () {
         for (let i = 0; i < 9; i++) {
             if (!items[i]) {
                 realItems.push(null);
-                console.warn("Item " + i + " not found");
                 continue;
             }
             let name = items[i].name;
             let item = globalItemDb[name];
             if (!item) {
+                console.warn("Item " + name + " not found");
                 continue;
             }
             if ((item.info.type || item.accessoryType).toLowerCase() !== correctOrder[i] && item.category.toLowerCase() !== correctOrder[i]) {
@@ -87,6 +87,7 @@ $(function () {
             // powders
             if (Array.isArray(items[i].powder)) {
                 let powders = items[i].powder.slice(0, realItem.info.sockets);
+                realItem.powders = powders;
 
                 for (let j = 0; j < powders.length; j++) {
                     let elem = powders[j][0];
@@ -101,7 +102,7 @@ $(function () {
                         conversion[elemName] += conversionPct;
                         let originalDamage = realItem.base.damage[elemName] || "0-0";
                         let [lower, upper] = originalDamage.split('-').map(x => parseInt(x));
-                        console.log(lower, upper, originalDamage);
+                        // console.log(lower, upper, originalDamage);
                         lower += powder[0];
                         upper += powder[1];
                         realItem.base.damage[elemName] = lower + '-' + upper;
@@ -137,7 +138,7 @@ $(function () {
             realItems.push(realItem);
         }
         // adjust health according to lvl req
-        totalBase.health += (totalReq.level || 1) * 5 + 5;
+        totalBase.health = (totalBase.health || 0) + (totalReq.level || 1) * 5 + 5;
         return {
             identification: totalIdentifications,
             base: totalBase,
@@ -149,6 +150,82 @@ $(function () {
 
     function renderBuild(build) {
         console.log(build);
+    }
+
+    function findStatReq(items) {
+        items = items.slice(0, 8); // remove weapon since it always come last
+        let combinations = [];
+        for (let i = 0; i < 256; i++) {
+            let buildItems = [null, null, null, null, null, null, null, null, null];
+            for (let j = 0; j < 8; j++) {
+                if (items[j] && (i & (1 << j))) {
+                    buildItems[j] = {name: items[j].displayName || items[j].info.name};
+                }
+            }
+            combinations.push(calculateBuild(buildItems, [0, 0, 0, 0, 0]));
+        }
+        console.log(combinations);
+        let currentOrder = [0, 1, 2, 3, 4, 5, 6, 7];
+        currentOrder = currentOrder.filter(i => items[i]); // so that we don't consider empty slots
+        // Absolute minimum, even if it means that you need to allocate 200 points in one skill
+        let currentMin;
+        let currentMinSum = 694201337;
+        // The minimum that is actually valid (<=200 in total, <=100 in any skill)
+        let currentValidMin;
+        let currentValidMinSum = 694201337;
+        do {
+            let bitSet = 0;
+            let currentReq = {
+                req: {
+                    strength: 0,
+                    dexterity: 0,
+                    intelligence: 0,
+                    defense: 0,
+                    agility: 0
+                },
+                bonus: {
+                    strength: 0,
+                    dexterity: 0,
+                    intelligence: 0,
+                    defense: 0,
+                    agility: 0
+                }
+            };
+            let sum = 0;
+            let valid = true;
+            for (let i = 0; i < 8; i++) {
+                bitSet |= 1 << currentOrder[i];
+                let build = combinations[bitSet];
+                let stageReq = build.req;
+                ['strength', 'dexterity', 'intelligence', 'defense', 'agility'].forEach(skill => {
+                    let ownedPoints = currentReq.req[skill] + currentReq.bonus[skill];
+                    let diff;
+                    if (!stageReq[skill]) {
+                        diff = 0;
+                    } else if (stageReq[skill] > ownedPoints) {
+                        diff = stageReq[skill] - ownedPoints;
+                    } else {
+                        diff = 0;
+                    }
+                    currentReq.req[skill] += diff;
+                    currentReq.bonus[skill] = build.base.skill[skill];
+                    sum += diff;
+                    valid = sum <= 200 && currentReq[skill] <= 100;
+                });
+            }
+            if (sum < currentMinSum) {
+                currentMinSum = sum;
+                currentMin = currentReq;
+                if (valid) {
+                    currentValidMinSum = sum;
+                    currentValidMin = currentReq;
+                }
+            }
+        } while (nextPermutation(currentOrder));
+        if (currentValidMin) {
+            return currentValidMin;
+        }
+        return currentMin;
     }
 
     // overrides source with data, overriding an object with a primitive won't work
@@ -267,4 +344,5 @@ $(function () {
     }
 
     window.calculateBuild = calculateBuild;
+    window.findStatReq = findStatReq;
 });
