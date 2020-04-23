@@ -118,7 +118,7 @@ $(function () {
     // load item db
     loadItemDb().then(itemDb => {
         itemDb.forEach(item => globalItemDb[item.displayName || item.info.name] = item);
-        console.log(globalItemDb);
+        // console.log(globalItemDb);
 
         // load into dropdown menus
         dropdowns.forEach((dropdown) => {
@@ -878,7 +878,6 @@ $(function () {
             }
             combinations.push(calculateBuild(buildItems, [0, 0, 0, 0, 0]));
         }
-        console.log(combinations);
         let currentOrder = [0, 1, 2, 3, 4, 5, 6, 7];
         currentOrder = currentOrder.filter(i => items[i]); // so that we don"t consider empty slots
         // Absolute minimum, even if it means that you need to allocate 200 points in one skill
