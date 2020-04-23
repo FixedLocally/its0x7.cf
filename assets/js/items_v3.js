@@ -112,6 +112,23 @@ $(function () {
         },
         order: []
     }; // for the wearables
+    let realReq = {
+        req: {
+            strength: 0,
+            dexterity: 0,
+            intelligence: 0,
+            defense: 0,
+            agility: 0
+        },
+        bonus: {
+            strength: 0,
+            dexterity: 0,
+            intelligence: 0,
+            defense: 0,
+            agility: 0
+        },
+        order: []
+    }; // for the wearables+wep
     let powderList = {helmet: [], chestplate: [], leggings: [], boots: [], weapon: []};
 
     console.log("window ready");
@@ -135,13 +152,12 @@ $(function () {
                     return {name, powder: powderList[dropdown[0]]};
                 });
                 let calculatedBuild = calculateBuild(build);
-                let realReq = {req: {}};
                 let parentId = e.target.parentElement.id;
                 let type = parentId.replace("_select", "");
                 let index = correctOrder.indexOf(type.replace(/\d/, ""));
                 if (type !== "weapon") {
                     currentReq = findStatReq(calculatedBuild.items);
-                    realReq = currentReq;
+                    realReq = JSON.parse(JSON.stringify(currentReq));
                 }
                 if (calculatedBuild.items[8]) {
                     // take the skills we have and see what else do we need
@@ -168,17 +184,17 @@ $(function () {
                 let item = calculatedBuild.items[index];
                 let box = $(`#${type}_div`).empty();
                 let powderBox = $(`#${type}_powders`);
-                if (item.info.sockets) {
+                if (item && item.info.sockets) {
                     box.append(generateItemBox(item, false));
                     powderBox.show();
                     powderBox.find("div > p.large").text(item.displayName || item.info.name).attr("class", "large item_name " + item.info.tier.toLowerCase());
                     let powderListBox = powderBox.find("div > div.powder_list");
-                    renderSockets(powderListBox, type);
+                    renderSockets(powderListBox, type, realReq);
                 } else {
                     powderBox.hide();
+                    renderBuild(calculatedBuild, realReq);
                 }
                 // $(`#${type}_div`).empty();
-                renderBuild(calculatedBuild, realReq);
             });
         });
         // add powder button handlers
@@ -200,11 +216,11 @@ $(function () {
             }
             let powderBox = $(`#${type}_powders`);
             let powderListBox = powderBox.find("div > div.powder_list");
-            renderSockets(powderListBox, type);
+            renderSockets(powderListBox, type, realReq);
         });
     });
 
-    function renderSockets(powderListBox, type) {
+    function renderSockets(powderListBox, type, realReq) {
         let box = $(`#${type}_div`).empty();
         let powderBox = $(`#${type}_powders`);
         let index = correctOrder.indexOf(type);
@@ -215,7 +231,6 @@ $(function () {
             return {name, powder: powderList[dropdown[1]]};
         });
         let calculatedBuild = calculateBuild(build);
-        renderBuild(calculatedBuild, currentReq);
         let item = calculatedBuild.items[index];
         let sockets = item.info.sockets;
         if (sockets) {
@@ -232,7 +247,7 @@ $(function () {
                     powderBox = $(`<div class="powder powder_${powderList[type][i].toLowerCase()}" data-index="${i}" data-slot="${type}"></div>`);
                     powderBox.click(() => {
                         powderList[type][i] = undefined;
-                        renderSockets(powderListBox, type);
+                        renderSockets(powderListBox, type, realReq);
                     });
                 }
                 powderListBox.append(powderBox);
@@ -240,7 +255,7 @@ $(function () {
         } else {
             powderBox.hide();
         }
-        renderBuild(calculatedBuild, currentReq);
+        renderBuild(calculatedBuild, realReq);
     }
 
     async function loadItemDb() {
@@ -271,7 +286,9 @@ $(function () {
             let item = globalItemDb[name];
             if (!item) {
                 realItems.push(null);
-                console.warn("Item " + name + " not found");
+                if (name.length) {
+                    console.warn("Item " + name + " not found");
+                }
                 continue;
             }
             if ((item.info.type || item.accessoryType).toLowerCase() !== correctOrder[i] && item.category.toLowerCase() !== correctOrder[i]) {
