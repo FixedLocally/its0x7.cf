@@ -220,6 +220,51 @@ $(function () {
         });
     });
 
+    function spellDamage(build, totalSkills, spellMultiplier, elemMultiplier) {
+        let weaponDamage = JSON.parse(JSON.stringify(build.base.damage));
+        for (let i in weaponDamage) {
+            weaponDamage[i] = weaponDamage[i].split("-").map(x => 1*x);
+        }
+        // consider wep powders, move elemMultiplier.neutral to the respective elem
+        powderList.weapon.forEach(powder => {
+            if (!powder || !elemMultiplier.neutral) {
+                return;
+            }
+            let stat = powderStats[powder[0]][powder[1]];
+            let conversion = stat[2];
+            if (elemMultiplier.neutral > conversion) {
+                elemMultiplier.neutral -= conversion;
+                elemMultiplier[powderStats[powder[0]][0][0]] += conversion;
+            } else {
+                elemMultiplier[powderStats[powder[0]][0][0]] += elemMultiplier.neutral;
+                elemMultiplier.neutral = 0;
+            }
+        });
+        // base damage is `neutral * multiplier + elemDamageOnWep` then multiply by attack speed multiplier, then spell multiplier
+        let base = {};
+        let attackSpeedMultiplier = {SUPER_SLOW: 0.51, VERY_SLOW: 0.83, SLOW: 1.5, NORMAL: 2.05, FAST: 2.5, VERY_FAST: 3.1, SUPER_FAST: 4.3}[build.base.attackSpeed];
+        base.neutral = weaponDamage.neutral.map(x => (x * elemMultiplier.neutral / 100 * attackSpeedMultiplier + build.identification.damage.spellRaw) * spellMultiplier / 100);
+        elementList.forEach(elem => {
+            base[elem] = [0, 1].map(i => (weaponDamage.neutral[i] * elemMultiplier[elem]) / 100 + weaponDamage[elem][i])
+                .map(x => x * attackSpeedMultiplier * spellMultiplier / 100);
+        });
+        console.log(base);
+        // multiply by (1 + spellDamage + strengthPercentage + elemSkillPercentage + elemDamagePercentage)
+        let normal = {};
+        normal.neutral = base.neutral.map(x => x * (100 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]]) / 100);
+        elementList.forEach((elem, i) => {
+            normal[elem] = base[elem].map(x => x * (100 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]] + skillBounsPct[totalSkills[i]] + build.identification.damage[elem]) / 100);
+        });
+        // for crit hits change the 1 to 2
+        let critical = {};
+        critical.neutral = base.neutral.map(x => x * (200 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]]) / 100);
+        elementList.forEach((elem, i) => {
+            critical[elem] = base[elem].map(x => x * (200 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]] + skillBounsPct[totalSkills[i]] + build.identification.damage[elem]) / 100);
+        });
+        let args = [build.identification.damage.spellPercent, elementList.map(elem => build.identification.damage[elem]), skillBounsPct[totalSkills[0]], totalSkills.map(x => skillBounsPct[x])];
+        return {normal, critical, args};
+    }
+
     function renderSockets(powderListBox, type, realReq) {
         let box = $(`#${type}_div`).empty();
         let powderBox = $(`#${type}_powders`);
@@ -515,7 +560,7 @@ $(function () {
             }
         }
         // get skills
-        let skills = $('input.sp_input').map((i, v) => 1*v.value);
+        let skills = $('input.sp_input').map((i, v) => 1*v.value).toArray();
         skillList.forEach((v, i) => {
             skills[i] += realReq.bonus[v] || 0;
             skills[i] = Math.max(0, Math.min(skills[i], 150));
@@ -528,8 +573,8 @@ $(function () {
             let meleeDamage = {normal: {}, critical: {}};
             for (let i in weaponDamage) {
                 if (!weaponDamage.hasOwnProperty(i)) continue;
-                meleeDamage.normal.neutral = build.displayDamage.neutral.map(x => x * (100 + skillBounsPct[skills[0]] + damage.meleePercent / 100) / 100 + damage.meleeRaw);
-                meleeDamage.critical.neutral = build.displayDamage.neutral.map(x => x * (200 + skillBounsPct[skills[0]] + damage.meleePercent / 100) / 100 + damage.meleeRaw);
+                meleeDamage.normal.neutral = build.displayDamage.neutral.map(x => x * (100 + skillBounsPct[skills[0]] + damage.meleePercent) / 100 + damage.meleeRaw);
+                meleeDamage.critical.neutral = build.displayDamage.neutral.map(x => x * (200 + skillBounsPct[skills[0]] + damage.meleePercent) / 100 + damage.meleeRaw);
                 elementList.forEach((elem, i) => {
                     meleeDamage.normal[elem] = build.displayDamage[elem].map(x => x * (100 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent) / 100);
                     meleeDamage.critical[elem] = build.displayDamage[elem].map(x => x * (200 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent) / 100);
