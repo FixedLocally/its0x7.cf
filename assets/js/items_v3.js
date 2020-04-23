@@ -1,3 +1,4 @@
+"use strict";
 $(function () {
     // some globals
     let globalItemDb = {};
@@ -332,13 +333,45 @@ $(function () {
             realItems.push(realItem);
         }
         // adjust health according to lvl req
-        totalBase.health = (totalBase.health || 0) + (totalReq.level || 1) * 5 + 5;
+        totalBase.health = (totalBase.health || 0) + Math.max((totalReq.level || 1), 101) * 5 + 5;
+
+        if (realItems[8]) {
+            let totalConverted = [0, 0];
+            let displayDamage = JSON.parse(JSON.stringify(totalBase.damage));
+            for (let i in displayDamage) {
+                displayDamage[i] = displayDamage[i].split("-").map(x => 1*x);
+            }
+            elementList.forEach(elem => {
+                if (conversion[elem]) {
+                    let converted = totalBase.damage.neutral.split("-").map(x => Math.round(x * conversion[elem] / 100));
+                    [0, 1].forEach(i => {
+                        if (converted[i] + totalConverted[i] > displayDamage.neutral[i]) {
+                            converted[i] = displayDamage.neutral[i] - totalConverted[i];
+                        }
+                    });
+                    displayDamage[elem] = sum(displayDamage[elem], converted);
+                    totalConverted[0] += converted[0];
+                    totalConverted[1] += converted[1];
+                }
+            });
+            displayDamage.neutral[0] -= totalConverted[0];
+            displayDamage.neutral[1] -= totalConverted[1];
+            realItems[8].displayDamage = displayDamage;
+            return {
+                identification: totalIdentifications,
+                base: totalBase,
+                req: totalReq,
+                items: realItems,
+                conversion,
+                displayDamage
+            };
+        }
         return {
             identification: totalIdentifications,
             base: totalBase,
             req: totalReq,
             items: realItems,
-            conversion: conversion
+            conversion
         };
     }
 
@@ -487,10 +520,13 @@ $(function () {
             });
         } else {
             // 5. weapon damage
+            if (item.displayDamage.neutral[1] !== 0) {
+                itemBox.append(`<span class="mctext gold">${elemIcons.earth} Neutral Damage: ${item.displayDamage.neutral[0]}-${item.displayDamage.neutral[1]}</span><br>`);
+            }
             elementList.forEach(elem => {
-                let value = item.base.damage[elem];
-                if (value !== "0-0") {
-                    itemBox.append(`<span class="mctext ${elemColours[elem]}">${elemIcons[elem]} ${capitalize(elem)}</span><span> Damage: ${value}</span><br>`);
+                let value = item.displayDamage[elem];
+                if (value[1] !== 0) {
+                    itemBox.append(`<span class="mctext ${elemColours[elem]}">${elemIcons[elem]} ${capitalize(elem)}</span><span> Damage: ${value[0]}-${value[1]}</span><br>`);
                     newLine = true;
                 }
             });
