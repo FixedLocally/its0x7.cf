@@ -105,6 +105,7 @@ $(function () {
         },
         order: []
     }; // for the wearables
+    let powderList = {helmet: [], chestplate: [], leggings: [], boots: [], weapon: []};
 
     console.log('window ready');
     // load item db
@@ -124,7 +125,7 @@ $(function () {
                 let build = dropdowns.map(dropdown => {
                     let select = $('#' + dropdown[0] + ' > select');
                     let name = select.val();
-                    return {name};
+                    return {name, powder: powderList[dropdown[0]]};
                 });
                 let calculatedBuild = calculateBuild(build);
                 let realReq = {req: {}};
@@ -152,15 +153,83 @@ $(function () {
                 }
                 let item = calculatedBuild.items[index];
                 let box = $(`#${type}_div`).empty();
+                let powderBox = $(`#${type}_powders`);
+                console.log(type);
                 if (item.info.sockets) {
                     box.append(generateItemBox(item, false));
+                    powderBox.show();
+                    powderBox.find('div > p.large').text(item.displayName || item.info.name).attr('class', 'large item_name ' + item.info.tier.toLowerCase());
+                    let powderListBox = powderBox.find('div > div.powder_list');
+                    renderSockets(powderListBox, type);
+                } else {
+                    powderBox.hide();
                 }
                 // $(`#${type}_div`).empty();
                 console.log(currentReq);
                 renderBuild(calculatedBuild, realReq);
             });
-        })
+        });
+        // add powder button handlers
+        $('span.powder').click(e => {
+            let type = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id.replaceAll('_powders', '');
+            let powder = e.target.classList[1].substr(7).toUpperCase();
+            let item = globalItemDb[$(`#${type}_select > select`).val()];
+            let sockets = item.info.sockets;
+            let powderArray = powderList[type];
+            for (let i = 0; i < sockets; i++) {
+                if (powderArray.length <= i) {
+                    powderArray.push(powder);
+                    break;
+                }
+                if (!powderArray[i]) {
+                    powderArray[i] = powder;
+                    break;
+                }
+            }
+            let powderBox = $(`#${type}_powders`);
+            let powderListBox = powderBox.find('div > div.powder_list');
+            renderSockets(powderListBox, type);
+        });
     });
+
+    function renderSockets(powderListBox, type) {
+        let box = $(`#${type}_div`).empty();
+        let powderBox = $(`#${type}_powders`);
+        let index = ['helmet', 'chestplate', 'leggings', 'boots', '', '', '', '', 'weapon'].indexOf(type);
+
+        let build = dropdowns.map(dropdown => {
+            let select = $('#' + dropdown[0] + ' > select');
+            let name = select.val();
+            return {name, powder: powderList[dropdown[1]]};
+        });
+        let calculatedBuild = calculateBuild(build);
+        renderBuild(calculatedBuild, currentReq);
+        let item = calculatedBuild.items[index];
+        let sockets = item.info.sockets;
+        if (sockets) {
+            box.append(generateItemBox(item, false));
+            powderBox.show();
+            powderBox.find('div > p.large').text(item.displayName || item.info.name).attr('class', 'large item_name ' + item.info.tier.toLowerCase());
+            let powderListBox = powderBox.find('div > div.powder_list');
+            powderListBox.empty();
+            for (let i = 0; i < sockets; i++) {
+                let powderBox;
+                if (powderList[type].length <= i || !powderList[type][i]) {
+                    powderBox = $(`<div class="powder powder_empty" data-index="${i}" data-slot="${type}"></div>`);
+                } else {
+                    powderBox = $(`<div class="powder powder_${powderList[type][i].toLowerCase()}" data-index="${i}" data-slot="${type}"></div>`);
+                    powderBox.click(() => {
+                        powderList[type][i] = undefined;
+                        renderSockets(powderListBox, type);
+                    });
+                }
+                powderListBox.append(powderBox);
+            }
+        } else {
+            powderBox.hide();
+        }
+        renderBuild(calculatedBuild, currentReq);
+    }
 
     async function loadItemDb() {
         // load from server lol, maybe cached tho
@@ -207,6 +276,9 @@ $(function () {
                 realItem.powders = powders;
 
                 for (let j = 0; j < powders.length; j++) {
+                    if (!powders[j]) {
+                        continue;
+                    }
                     let elem = powders[j][0];
                     let tier = powders[j][1];
                     let elemName = powderStats[elem][0][0];
@@ -427,6 +499,7 @@ $(function () {
                         let line = idMap.steal[i];
                         if (value) {
                             itemBox.append(`<span class="mctext ${value > 0 ? "green" : "red"}">${nToString(value)}${line[0]}</span><span> ${line[1]}</span><br>`);
+                            newLine = true;
                         }
                     }
                 }
