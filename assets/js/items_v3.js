@@ -439,10 +439,47 @@ $(function () {
                         let line = idMap.others[i];
                         if (value) {
                             itemBox.append(`<span class="mctext ${value > 0 ? "green" : "red"}">${nToString(value)}${line[0]}</span><span> ${line[1]}</span><br>`);
+                            newLine = true;
                         }
                     }
                 }
             }
+        }
+        if (newLine) {
+            itemBox.append('<br>');
+            newLine = false;
+        }
+        // 10. powder slots
+        {
+            let type = item.info.type.toLowerCase();
+            let {sockets} = item.info;
+            if (type == 'relik' || type == 'wand' || type == 'bow' || type == 'spear' || type == 'dagger') {
+                type = 'weapon';
+            }
+            let powderArray = powderList[type].filter(x => !!x);
+            let powderCount = Math.min(powderArray.length, sockets);
+            if (sockets) {
+                if (!powderCount) {
+                    itemBox.append(`<span>[0/${sockets}] Powder Slots</span><br>`);
+                } else {
+                    let powderString = '';
+                    for (let i = 0; i < powderArray.length; i++) {
+                        let elem = powderStats[powderArray[i][0].toUpperCase()][0][0];
+                        powderString += `<span class="mctext ${elemColours[elem]}">${elemIcons[elem]}</span>`;
+                    }
+                    itemBox.append(`<span>[${powderCount}/${sockets}] Powder Slots [${powderString}]</span><br>`);
+                }
+            }
+        }
+        // 11. tier
+        itemBox.append(`<span class="item_name ${item.info.tier.toLowerCase()}">${item.info.tier} Item</span><br>`);
+        // 12. restrictions
+        if (item.restrictions) {
+            itemBox.append(`<span class="mctext red">${item.restrictions} Item</span><br>`);
+        }
+        // 13. lore
+        if (item.info.lore) {
+            itemBox.append(`<span class="mctext dark_gray">${item.info.lore} Item</span><br>`);
         }
         return itemBox;
     }
