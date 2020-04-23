@@ -118,12 +118,50 @@ function convertItem(rawItem) {
         }
     }
 
+    // weapon class req
+    switch (item.info.type.toLowerCase()) {
+        case "Relik":
+            item.req.class = "Shaman";
+            break;
+        case "Wand":
+            item.req.class = "Mage";
+            break;
+        case "Bow":
+            item.req.class = "Archer";
+            break;
+        case "Spear":
+            item.req.class = "Warrior";
+            break;
+        case "Dagger":
+            item.req.class = "Assassin";
+            break;
+    }
+
+    // replace class req with generic ones
+    switch (item.req.class) {
+        case "Shaman":
+            item.req.class = "Shaman/Skyseer";
+            break;
+        case "Mage":
+            item.req.class = "Mage/Dark Wizard";
+            break;
+        case "Archer":
+            item.req.class = "Archer/Hunter";
+            break;
+        case "Warrior":
+            item.req.class = "Warrior/Knight";
+            break;
+        case "Assassin":
+            item.req.class = "Assassin/Ninja";
+            break;
+    }
+
     return item;
 }
 
 // this function resolves to the contents of the itemdb
 async function loadItemDb() {
-    let types = ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'bracelet', 'necklace', 'spear', 'dagger', 'wand', 'bow', 'relik'];
+    let types = ["helmet", "chestplate", "leggings", "boots", "ring", "bracelet", "necklace", "spear", "dagger", "wand", "bow", "relik"];
     return (await Promise.all(types.map(async (type) => {
         return await fetch(`https://api.wynncraft.com/public_api.php?action=itemDB&category=${type}`)
             .then(resp => resp.json())
