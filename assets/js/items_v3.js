@@ -142,9 +142,10 @@ $(function () {
                 if (type !== "weapon") {
                     currentReq = findStatReq(calculatedBuild.items);
                     realReq = currentReq;
-                } else {
+                }
+                if (calculatedBuild.items[8]) {
                     // take the skills we have and see what else do we need
-                    let weaponItem = globalItemDb[o.selected];
+                    let weaponItem = calculatedBuild.items[8];
                     skillList.forEach(skill => {
                         let ownedPoints = currentReq.req[skill] + currentReq.bonus[skill];
                         let diff;
@@ -156,8 +157,13 @@ $(function () {
                             diff = 0;
                         }
                         realReq.req[skill] = currentReq.req[skill] + diff;
-                        realReq.order = currentReq.order;
                     });
+                    let bonus = {};
+                    skillList.forEach(skill => {
+                        bonus[skill] = currentReq.bonus[skill] + weaponItem.base.skill[skill];
+                    });
+                    realReq.bonus = bonus;
+                    realReq.order = currentReq.order;
                 }
                 let item = calculatedBuild.items[index];
                 let box = $(`#${type}_div`).empty();
@@ -172,7 +178,6 @@ $(function () {
                     powderBox.hide();
                 }
                 // $(`#${type}_div`).empty();
-                console.log(currentReq);
                 renderBuild(calculatedBuild, realReq);
             });
         });
@@ -376,7 +381,6 @@ $(function () {
     }
 
     function renderBuild(build, realReq) {
-        console.log(build, realReq);
         itemListBox.empty();
         build.items.forEach(item => {
             if (item !== null) {
@@ -441,6 +445,12 @@ $(function () {
         othersBox.empty();
         othersBox.append("<table></table>");
         othersBox = othersBox.children("table");
+        skillList.forEach(skill => {
+            if (realReq.bonus[skill]) {
+                let value = realReq.bonus[skill];
+                othersBox.append(`<tr><td>${capitalize(skill)}</td><td><span class="mctext ${value >= 0 ? "green" : "red"}">${nToString(value)}</span></td></tr>`);
+            }
+        });
         for (let i in damage) {
             if (damage.hasOwnProperty(i)) {
                 let value = damage[i];
@@ -487,6 +497,29 @@ $(function () {
                 }
             }
         }
+        // get skills
+        let skills = $('input.sp_input').map((i, v) => 1*v.value);
+        skillList.forEach((v, i) => {
+            skills[i] += realReq.bonus[v] || 0;
+            skills[i] = Math.max(0, Math.min(skills[i], 150));
+        });
+        if (build.items[8]) {
+            // calculate damages
+            // melee
+            let weaponDamage = JSON.parse(JSON.stringify(build.displayDamage));
+            let {damage} = build.identification;
+            let meleeDamage = {normal: {}, critical: {}};
+            for (let i in weaponDamage) {
+                if (!weaponDamage.hasOwnProperty(i)) continue;
+                meleeDamage.normal.neutral = build.displayDamage.neutral.map(x => x * (100 + skillBounsPct[skills[0]] + damage.meleePercent / 100) / 100 + damage.meleeRaw);
+                meleeDamage.critical.neutral = build.displayDamage.neutral.map(x => x * (200 + skillBounsPct[skills[0]] + damage.meleePercent / 100) / 100 + damage.meleeRaw);
+                elementList.forEach((elem, i) => {
+                    meleeDamage.normal[elem] = build.displayDamage[elem].map(x => x * (100 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent) / 100);
+                    meleeDamage.critical[elem] = build.displayDamage[elem].map(x => x * (200 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent) / 100);
+                });
+            }
+            console.log(build, realReq, meleeDamage);
+        }
     }
 
     function generateItemBox(item, floatLeft) {
@@ -532,7 +565,7 @@ $(function () {
             });
         }
         // 6. powder special
-        {
+        if (item.category !== "accessory"){
             let powders;
             if (item.category === "weapon") {
                 powders = powderList.weapon;
