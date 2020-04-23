@@ -2,58 +2,64 @@ $(function () {
     // some globals
     let globalItemDb = {};
     let dropdowns = [
-        ['helmet_select', 'helmet'],
-        ['chestplate_select', 'chestplate'],
-        ['leggings_select', 'leggings'],
-        ['boots_select', 'boots'],
-        ['ring0_select', 'ring'],
-        ['ring1_select', 'ring'],
-        ['bracelet_select', 'bracelet'],
-        ['necklace_select', 'necklace'],
-        ['weapon_select', 'weapon'],
+        ["helmet_select", "helmet"],
+        ["chestplate_select", "chestplate"],
+        ["leggings_select", "leggings"],
+        ["boots_select", "boots"],
+        ["ring0_select", "ring"],
+        ["ring1_select", "ring"],
+        ["bracelet_select", "bracelet"],
+        ["necklace_select", "necklace"],
+        ["weapon_select", "weapon"]
     ];
+    let correctOrder = ["helmet", "chestplate", "leggings", "boots", "ring", "ring", "bracelet", "necklace", "weapon"];
     // [suffix, id]
     let idMap = {
-        damages: {
-            spellPercent: ['%', 'Spell Damage'],
-            spellRaw: ['', 'Neutral Spell Damage'],
-            meleePercent: ['%', 'Main Attack Damage'],
-            meleeRaw: ['', 'Main Attack Neutral Damage'],
+        damage: {
+            spellPercent: ["%", "Spell Damage"],
+            spellRaw: ["", "Neutral Spell Damage"],
+            meleePercent: ["%", "Main Attack Damage"],
+            meleeRaw: ["", "Main Attack Neutral Damage"],
+            earth: ["%", "Earth Damage"],
+            thunder: ["%", "Thunder Damage"],
+            water: ["%", "Water Damage"],
+            fire: ["%", "Fire Damage"],
+            air: ["%", "Air Damage"],
         },
         regen: {
-            healthPercent: ['%', 'Health Regen'],
-            healthRaw: ['', 'Health Regen'],
-            mana: ['/4s', 'Mana Regen'],
-            soulPoint: ['%', 'Soul Pint Regen']
+            healthPercent: ["%", "Health Regen"],
+            healthRaw: ["", "Health Regen"],
+            mana: ["/4s", "Mana Regen"],
+            soulPoint: ["%", "Soul Pint Regen"]
         },
         steal: {
-            mana: ['/4s', 'Mana Steal'],
-            health: ['/4s', 'Life Steal']
+            mana: ["/4s", "Mana Steal"],
+            health: ["/4s", "Life Steal"]
         },
         others: {
-            attackSpeedBonus: [' Tier', 'Attack Speed'],
-            exploding: ['%', 'Exploding'],
-            healthBonus: ['', 'Health'],
-            jumpHeight: ['', 'Jump Height'],
-            lootBonus: ['%', 'Loot Bonus'],
-            lootQuality: ['%', 'Loot Quality'],
-            poison: ['/3s', 'Poison'],
-            reflection: ['%', 'Reflection'],
-            sprint: ['%', 'Sprint'],
-            sprintRegen: ['%', 'Sprint Regen'],
-            stealing: ['%', 'Stealing'],
-            thorns: ['%', 'Thorns'],
-            walkSpeed: ['%', 'Walk Speed'],
-            xpBonus: ['%', 'XP Bonus']
+            attackSpeedBonus: [" Tier", "Attack Speed"],
+            exploding: ["%", "Exploding"],
+            healthBonus: ["", "Health"],
+            jumpHeight: ["", "Jump Height"],
+            lootBonus: ["%", "Loot Bonus"],
+            lootQuality: ["%", "Loot Quality"],
+            poison: ["/3s", "Poison"],
+            reflection: ["%", "Reflection"],
+            sprint: ["%", "Sprint"],
+            sprintRegen: ["%", "Sprint Regen"],
+            stealing: ["%", "Stealing"],
+            thorns: ["%", "Thorns"],
+            walkSpeed: ["%", "Walk Speed"],
+            xpBonus: ["%", "XP Bonus"]
         }
     };
     // min dmg, max dmg, conversion, +def, -def
     let powderStats = {
-        E: [['earth','air'],[3,6,17,2,1],[6,9,21,4,2],[8,14,25,8,3],[11,16,31,14,5],[15,18,38,22,9],[18,22,46,30,13]],
-        T: [['thunder','earth'],[1,8,9,3,1],[1,13,11,5,1],[2,18,14,9,2],[3,24,17,14,4],[3,32,22,20,7],[5,40,28,28,10]],
-        W: [['water','thunder'],[3,4,13,3,1],[4,7,15,6,1],[6,10,17,11,2],[8,12,21,18,4],[11,14,26,28,7],[13,17,32,40,10]],
-        F: [['fire','water'],[2,5,14,3,1],[4,8,16,5,2],[6,10,19,9,3],[9,13,24,16,5],[12,16,30,25,9],[15,19,37,36,13]],
-        A: [['air','fire'],[2,6,11,3,1],[4,9,14,6,2],[7,10,17,10,3],[9,13,22,16,5],[13,18,28,24,9],[16,18,35,34,13]]
+        E: [["earth","air"],[3,6,17,2,1],[6,9,21,4,2],[8,14,25,8,3],[11,16,31,14,5],[15,18,38,22,9],[18,22,46,30,13]],
+        T: [["thunder","earth"],[1,8,9,3,1],[1,13,11,5,1],[2,18,14,9,2],[3,24,17,14,4],[3,32,22,20,7],[5,40,28,28,10]],
+        W: [["water","thunder"],[3,4,13,3,1],[4,7,15,6,1],[6,10,17,11,2],[8,12,21,18,4],[11,14,26,28,7],[13,17,32,40,10]],
+        F: [["fire","water"],[2,5,14,3,1],[4,8,16,5,2],[6,10,19,9,3],[9,13,24,16,5],[12,16,30,25,9],[15,19,37,36,13]],
+        A: [["air","fire"],[2,6,11,3,1],[4,9,14,6,2],[7,10,17,10,3],[9,13,22,16,5],[13,18,28,24,9],[16,18,35,34,13]]
     };
     let skillBounsPct = [
          0.0, 1.0, 2.0, 2.9, 3.9, 4.9, 5.8, 6.7, 7.7, 8.6,
@@ -72,22 +78,22 @@ $(function () {
         75.3,75.6,75.9,76.2,76.5,76.8,77.1,77.3,77.6,77.9,
         78.2,78.4,78.7,79.0,79.2,79.5,79.8,80.0,80.3,80.5,80.8];
     let elemIcons = {
-        earth: '✤',
-        thunder: '✦',
-        water: '❉',
-        fire: '✹',
-        air: '❋'
+        earth: "✤",
+        thunder: "✦",
+        water: "❉",
+        fire: "✹",
+        air: "❋"
     };
     let elemColours = {
-        earth: 'dark_green',
-        thunder: 'yellow',
-        water: 'aqua',
-        fire: 'red',
-        air: 'white'
+        earth: "dark_green",
+        thunder: "yellow",
+        water: "aqua",
+        fire: "red",
+        air: "white"
     };
-    let elementList = ['earth', 'thunder', 'water', 'fire', 'air'];
-    let skillList = ['strength', 'dexterity', 'intelligence', 'defense', 'agility'];
-    let itemListBox = $('#item_list_box');
+    let elementList = ["earth", "thunder", "water", "fire", "air"];
+    let skillList = ["strength", "dexterity", "intelligence", "defense", "agility"];
+    let itemListBox = $("#item_list_box");
     let currentReq = {
         req: {
             strength: 0,
@@ -107,7 +113,7 @@ $(function () {
     }; // for the wearables
     let powderList = {helmet: [], chestplate: [], leggings: [], boots: [], weapon: []};
 
-    console.log('window ready');
+    console.log("window ready");
     // load item db
     loadItemDb().then(itemDb => {
         itemDb.forEach(item => globalItemDb[item.displayName || item.info.name] = item);
@@ -115,24 +121,24 @@ $(function () {
 
         // load into dropdown menus
         dropdowns.forEach((dropdown) => {
-            let select = $('#' + dropdown[0] + ' > select');
-            itemDb.filter(x => (x.info.type || x.accessoryType).toLowerCase() === dropdown[1] || x.category.toLowerCase() === dropdown[1])
-                .map(x => x.displayName || x.info.name).sort().forEach(name => {
-                    select.append(`<option value="${name}">${name}</option>`);
-                });
-            select.chosen({width: '100%'}).addClass('col-md-3 col-sm-4');
+            let select = $("#" + dropdown[0] + " > select");
+            itemDb.filter((x) => (x.info.type || x.accessoryType).toLowerCase() === dropdown[1] || x.category.toLowerCase() === dropdown[1])
+                .map((x) => x.displayName || x.info.name).sort().forEach(name => {
+                select.append(`<option value="${name}">${name}</option>`);
+            });
+            select.chosen({width: "100%"}).addClass("col-md-3 col-sm-4");
             select.change((e, o) => {
                 let build = dropdowns.map(dropdown => {
-                    let select = $('#' + dropdown[0] + ' > select');
+                    let select = $("#" + dropdown[0] + " > select");
                     let name = select.val();
                     return {name, powder: powderList[dropdown[0]]};
                 });
                 let calculatedBuild = calculateBuild(build);
                 let realReq = {req: {}};
                 let parentId = e.target.parentElement.id;
-                let type = parentId.replace('_select', '');
-                let index = ['helmet', 'chestplate', 'leggings', 'boots', 'ring0', 'ring1', 'bracelet', 'necklace', 'weapon'].indexOf(type);
-                if (type !== 'weapon') {
+                let type = parentId.replace("_select", "");
+                let index = correctOrder.indexOf(type.replace(/\d/, ""));
+                if (type !== "weapon") {
                     currentReq = findStatReq(calculatedBuild.items);
                     realReq = currentReq;
                 } else {
@@ -149,17 +155,17 @@ $(function () {
                             diff = 0;
                         }
                         realReq.req[skill] = currentReq.req[skill] + diff;
+                        realReq.order = currentReq.order;
                     });
                 }
                 let item = calculatedBuild.items[index];
                 let box = $(`#${type}_div`).empty();
                 let powderBox = $(`#${type}_powders`);
-                console.log(type);
                 if (item.info.sockets) {
                     box.append(generateItemBox(item, false));
                     powderBox.show();
-                    powderBox.find('div > p.large').text(item.displayName || item.info.name).attr('class', 'large item_name ' + item.info.tier.toLowerCase());
-                    let powderListBox = powderBox.find('div > div.powder_list');
+                    powderBox.find("div > p.large").text(item.displayName || item.info.name).attr("class", "large item_name " + item.info.tier.toLowerCase());
+                    let powderListBox = powderBox.find("div > div.powder_list");
                     renderSockets(powderListBox, type);
                 } else {
                     powderBox.hide();
@@ -170,8 +176,8 @@ $(function () {
             });
         });
         // add powder button handlers
-        $('span.powder').click(e => {
-            let type = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id.replaceAll('_powders', '');
+        $("span.powder").click(e => {
+            let type = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id.replaceAll("_powders", "");
             let powder = e.target.classList[1].substr(7).toUpperCase();
             let item = globalItemDb[$(`#${type}_select > select`).val()];
             let sockets = item.info.sockets;
@@ -187,7 +193,7 @@ $(function () {
                 }
             }
             let powderBox = $(`#${type}_powders`);
-            let powderListBox = powderBox.find('div > div.powder_list');
+            let powderListBox = powderBox.find("div > div.powder_list");
             renderSockets(powderListBox, type);
         });
     });
@@ -195,10 +201,10 @@ $(function () {
     function renderSockets(powderListBox, type) {
         let box = $(`#${type}_div`).empty();
         let powderBox = $(`#${type}_powders`);
-        let index = ['helmet', 'chestplate', 'leggings', 'boots', '', '', '', '', 'weapon'].indexOf(type);
+        let index = correctOrder.indexOf(type);
 
         let build = dropdowns.map(dropdown => {
-            let select = $('#' + dropdown[0] + ' > select');
+            let select = $("#" + dropdown[0] + " > select");
             let name = select.val();
             return {name, powder: powderList[dropdown[1]]};
         });
@@ -209,8 +215,8 @@ $(function () {
         if (sockets) {
             box.append(generateItemBox(item, false));
             powderBox.show();
-            powderBox.find('div > p.large').text(item.displayName || item.info.name).attr('class', 'large item_name ' + item.info.tier.toLowerCase());
-            let powderListBox = powderBox.find('div > div.powder_list');
+            powderBox.find("div > p.large").text(item.displayName || item.info.name).attr("class", "large item_name " + item.info.tier.toLowerCase());
+            let powderListBox = powderBox.find("div > div.powder_list");
             powderListBox.empty();
             for (let i = 0; i < sockets; i++) {
                 let powderBox;
@@ -233,19 +239,18 @@ $(function () {
 
     async function loadItemDb() {
         // load from server lol, maybe cached tho
-        return await fetch('/build/itemdb.json').then(data => data.json()).then(json => json.itemDB)
+        return await fetch("/build/itemdb.json").then(data => data.json()).then(json => json.itemDB)
     }
 
     /**
-     * Calculates the build's stats according to the items and skill points allocated.
-     * Normally we use the item's base stats as outlined in itemDB, but stats can be overridden,
-     * even if the override is outside of the normal range we won't check
+     * Calculates the build"s stats according to the items and skill points allocated.
+     * Normally we use the item"s base stats as outlined in itemDB, but stats can be overridden,
+     * even if the override is outside of the normal range we won"t check
      * @param items The items equipped as an array
      * @param skills The skill points allocated
      */
     function calculateBuild(items, skills) {
         // check for the correct types [helm, chest, leggings, boots, ring, ring, bracelet, necklace, wep]
-        let correctOrder = ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'ring', 'bracelet', 'necklace', 'weapon'];
         let totalIdentifications = {};
         let totalBase = {};
         let totalReq = {quest: []};
@@ -266,7 +271,7 @@ $(function () {
             if ((item.info.type || item.accessoryType).toLowerCase() !== correctOrder[i] && item.category.toLowerCase() !== correctOrder[i]) {
                 return null;
             }
-            // must clone since we don't want to override the base item
+            // must clone since we don"t want to override the base item
             let realItem = JSON.parse(JSON.stringify(item));
             // this item passed the check, populate it with the real one
             override(realItem.identification, items.override);
@@ -290,11 +295,11 @@ $(function () {
                         conversion.neutral -= conversionPct;
                         conversion[elemName] += conversionPct;
                         let originalDamage = realItem.base.damage[elemName] || "0-0";
-                        let [lower, upper] = originalDamage.split('-').map(x => parseInt(x));
+                        let [lower, upper] = originalDamage.split("-").map(x => parseInt(x));
                         // console.log(lower, upper, originalDamage);
                         lower += powder[0];
                         upper += powder[1];
-                        realItem.base.damage[elemName] = lower + '-' + upper;
+                        realItem.base.damage[elemName] = lower + "-" + upper;
                         switch (realItem.info.type) {
                             case "Relik":
                                 realItem.req.class = "Shaman";
@@ -341,29 +346,132 @@ $(function () {
         console.log(build, realReq);
         itemListBox.empty();
         build.items.forEach(item => {
-            if (item != null) {
+            if (item !== null) {
                 itemListBox.append(generateItemBox(item, true));
             }
         });
         resetPos();
+        // requirements
+        let req = build.req;
+        let reqBox = $("#build_req > .build_content");
+        reqBox.empty();
+        if (req.quest.length) {
+            for (let i = 0; i < req.quest.length; i++) {
+                reqBox.append(`<span class="mctext green">✓ </span><span>Quest Req: ${req.quest[i]}</span><br>`);
+            }
+        }
+        if (req.class) {
+            reqBox.append(`<span class="mctext green">✓ </span><span>Class Req: ${req.class}</span><br>`);
+        }
+        if (req.level) {
+            reqBox.append(`<span class="mctext green">✓ </span><span>Combat Lv. Min: ${req.level}</span><br>`);
+        }
+        skillList.forEach(skill => {
+            let value = req[skill];
+            if (value) {
+                reqBox.append(`<span class="mctext green">✓ </span><span>${capitalize(skill)} Min: ${value}</span><br>`);
+            }
+        });
+        // how to wear
+        let howToWearBox = $("#build_howto > .build_content");
+        howToWearBox.empty();
+        howToWearBox.append("<p>Assign the follow Skill Points:</p>");
+        skillList.forEach(skill => {
+            howToWearBox.append(`<span>${capitalize(skill)}: ${realReq.req[skill]}</span><br>`);
+        });
+        howToWearBox.append("<br><span>Then wear your items in the following order:</span><br>");
+        realReq.order.forEach((index, i) => {
+            howToWearBox.append(`<span>${i + 1}. ${capitalize(correctOrder[index])}</span><br>`);
+        });
+        if (build.items[8]) {
+            howToWearBox.append(`<span>${realReq.order.length + 1}. Weapon</span><br>`);
+        }
+        let {others, damage, regen, steal} = build.identification;
+        let {healthRaw, healthPercent} = regen;
+        // defenses
+        let defensesBox = $("#build_defs > .build_content");
+        defensesBox.empty();
+        defensesBox.empty();
+        defensesBox.append("<table></table>");
+        defensesBox = defensesBox.children("table");
+        defensesBox.append(`<tr><td><span class="mctext dark_red">❤ Health:</span></td><td>${build.base.health}</td></tr>`);
+        defensesBox.append(`<tr><td><span class="mctext dark_red">❤ Health Regen:</span></td><td>${healthRaw}</td><td><span class="mctext ${healthPercent >= 0 ? "green" : "red"}">${nToString(healthPercent)}%</span></td><td>=</td><td>${Math.round(healthRaw + Math.abs(healthRaw) * healthPercent / 100)}</td></tr>`);
+        defensesBox.append("<tr><td>&nbsp;</td></tr>");
+        elementList.forEach(elem => {
+            let raw = build.base.defense[elem] || 0;
+            let percent = build.identification.defense[elem] || 0;
+            let final = Math.round(raw + Math.abs(raw) * percent / 100);
+            defensesBox.append(`<tr><td><span class="mctext ${elemColours[elem]}">${elemIcons[elem]} ${capitalize(elem)}</span> Defense:</td><td>${raw}</td><td><span class="mctext ${percent >= 0 ? "green" : "red"}">${nToString(percent)}%</span></td><td>=</td><td><span class="mctext ${final >= 0 ? "green" : "red"}">${final}</span></td></tr>`);
+        });
+        // other ids
+        let othersBox = $("#build_ids > .build_content");
+        othersBox.empty();
+        othersBox.append("<table></table>");
+        othersBox = othersBox.children("table");
+        for (let i in damage) {
+            if (damage.hasOwnProperty(i)) {
+                let value = damage[i];
+                if (value) {
+                    othersBox.append(`<tr><td>${idMap.damage[i][1]}</td><td><span class="mctext ${value >= 0 ? "green" : "red"}">${nToString(value)}${idMap.damage[i][0]}</span></td></tr>`);
+                }
+            }
+        }
+        for (let i in regen) {
+            if (regen.hasOwnProperty(i)) {
+                if (i.startsWith('health')) {
+                    continue;
+                }
+                let value = regen[i];
+                if (value) {
+                    othersBox.append(`<tr><td>${idMap.regen[i][1]}</td><td><span class="mctext ${value >= 0 ? "green" : "red"}">${nToString(value)}${idMap.regen[i][0]}</span></td></tr>`);
+                }
+            }
+        }
+        for (let i in steal) {
+            if (steal.hasOwnProperty(i)) {
+                let value = steal[i];
+                if (value) {
+                    othersBox.append(`<tr><td>${idMap.steal[i][1]}</td><td><span class="mctext ${value >= 0 ? "green" : "red"}">${nToString(value)}${idMap.steal[i][0]}</span></td></tr>`);
+                }
+            }
+        }
+        let ordinals = ["1st", "2nd", "3rd", "4th"];
+        let spellCostPct = build.identification.spellCost.percent;
+        let spellCostRaw = build.identification.spellCost.raw;
+        for (let i = 0; i < 4; i++) {
+            if (spellCostRaw[i]) {
+                othersBox.append(`<tr><td>${ordinals[i]} Spell Cost: </td><td><span class="mctext ${spellCostRaw[i] < 0 ? "green" : "red"}">${nToString(spellCostRaw[i])}</span></td></tr>`);
+            }
+            if (spellCostPct[i]) {
+                othersBox.append(`<tr><td>${ordinals[i]} Spell Cost: </td><td><span class="mctext ${spellCostPct[i] < 0 ? "green" : "red"}">${nToString(spellCostPct[i])}%</span></td></tr>`);
+            }
+        }
+        for (let i in others) {
+            if (others.hasOwnProperty(i)) {
+                let value = others[i];
+                if (value) {
+                    othersBox.append(`<tr><td>${idMap.others[i][1]}</td><td><span class="mctext ${value >= 0 ? "green" : "red"}">${nToString(value)}${idMap.others[i][0]}</span></td></tr>`);
+                }
+            }
+        }
     }
 
     function generateItemBox(item, floatLeft) {
         let itemBox;
         let newLine = false;
         if (floatLeft) {
-            itemBox = $('<div class="item float_left" style="position: absolute; top: 0; left: 0;"></div>');
+            itemBox = $(`<div class="item float_left" style="position: absolute; top: 0; left: 0;"></div>`);
         } else {
-            itemBox = $('<div class="item"></div>');
+            itemBox = $(`<div class="item"></div>`);
         }
         // 1. name coloured according to tier
         itemBox.append(`<span class="item_name ${item.info.tier.toLowerCase()}">${item.displayName || item.info.name}</span><br>`);
         // 2. weapon attack speed
-        if (item.category === 'weapon') {
+        if (item.category === "weapon") {
             itemBox.append(`<span class="atk_speed">${capitalize(item.base.attackSpeed)} Attack Speed</span><br>`);
         }
-        itemBox.append('<br>');
-        if (item.category !== 'weapon') {
+        itemBox.append("<br>");
+        if (item.category !== "weapon") {
             // 3. armour health
             if (item.base.health) {
                 itemBox.append(`<span class="armour_stats"><span class="mctext dark_red">❤ Health: ${nToString(item.base.health)}</span><br>`);
@@ -378,16 +486,107 @@ $(function () {
                 }
             });
         } else {
-            // 5. weapon damages
+            // 5. weapon damage
             elementList.forEach(elem => {
                 let value = item.base.damage[elem];
-                if (value !== '0-0') {
+                if (value !== "0-0") {
                     itemBox.append(`<span class="mctext ${elemColours[elem]}">${elemIcons[elem]} ${capitalize(elem)}</span><span> Damage: ${value}</span><br>`);
                     newLine = true;
                 }
             });
         }
-        // TODO 6. powder special
+        // 6. powder special
+        {
+            let powders;
+            if (item.category === "weapon") {
+                powders = powderList.weapon;
+            } else {
+                powders = powderList[item.info.type.toLowerCase()];
+            }
+            let count = {E: 0, T: 0, W: 0, F: 0, A: 0};
+            let sum = {E: 0, T: 0, W: 0, F: 0, A: 0};
+            let specialElem;
+            let specialTier = 0;
+            for (const powder of powders) {
+                if (!powder) {
+                    continue;
+                }
+                let elem = powder[0];
+                let tier = powder[1];
+                if (tier < 4) {
+                    continue;
+                }
+                ++count[elem];
+                sum[elem] += 1*tier;
+                if (count[elem] == 2) {
+                    specialElem = elem;
+                    specialTier = sum[elem];
+                    break;
+                }
+            }
+            if (specialTier) {
+                if (item.category === "weapon") {
+                    // weapon specials
+                    switch (specialElem) {
+                        case 'E':
+                            itemBox.append(`<span class="mctext dark_green">&nbsp;&nbsp;Quake</span><br>`);
+                            itemBox.append(`<span class="mctext dark_green">&nbsp;&nbsp;-</span> Radius: ${specialTier / 2 + 1} blocks<br>`);
+                            itemBox.append(`<span class="mctext dark_green">&nbsp;&nbsp;-</span> Damage: ${specialTier * 65 - 365}% ${elemIcons.earth}<br>`);
+                            break;
+                        case 'T':
+                            itemBox.append(`<span class="mctext yellow">&nbsp;&nbsp;Chained Lightning</span><br>`);
+                            itemBox.append(`<span class="mctext yellow">&nbsp;&nbsp;-</span> Chains: ${specialTier - 3}<br>`);
+                            itemBox.append(`<span class="mctext yellow">&nbsp;&nbsp;-</span> Damage: ${specialTier * 40 - 240}% ${elemIcons.thunder}<br>`);
+                            break;
+                        case 'W':
+                            itemBox.append(`<span class="mctext aqua">&nbsp;&nbsp;Curse</span><br>`);
+                            itemBox.append(`<span class="mctext aqua">&nbsp;&nbsp;-</span> Duration: ${specialTier - 3} seconds<br>`);
+                            itemBox.append(`<span class="mctext aqua">&nbsp;&nbsp;-</span> Damage Boost: +${specialTier * 30 - 150}%<br>`);
+                            break;
+                        case 'F':
+                            itemBox.append(`<span class="mctext red">&nbsp;&nbsp;Courage</span><br>`);
+                            itemBox.append(`<span class="mctext red">&nbsp;&nbsp;-</span> Duration: ${specialTier / 2 + 2} seconds<br>`);
+                            itemBox.append(`<span class="mctext red">&nbsp;&nbsp;-</span> Damage: ${specialTier * 12.5 - 25}% ${elemIcons.fire}<br>`);
+                            itemBox.append(`<span class="mctext red">&nbsp;&nbsp;-</span> Damage Boost: +${specialTier * 20 - 90}%<br>`);
+                            break;
+                        case 'A':
+                            itemBox.append(`<span class="mctext white">&nbsp;&nbsp;Wind Prison</span><br>`);
+                            itemBox.append(`<span class="mctext white">&nbsp;&nbsp;-</span> Duration: ${specialTier / 2 - 1} seconds<br>`);
+                            itemBox.append(`<span class="mctext white">&nbsp;&nbsp;-</span> Damage Boost: +${specialTier * 100 - 600}%<br>`);
+                            itemBox.append(`<span class="mctext white">&nbsp;&nbsp;-</span> Knockback: ${specialTier * 4 - 24} blocks<br>`);
+                            break;
+                    }
+                } else {
+                    // armour specials
+                    switch (specialElem) {
+                        case 'E':
+                            itemBox.append(`<span class="mctext dark_green">&nbsp;&nbsp;Rage [% ❤ Missing]</span><br>`);
+                            itemBox.append(`<span class="mctext dark_green">&nbsp;&nbsp;-</span> Damage: +${(specialTier - 4 + (specialTier == 12 ? 2 : 0)) / 10}% ${elemIcons.earth}<br>`);
+                            break;
+                        case 'T':
+                            itemBox.append(`<span class="mctext yellow">&nbsp;&nbsp;Kill Streak [Mob Killed]</span><br>`);
+                            itemBox.append(`<span class="mctext yellow">&nbsp;&nbsp;-</span> Damage: +${specialTier * 1.5 - 9}% ${elemIcons.thunder}<br>`);
+                            itemBox.append(`<span class="mctext yellow">&nbsp;&nbsp;-</span> Duration: 5 seconds<br>`);
+                            break;
+                        case 'W':
+                            itemBox.append(`<span class="mctext aqua">&nbsp;&nbsp;Concentration [Mana Used]</span><br>`);
+                            itemBox.append(`<span class="mctext aqua">&nbsp;&nbsp;-</span> Damage: ${specialTier - 7}% ${elemIcons.water} / Mana<br>`);
+                            itemBox.append(`<span class="mctext aqua">&nbsp;&nbsp;-</span> Duration: 1 Sec. / Mana<br>`);
+                            break;
+                        case 'F':
+                            itemBox.append(`<span class="mctext red">&nbsp;&nbsp;Endurance [Hit Taken]</span><br>`);
+                            itemBox.append(`<span class="mctext red">&nbsp;&nbsp;-</span> Damage: ${specialTier - 6}% ${elemIcons.fire}<br>`);
+                            itemBox.append(`<span class="mctext red">&nbsp;&nbsp;-</span> Duration: 8 seconds<br>`);
+                            break;
+                        case 'A':
+                            itemBox.append(`<span class="mctext white">&nbsp;&nbsp;Dodge [Near Mobs]</span><br>`);
+                            itemBox.append(`<span class="mctext white">&nbsp;&nbsp;-</span> Damage: ${specialTier - 6}% ${elemIcons.air}<br>`);
+                            itemBox.append(`<span class="mctext white">&nbsp;&nbsp;-</span> Duration: 6 seconds<br>`);
+                            break;
+                    }
+                }
+            }
+        }
         if (newLine) {
             itemBox.append("<br>");
             newLine = false;
@@ -417,7 +616,7 @@ $(function () {
             }
         });
         if (newLine) {
-            itemBox.append('<br>');
+            itemBox.append("<br>");
             newLine = false;
         }
         // 8. bonus skills
@@ -429,12 +628,12 @@ $(function () {
             }
         });
         if (newLine) {
-            itemBox.append('<br>');
+            itemBox.append("<br>");
             newLine = false;
         }
         // 9. ids
         {
-            // damages
+            // damage
             {
                 elementList.forEach(elem => {
                     let value = item.identification.damage[elem];
@@ -443,10 +642,10 @@ $(function () {
                         newLine = true;
                     }
                 });
-                for (let i in idMap.damages) {
-                    if (idMap.damages.hasOwnProperty(i)) {
+                for (let i in idMap.damage) {
+                    if (idMap.damage.hasOwnProperty(i)) {
                         let value = item.identification.damage[i];
-                        let line = idMap.damages[i];
+                        let line = idMap.damage[i];
                         if (value) {
                             itemBox.append(`<span class="mctext ${value > 0 ? "green" : "red"}">${nToString(value)}${line[0]}</span><span> ${line[1]}</span><br>`);
                         }
@@ -477,7 +676,7 @@ $(function () {
             }
             // spell cost
             {
-                let ordinals = ['1st', '2nd', '3rd', '4th'];
+                let ordinals = ["1st", "2nd", "3rd", "4th"];
                 let spellCostPct = item.identification.spellCost.percent;
                 let spellCostRaw = item.identification.spellCost.raw;
                 for (let i = 0; i < 4; i++) {
@@ -519,23 +718,23 @@ $(function () {
             }
         }
         if (newLine) {
-            itemBox.append('<br>');
+            itemBox.append("<br>");
             newLine = false;
         }
         // 10. powder slots
         {
-            let type = item.info.type.toLowerCase();
+            let type = (item.info.type || item.accessoryType).toLowerCase();
             let {sockets} = item.info;
-            if (type == 'relik' || type == 'wand' || type == 'bow' || type == 'spear' || type == 'dagger') {
-                type = 'weapon';
+            if (type == "relik" || type == "wand" || type == "bow" || type == "spear" || type == "dagger") {
+                type = "weapon";
             }
-            let powderArray = powderList[type].filter(x => !!x);
-            let powderCount = Math.min(powderArray.length, sockets);
+            let powderArray = (powderList[type] || []).filter(x => !!x);
+            let powderCount = Math.min(powderArray.length, sockets || 0);
             if (sockets) {
                 if (!powderCount) {
                     itemBox.append(`<span>[0/${sockets}] Powder Slots</span><br>`);
                 } else {
-                    let powderString = '';
+                    let powderString = "";
                     for (let i = 0; i < powderArray.length; i++) {
                         let elem = powderStats[powderArray[i][0].toUpperCase()][0][0];
                         powderString += `<span class="mctext ${elemColours[elem]}">${elemIcons[elem]}</span>`;
@@ -552,18 +751,18 @@ $(function () {
         }
         // 13. lore
         if (item.info.lore) {
-            itemBox.append(`<span class="mctext dark_gray">${item.info.lore} Item</span><br>`);
+            itemBox.append(`<span class="mctext dark_gray">${item.info.lore}</span><br>`);
         }
         return itemBox;
     }
 
     function capitalize(s) {
-        return s.split('_').map(x => x.substr(0, 1).toUpperCase() + x.substr(1).toLowerCase()).join(' ');
+        return s.split("_").map(x => x.substr(0, 1).toUpperCase() + x.substr(1).toLowerCase()).join(" ");
     }
 
     function resetPos() {
-        const CONTAINER = '#item_list_box';
-        const SELECTOR = '.item.float_left';
+        const CONTAINER = "#item_list_box";
+        const SELECTOR = ".item.float_left";
         const COLUMN_WIDTH = 250;
         const VERTICAL_MARGIN = 40;
         const HORIZONTAL_MARGIN = 24;
@@ -572,7 +771,7 @@ $(function () {
         let columns = Math.floor(container.width() / (HORIZONTAL_MARGIN + COLUMN_WIDTH));
         let height_occupied = [];
         let elems = container.children(SELECTOR);
-        container.css('position', 'relative');
+        container.css("position", "relative");
         for (let i = 0; i < columns; i++) {
             height_occupied.push(0);
         }
@@ -587,7 +786,7 @@ $(function () {
                 }
             }
             let $elem = $(elems[i]);
-            $elem.css('position', 'absolute').css('top', min).css('left', COLUMN_WIDTH * idx + HORIZONTAL_MARGIN * idx);
+            $elem.css("position", "absolute").css("top", min).css("left", COLUMN_WIDTH * idx + HORIZONTAL_MARGIN * idx);
             height_occupied[idx] += $elem.height() + VERTICAL_MARGIN;
         }
         let h = Math.max.apply(this, height_occupied);
@@ -595,7 +794,7 @@ $(function () {
     }
 
     function nToString(n) {
-        return (n > 0 ? '+' : '') + n;
+        return (n >= 0 ? "+" : "") + n;
     }
 
     function findStatReq(items) {
@@ -612,7 +811,7 @@ $(function () {
         }
         console.log(combinations);
         let currentOrder = [0, 1, 2, 3, 4, 5, 6, 7];
-        currentOrder = currentOrder.filter(i => items[i]); // so that we don't consider empty slots
+        currentOrder = currentOrder.filter(i => items[i]); // so that we don"t consider empty slots
         // Absolute minimum, even if it means that you need to allocate 200 points in one skill
         let currentMin;
         let currentMinSum = 694201337;
@@ -675,7 +874,7 @@ $(function () {
         return currentMin;
     }
 
-    // overrides source with data, overriding an object with a primitive won't work
+    // overrides source with data, overriding an object with a primitive won"t work
     function override(source, data) {
         if (data === undefined) {
             return source;
@@ -683,7 +882,7 @@ $(function () {
         for (let i in data) {
             if (data.hasOwnProperty(i)) {
                 let obj = source[i];
-                if (typeof obj === 'object') {
+                if (typeof obj === "object") {
                     override(obj, data[i]);
                 } else {
                     if (data[i] !== undefined) {
@@ -730,12 +929,12 @@ $(function () {
             return right;
         }
         let result = JSON.parse(JSON.stringify(left));
-        if (typeof right === 'string') {
+        if (typeof right === "string") {
             return combiner(left, right);
         }
         for (let i in right) {
             if (right.hasOwnProperty(i)) {
-                if (typeof left[i] === 'object') {
+                if (typeof left[i] === "object") {
                     result[i] = combine(left[i], right[i], combiner);
                 } else {
                     result[i] = combiner(left[i], right[i]);
@@ -746,10 +945,10 @@ $(function () {
     }
 
     function nextPermutation(array) {
-        /* The algorithm: find the longest decreasing subsequence from the end, since we don't have a larger permutation
+        /* The algorithm: find the longest decreasing subsequence from the end, since we don"t have a larger permutation
         for such a sequence, then find the smallest number that is larger than the one before the decreasing
         subsequence, and swap the smallest with the one before. That way we increment the whole sequence the least.
-        However this way the decreasing subsequence that we've found is still decreasing, so we reverse it to become an
+        However this way the decreasing subsequence that we"ve found is still decreasing, so we reverse it to become an
         increasing one, just like 39+1=40, the last digit is reset from the highest possible value to the lowest.
         6 8 7 4 3 [(5) 2 1] -> 6 8 7 4 (5) [3 2 1] -> 6 8 7 4 5 1 2 3
          */
@@ -759,10 +958,10 @@ $(function () {
         // `i--` returns the value before the decrement, so it is one larger than the decremented `i`.
         // So this expands to `while (i--, array[i + 1] < array[i]);`, which continues iff the next item is is smaller
         // than the last item i.e. true if the pair is decreasing.
-        // When `i` reaches -1, it's comparing undefined and a number, which gives false.
+        // When `i` reaches -1, it"s comparing undefined and a number, which gives false.
         // When this completes, `i` is pointing at the index right before the longest decreasing subsequence from the end.
         while (array[i--] < array[i]);
-        // if `i` is -1, the whole sequence is decreasing. There's no next permutation.
+        // if `i` is -1, the whole sequence is decreasing. There"s no next permutation.
         if (!(i+1)) return false;
         // This is the number to be swapped out, 3 in the example. We are going to find a number in the subsequence that
         // is slightly larger than this.
