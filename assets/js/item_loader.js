@@ -118,6 +118,11 @@ function convertItem(rawItem) {
         }
     }
 
+    // accessory type
+    if (item.accessoryType) {
+        item.info.type = item.accessoryType;
+    }
+
     // weapon class req
     switch (item.info.type.toLowerCase()) {
         case "Relik":
