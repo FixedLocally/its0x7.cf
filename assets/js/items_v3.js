@@ -199,7 +199,7 @@ $(function () {
         });
         // add powder button handlers
         $("span.powder").click(e => {
-            let type = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id.replaceAll("_powders", "");
+            let type = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id.replace("_powders", "");
             let powder = e.target.classList[1].substr(7).toUpperCase();
             let item = globalItemDb[$(`#${type}_select > select`).val()];
             let sockets = item.info.sockets;
@@ -455,6 +455,7 @@ $(function () {
     }
 
     function renderBuild(build, realReq) {
+        console.trace();
         itemListBox.empty();
         build.items.forEach(item => {
             if (item !== null) {
