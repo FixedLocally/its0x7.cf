@@ -228,6 +228,7 @@ $(function () {
             $('#sp_remaining').html(`Assign Skill Points (${200 - total} remaining):`);
             renderBuild(calculateBuild(build), realReq);
         });
+        $(window).resize(resetPos);
     });
 
     function spellDamage(build, totalSkills, spellMultiplier, elemMultiplier) {
@@ -1172,10 +1173,7 @@ $(function () {
         skillList.forEach((skill, i) => {
             let spInput = $(`.sp_input[data-slot=${i}]`);
             spInput.attr("min", result.req[skill]);
-            let val = spInput.val();
-            if (val < result.req[skill]) {
-                spInput.val(result.req[skill]);
-            }
+            spInput.val(result.req[skill]);
         });
         return result;
     }
