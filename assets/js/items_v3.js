@@ -196,35 +196,36 @@ $(function () {
                 }
                 // $(`#${type}_div`).empty();
             });
-            // add powder button handlers
-            $("span.powder").click(e => {
-                let type = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id.replaceAll("_powders", "");
-                let powder = e.target.classList[1].substr(7).toUpperCase();
-                let item = globalItemDb[$(`#${type}_select > select`).val()];
-                let sockets = item.info.sockets;
-                let powderArray = powderList[type];
-                for (let i = 0; i < sockets; i++) {
-                    if (powderArray.length <= i) {
-                        powderArray.push(powder);
-                        break;
-                    }
-                    if (!powderArray[i]) {
-                        powderArray[i] = powder;
-                        break;
-                    }
+        });
+        // add powder button handlers
+        $("span.powder").click(e => {
+            let type = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id.replaceAll("_powders", "");
+            let powder = e.target.classList[1].substr(7).toUpperCase();
+            let item = globalItemDb[$(`#${type}_select > select`).val()];
+            let sockets = item.info.sockets;
+            let powderArray = powderList[type];
+            for (let i = 0; i < sockets; i++) {
+                if (powderArray.length <= i) {
+                    powderArray.push(powder);
+                    break;
                 }
-                let powderBox = $(`#${type}_powders`);
-                let powderListBox = powderBox.find("div > div.powder_list");
-                renderSockets(powderListBox, type, realReq);
+                if (!powderArray[i]) {
+                    powderArray[i] = powder;
+                    break;
+                }
+            }
+            let powderBox = $(`#${type}_powders`);
+            let powderListBox = powderBox.find("div > div.powder_list");
+            renderSockets(powderListBox, type, realReq);
+        });
+        $('.sp_input').change((e) => {
+            console.log('sp change', e);
+            let build = dropdowns.map(dropdown => {
+                let select = $("#" + dropdown[0] + " > select");
+                let name = select.val();
+                return {name, powder: powderList[dropdown[1]]};
             });
-            $('.sp_input').change(() => {
-                let build = dropdowns.map(dropdown => {
-                    let select = $("#" + dropdown[0] + " > select");
-                    let name = select.val();
-                    return {name, powder: powderList[dropdown[1]]};
-                });
-                renderBuild(calculateBuild(build), realReq);
-            });
+            renderBuild(calculateBuild(build), realReq);
         });
     });
 
@@ -273,7 +274,6 @@ $(function () {
             critical[elem] = base[elem].map(x => x * (200 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]] + skillBounsPct[totalSkills[i]] + build.identification.damage[elem]) / 100).map(Math.floor);
             critical.total = sum(critical.total, critical[elem]);
         });
-        console.log(base);
         let args = [build.identification.damage.spellPercent, elementList.map(elem => build.identification.damage[elem]), skillBounsPct[totalSkills[0]], totalSkills.map(x => skillBounsPct[x])];
         return {normal, critical, args};
     }
@@ -592,8 +592,8 @@ $(function () {
                 meleeDamage.normal.total = [meleeDamage.normal.neutral[0], meleeDamage.normal.neutral[1]];
                 meleeDamage.critical.total = [meleeDamage.critical.neutral[0], meleeDamage.critical.neutral[1]];
                 elementList.forEach((elem, i) => {
-                    meleeDamage.normal[elem] = build.displayDamage[elem].map(x => x * (100 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent) / 100).map(Math.floor);
-                    meleeDamage.critical[elem] = build.displayDamage[elem].map(x => x * (200 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent) / 100).map(Math.floor);
+                    meleeDamage.normal[elem] = build.displayDamage[elem].map(x => x * (100 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent + damage[elem]) / 100).map(Math.floor);
+                    meleeDamage.critical[elem] = build.displayDamage[elem].map(x => x * (200 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent + damage[elem]) / 100).map(Math.floor);
                     meleeDamage.normal.total = sum(meleeDamage.normal.total, meleeDamage.normal[elem]);
                     meleeDamage.critical.total = sum(meleeDamage.critical.total, meleeDamage.critical[elem]);
                 });
