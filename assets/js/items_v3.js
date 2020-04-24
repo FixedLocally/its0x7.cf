@@ -223,7 +223,6 @@ $(function () {
                     let name = select.val();
                     return {name, powder: powderList[dropdown[1]]};
                 });
-                console.log(build, dropdown, powderList);
                 renderBuild(calculateBuild(build), realReq);
             });
         });
@@ -252,7 +251,7 @@ $(function () {
         // base damage is `neutral * multiplier + elemDamageOnWep` then multiply by attack speed multiplier, then spell multiplier
         let base = {};
         let attackSpeedMultiplier = {SUPER_SLOW: 0.51, VERY_SLOW: 0.83, SLOW: 1.5, NORMAL: 2.05, FAST: 2.5, VERY_FAST: 3.1, SUPER_FAST: 4.3}[build.base.attackSpeed];
-        base.neutral = weaponDamage.neutral.map(x => (x * elemMultiplier.neutral / 100 * attackSpeedMultiplier + build.identification.damage.spellRaw) * spellMultiplier / 100);
+        base.neutral = weaponDamage.neutral.map(x => x * elemMultiplier.neutral / 100 * attackSpeedMultiplier * spellMultiplier / 100);
         elementList.forEach(elem => {
             base[elem] = [0, 1].map(i => (weaponDamage.neutral[i] * elemMultiplier[elem]) / 100 + weaponDamage[elem][i])
                 .map(x => x * attackSpeedMultiplier * spellMultiplier / 100);
@@ -260,7 +259,7 @@ $(function () {
         // console.log(base);
         // multiply by (1 + spellDamage + strengthPercentage + elemSkillPercentage + elemDamagePercentage)
         let normal = {};
-        normal.neutral = base.neutral.map(x => x * (100 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]]) / 100).map(Math.floor);
+        normal.neutral = base.neutral.map(x => (x * (100 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]]) + build.identification.damage.spellRaw * spellMultiplier) / 100).map(Math.floor);
         normal.total = [normal.neutral[0], normal.neutral[1]];
         elementList.forEach((elem, i) => {
             normal[elem] = base[elem].map(x => x * (100 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]] + skillBounsPct[totalSkills[i]] + build.identification.damage[elem]) / 100).map(Math.floor);
@@ -268,12 +267,13 @@ $(function () {
         });
         // for crit hits change the 1 to 2
         let critical = {};
-        critical.neutral = base.neutral.map(x => x * (200 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]]) / 100).map(Math.floor);
+        critical.neutral = base.neutral.map(x => (x * (200 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]]) + build.identification.damage.spellRaw * spellMultiplier) / 100).map(Math.floor);
         critical.total = [critical.neutral[0], critical.neutral[1]];
         elementList.forEach((elem, i) => {
             critical[elem] = base[elem].map(x => x * (200 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]] + skillBounsPct[totalSkills[i]] + build.identification.damage[elem]) / 100).map(Math.floor);
             critical.total = sum(critical.total, critical[elem]);
         });
+        console.log(base);
         let args = [build.identification.damage.spellPercent, elementList.map(elem => build.identification.damage[elem]), skillBounsPct[totalSkills[0]], totalSkills.map(x => skillBounsPct[x])];
         return {normal, critical, args};
     }
@@ -676,7 +676,11 @@ $(function () {
             let criticalAvg = (critical.total[0] + critical.total[1]) / 2;
             let critChance = skillBounsPct[skills[1]];
             let avg = Math.round(normalAvg * (1 - critChance / 100) + criticalAvg * critChance / 100);
-            div.append(`<span class="center block">DPS: idk</span>`);
+            let attackSpeeds = ['SUPER_SLOW', 'VERY_SLOW', 'SLOW', 'NORMAL', 'FAST', 'VERY_FAST', 'SUPER_FAST'];
+            let hitsPerSec = [0.51, 0.83, 1.5, 2.05, 2.5, 3.4, 4.3];
+            let speedTier = Math.min(6, Math.max(0, attackSpeeds.indexOf(build.items[8].base.attackSpeed) + build.identification.others.attackSpeedBonus));
+            div.append(`<span class="center block">${capitalize(attackSpeeds[speedTier])} Attack Speed</span>`);
+            div.append(`<span class="center block">DPS: ${Math.floor(avg * hitsPerSec[speedTier] + build.identification.others.poison * skillBounsPct[skills[0]] / 3)}</span>`);
             div.append(`<span class="dps">Average Damage: ${avg}</span>`);
             let leftDamageBox = $(`<div class="damage_left">Normal Damage<br>Total: ${normal.total[0]} - ${normal.total[1]} (${Math.round(normalAvg)})<br><span class="mctext gold">✤ ${normal.neutral[0]} - ${normal.neutral[1]}</span><br></div>`);
             let rightDamageBox = $(`<div class="damage_right">Critical Damage<br>Total: ${critical.total[0]} - ${critical.total[1]} (${Math.round(criticalAvg)})<br><span class="mctext gold">✤ ${critical.neutral[0]} - ${critical.neutral[1]}</span><br></div>`);
@@ -1026,7 +1030,8 @@ $(function () {
                     itemBox.append(`<span>[0/${sockets}] Powder Slots</span><br>`);
                 } else {
                     let powderString = "";
-                    for (let i = 0; i < powderArray.length; i++) {
+                    let count = Math.min(powderArray.length, item.info.sockets);
+                    for (let i = 0; i < count; i++) {
                         let elem = powderStats[powderArray[i][0].toUpperCase()][0][0];
                         powderString += `<span class="mctext ${elemColours[elem]}">${elemIcons[elem]}</span>`;
                     }
