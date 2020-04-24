@@ -666,7 +666,7 @@ $(function () {
                     // explosive blender
                     spells.push({spell: "Aura", subtitle: "Center Damage", primary: true, damage: spellDamage(build, skills, 200, {neutral: 70, earth: 0, thunder: 0, water: 30, fire: 0, air: 0})});
                     // uproot
-                    spells.push({spell: "Uproot", subtitle: "", primary: true, damage: spellDamage(build, skills, 75, {neutral: 70, earth: 30, thunder: 0, water: 0, fire: 0, air: 0})});
+                    spells.push({spell: "Uproot", subtitle: "", primary: true, damage: spellDamage(build, skills, 50, {neutral: 70, earth: 30, thunder: 0, water: 0, fire: 0, air: 0})});
             }
             // spells.sort((a,b) => (b.primary||0)-(a.primary||0));
             let div = $('<div class="spell_damage"></div>');
