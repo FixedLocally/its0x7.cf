@@ -456,7 +456,10 @@ $(function () {
     }
 
     function renderBuild(build, realReq) {
-        console.trace();
+        if (!build.items.filter(x => x).length) {
+            // empty build
+            return;
+        }
         itemListBox.empty();
         build.items.forEach(item => {
             if (item !== null) {
@@ -1165,10 +1168,16 @@ $(function () {
                 }
             }
         } while (nextPermutation(currentOrder));
-        if (currentValidMin) {
-            return currentValidMin;
-        }
-        return currentMin;
+        let result = currentValidMin || currentMin;
+        skillList.forEach((skill, i) => {
+            let spInput = $(`.sp_input[data-slot=${i}]`);
+            spInput.attr("min", result.req[skill]);
+            let val = spInput.val();
+            if (val < result.req[skill]) {
+                spInput.val(result.req[skill]);
+            }
+        });
+        return result;
     }
 
     // overrides source with data, overriding an object with a primitive won"t work
