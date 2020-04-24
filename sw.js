@@ -3,9 +3,9 @@ const urlsToCache = [
     '/map/',
     '/build/',
     '/build/itemdb.json',
-    '/assets/js/common.js?1548344983219',
-    '/assets/js/items_v3.js?1548344983219',
-    '/assets/js/chosen.jquery.min.js?1548344983219',
+    '/assets/js/common.js?1587753862445',
+    '/assets/js/items_v3.js?1587753862445',
+    '/assets/js/chosen.jquery.min.js?1587753862445',
     '/assets/img/icons/build.png',
     '/assets/img/powders/air0.png',
     '/assets/img/powders/air1.png',
@@ -18,10 +18,10 @@ const urlsToCache = [
     '/assets/img/powders/water0.png',
     '/assets/img/powders/water1.png',
     '/assets/img/powders/empty.png',
-    '/assets/css/chosen.min.css?1548344983219',
+    '/assets/css/chosen.min.css?1587753862445',
     '/assets/css/chosen-sprite.png',
     '/assets/css/chosen-sprite@2x.png',
-    '/assets/css/main.css?1548344983219',
+    '/assets/css/main.css?1587753862445',
 ];
 
 self.addEventListener('install', function(event) {
