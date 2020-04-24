@@ -218,13 +218,14 @@ $(function () {
             let powderListBox = powderBox.find("div > div.powder_list");
             renderSockets(powderListBox, type, realReq);
         });
-        $('.sp_input').change((e) => {
-            console.log('sp change', e);
+        $('.sp_input').change(() => {
             let build = dropdowns.map(dropdown => {
                 let select = $("#" + dropdown[0] + " > select");
                 let name = select.val();
                 return {name, powder: powderList[dropdown[1]]};
             });
+            let total = $('.sp_input').map((i, v) => 1*v.value).toArray().reduce((a, b) => a + b);
+            $('#sp_remaining').html(`Assign Skill Points (${200 - total} remaining):`);
             renderBuild(calculateBuild(build), realReq);
         });
     });
