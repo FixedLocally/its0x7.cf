@@ -61,6 +61,11 @@ span.dps {
 	display: block;
 }
 
+span.subtitle {
+	display: block;
+	font-size: small;
+}
+
 .float_left {
 	float: left;
 }
@@ -69,6 +74,10 @@ span.dps {
 	content: '';
 	display: block;
 	clear: both;
+}
+
+.block {
+	display: block;
 }
 
 .damage_left {
@@ -89,6 +98,9 @@ td {
 }
 fieldset {
 	border: 1px solid #999;
+}
+h4.item_name {
+	margin-bottom: 0;
 }
 .item_name.legendary, .mctext.aqua {
 	color: #4de8e8;

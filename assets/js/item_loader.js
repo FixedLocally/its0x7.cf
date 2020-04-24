@@ -125,19 +125,19 @@ function convertItem(rawItem) {
 
     // weapon class req
     switch (item.info.type.toLowerCase()) {
-        case "Relik":
+        case "relik":
             item.req.class = "Shaman";
             break;
-        case "Wand":
+        case "wand":
             item.req.class = "Mage";
             break;
-        case "Bow":
+        case "bow":
             item.req.class = "Archer";
             break;
-        case "Spear":
+        case "spear":
             item.req.class = "Warrior";
             break;
-        case "Dagger":
+        case "dagger":
             item.req.class = "Assassin";
             break;
     }
