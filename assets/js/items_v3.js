@@ -228,6 +228,10 @@ $(function () {
             $('#sp_remaining').html(`Assign Skill Points (${200 - total} remaining):`);
             renderBuild(calculateBuild(build), realReq);
         });
+        $('.reset_button').click(() => {
+            $('.sp_input').map((i, v) => v.value = v.getAttribute("min"));
+            $('.sp_input[data-slot=0]').change();
+        });
         $(window).resize(resetPos);
     });
 
