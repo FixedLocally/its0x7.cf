@@ -149,7 +149,7 @@ $(function () {
                 let build = dropdowns.map(dropdown => {
                     let select = $("#" + dropdown[0] + " > select");
                     let name = select.val();
-                    return {name, powder: powderList[dropdown[0]]};
+                    return {name, powder: powderList[dropdown[1]]};
                 });
                 let calculatedBuild = calculateBuild(build);
                 let parentId = e.target.parentElement.id;
@@ -196,27 +196,36 @@ $(function () {
                 }
                 // $(`#${type}_div`).empty();
             });
-        });
-        // add powder button handlers
-        $("span.powder").click(e => {
-            let type = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id.replaceAll("_powders", "");
-            let powder = e.target.classList[1].substr(7).toUpperCase();
-            let item = globalItemDb[$(`#${type}_select > select`).val()];
-            let sockets = item.info.sockets;
-            let powderArray = powderList[type];
-            for (let i = 0; i < sockets; i++) {
-                if (powderArray.length <= i) {
-                    powderArray.push(powder);
-                    break;
+            // add powder button handlers
+            $("span.powder").click(e => {
+                let type = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id.replaceAll("_powders", "");
+                let powder = e.target.classList[1].substr(7).toUpperCase();
+                let item = globalItemDb[$(`#${type}_select > select`).val()];
+                let sockets = item.info.sockets;
+                let powderArray = powderList[type];
+                for (let i = 0; i < sockets; i++) {
+                    if (powderArray.length <= i) {
+                        powderArray.push(powder);
+                        break;
+                    }
+                    if (!powderArray[i]) {
+                        powderArray[i] = powder;
+                        break;
+                    }
                 }
-                if (!powderArray[i]) {
-                    powderArray[i] = powder;
-                    break;
-                }
-            }
-            let powderBox = $(`#${type}_powders`);
-            let powderListBox = powderBox.find("div > div.powder_list");
-            renderSockets(powderListBox, type, realReq);
+                let powderBox = $(`#${type}_powders`);
+                let powderListBox = powderBox.find("div > div.powder_list");
+                renderSockets(powderListBox, type, realReq);
+            });
+            $('.sp_input').change(() => {
+                let build = dropdowns.map(dropdown => {
+                    let select = $("#" + dropdown[0] + " > select");
+                    let name = select.val();
+                    return {name, powder: powderList[dropdown[1]]};
+                });
+                console.log(build, dropdown, powderList);
+                renderBuild(calculateBuild(build), realReq);
+            });
         });
     });
 
@@ -248,18 +257,22 @@ $(function () {
             base[elem] = [0, 1].map(i => (weaponDamage.neutral[i] * elemMultiplier[elem]) / 100 + weaponDamage[elem][i])
                 .map(x => x * attackSpeedMultiplier * spellMultiplier / 100);
         });
-        console.log(base);
+        // console.log(base);
         // multiply by (1 + spellDamage + strengthPercentage + elemSkillPercentage + elemDamagePercentage)
         let normal = {};
-        normal.neutral = base.neutral.map(x => x * (100 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]]) / 100);
+        normal.neutral = base.neutral.map(x => x * (100 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]]) / 100).map(Math.floor);
+        normal.total = [normal.neutral[0], normal.neutral[1]];
         elementList.forEach((elem, i) => {
-            normal[elem] = base[elem].map(x => x * (100 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]] + skillBounsPct[totalSkills[i]] + build.identification.damage[elem]) / 100);
+            normal[elem] = base[elem].map(x => x * (100 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]] + skillBounsPct[totalSkills[i]] + build.identification.damage[elem]) / 100).map(Math.floor);
+            normal.total = sum(normal.total, normal[elem]);
         });
         // for crit hits change the 1 to 2
         let critical = {};
-        critical.neutral = base.neutral.map(x => x * (200 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]]) / 100);
+        critical.neutral = base.neutral.map(x => x * (200 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]]) / 100).map(Math.floor);
+        critical.total = [critical.neutral[0], critical.neutral[1]];
         elementList.forEach((elem, i) => {
-            critical[elem] = base[elem].map(x => x * (200 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]] + skillBounsPct[totalSkills[i]] + build.identification.damage[elem]) / 100);
+            critical[elem] = base[elem].map(x => x * (200 + build.identification.damage.spellPercent + skillBounsPct[totalSkills[0]] + skillBounsPct[totalSkills[i]] + build.identification.damage[elem]) / 100).map(Math.floor);
+            critical.total = sum(critical.total, critical[elem]);
         });
         let args = [build.identification.damage.spellPercent, elementList.map(elem => build.identification.damage[elem]), skillBounsPct[totalSkills[0]], totalSkills.map(x => skillBounsPct[x])];
         return {normal, critical, args};
@@ -313,9 +326,8 @@ $(function () {
      * Normally we use the item"s base stats as outlined in itemDB, but stats can be overridden,
      * even if the override is outside of the normal range we won"t check
      * @param items The items equipped as an array
-     * @param skills The skill points allocated
      */
-    function calculateBuild(items, skills) {
+    function calculateBuild(items) {
         // check for the correct types [helm, chest, leggings, boots, ring, ring, bracelet, necklace, wep]
         let totalIdentifications = {};
         let totalBase = {};
@@ -565,6 +577,8 @@ $(function () {
             skills[i] += realReq.bonus[v] || 0;
             skills[i] = Math.max(0, Math.min(skills[i], 150));
         });
+        let damagesBox = $('#build_dmg > .build_content');
+        damagesBox.empty();
         if (build.items[8]) {
             // calculate damages
             // melee
@@ -573,15 +587,161 @@ $(function () {
             let meleeDamage = {normal: {}, critical: {}};
             for (let i in weaponDamage) {
                 if (!weaponDamage.hasOwnProperty(i)) continue;
-                meleeDamage.normal.neutral = build.displayDamage.neutral.map(x => x * (100 + skillBounsPct[skills[0]] + damage.meleePercent) / 100 + damage.meleeRaw);
-                meleeDamage.critical.neutral = build.displayDamage.neutral.map(x => x * (200 + skillBounsPct[skills[0]] + damage.meleePercent) / 100 + damage.meleeRaw);
+                meleeDamage.normal.neutral = build.displayDamage.neutral.map(x => x * (100 + skillBounsPct[skills[0]] + damage.meleePercent) / 100 + damage.meleeRaw).map(Math.floor);
+                meleeDamage.critical.neutral = build.displayDamage.neutral.map(x => x * (200 + skillBounsPct[skills[0]] + damage.meleePercent) / 100 + damage.meleeRaw).map(Math.floor);
+                meleeDamage.normal.total = [meleeDamage.normal.neutral[0], meleeDamage.normal.neutral[1]];
+                meleeDamage.critical.total = [meleeDamage.critical.neutral[0], meleeDamage.critical.neutral[1]];
                 elementList.forEach((elem, i) => {
-                    meleeDamage.normal[elem] = build.displayDamage[elem].map(x => x * (100 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent) / 100);
-                    meleeDamage.critical[elem] = build.displayDamage[elem].map(x => x * (200 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent) / 100);
+                    meleeDamage.normal[elem] = build.displayDamage[elem].map(x => x * (100 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent) / 100).map(Math.floor);
+                    meleeDamage.critical[elem] = build.displayDamage[elem].map(x => x * (200 + skillBounsPct[skills[0]] + skillBounsPct[skills[i]] + damage.meleePercent) / 100).map(Math.floor);
+                    meleeDamage.normal.total = sum(meleeDamage.normal.total, meleeDamage.normal[elem]);
+                    meleeDamage.critical.total = sum(meleeDamage.critical.total, meleeDamage.critical[elem]);
                 });
             }
-            console.log(build, realReq, meleeDamage);
+
+            // spell
+            let spells = [];
+            switch (build.items[8].info.type.toLowerCase()) {
+                case "spear":
+                    // warrior
+                    // bash
+                    spells.push({spell: "Bash", subtitle: "First Explosion", damage: spellDamage(build, skills, 130, {neutral: 60, earth: 40, thunder: 0, water: 0, fire: 0, air: 0})});
+                    spells.push({spell: "Bash", subtitle: "Second Explosion", damage: spellDamage(build, skills, 130, {neutral: 100, earth: 0, thunder: 0, water: 0, fire: 0, air: 0})});
+                    spells.push({spell: "Bash", subtitle: "Total Damage", primary: true, damage: sum(spells[0].damage, spells[1].damage)});
+                    // charge
+                    spells.push({spell: "Charge", subtitle: "", primary: true, damage: spellDamage(build, skills, 150, {neutral: 60, earth: 0, thunder: 0, water: 0, fire: 40, air: 0})});
+                    // uppercut
+                    spells.push({spell: "Uppercut", subtitle: "First Damage", damage: spellDamage(build, skills, 300, {neutral: 85, earth: 15, thunder: 0, water: 0, fire: 40, air: 0})});
+                    spells.push({spell: "Uppercut", subtitle: "Fireworks Damage", damage: spellDamage(build, skills, 50, {neutral: 85, earth: 0, thunder: 15, water: 0, fire: 40, air: 0})});
+                    spells.push({spell: "Uppercut", subtitle: "Comet Damage", damage: spellDamage(build, skills, 50, {neutral: 100, earth: 0, thunder: 0, water: 0, fire: 40, air: 0})});
+                    spells.push({spell: "Uppercut", subtitle: "Total Damage", primary: true, damage: sum(sum(spells[4].damage, spells[5].damage), spells[6].damage)});
+                    // war scream
+                    spells.push({spell: "War Scream", subtitle: "Per Hit", primary: true, damage: spellDamage(build, skills, 50, {neutral: 0, earth: 0, thunder: 0, water: 0, fire: 75, air: 25})});
+                    break;
+                case "bow":
+                    // archer
+                    // arrow storm
+                    spells.push({spell: "Arrow Storm", subtitle: "Per Arrow", damage: spellDamage(build, skills, 10, {neutral: 60, earth: 0, thunder: 25, water: 0, fire: 15, air: 0})});
+                    spells.push({spell: "Arrow Storm", subtitle: "Per 60 Arrows", primary: true, damage: multiply(spells[0].damage, 60)});
+                    // escape
+                    spells.push({spell: "Escape", subtitle: "", primary: true, damage: spellDamage(build, skills, 100, {neutral: 50, earth: 0, thunder: 0, water: 0, fire: 0, air: 50})});
+                    // bomb
+                    spells.push({spell: "Bomb", subtitle: "", primary: true, damage: spellDamage(build, skills, 250, {neutral: 60, earth: 25, thunder: 0, water: 0, fire: 15, air: 0})});
+                    // arrow shield
+                    spells.push({spell: "Arrow Shield", subtitle: "", primary: true, damage: spellDamage(build, skills, 100, {neutral: 70, earth: 0, thunder: 0, water: 30, fire: 0, air: 0})});
+                    spells.push({spell: "Arrow Shield", subtitle: "Arrow Rain Damage", damage: spellDamage(build, skills, 250, {neutral: 70, earth: 0, thunder: 0, water: 0, fire: 0, air: 30})});
+                    break;
+                case "wand":
+                    // mage
+                    // heal
+                    spells.push({spell: "Heal", subtitle: "", primary: true, heal: [heal(build, 0.12), heal(build, 0.06), heal(build, 0.06)]});
+                    // teleport
+                    spells.push({spell: "Teleport", subtitle: "", primary: true, damage: spellDamage(build, skills, 100, {neutral: 60, earth: 0, thunder: 40, water: 0, fire: 0, air: 0})});
+                    // meteor
+                    spells.push({spell: "Meteor", subtitle: "Explosion Damage", primary: true, damage: spellDamage(build, skills, 500, {neutral: 40, earth: 30, thunder: 0, water: 0, fire: 30, air: 0})});
+                    spells.push({spell: "Meteor", subtitle: "Burning Damage", damage: spellDamage(build, skills, 125, {neutral: 100, earth: 0, thunder: 0, water: 0, fire: 0, air: 0})});
+                    // ice snake
+                    spells.push({spell: "Ice Snake", subtitle: "", primary: true, damage: spellDamage(build, skills, 70, {neutral: 50, earth: 0, thunder: 0, water: 50, fire: 0, air: 0})});
+                    break;
+                case "dagger":
+                    // assassin
+                    // spin attack
+                    spells.push({spell: "Spin Attack", subtitle: "", primary: true, damage: spellDamage(build, skills, 150, {neutral: 70, earth: 0, thunder: 30, water: 0, fire: 0, air: 0})});
+                    // multihit
+                    spells.push({spell: "Multihit", subtitle: "First 10 Hits", damage: spellDamage(build, skills, 30, {neutral: 70, earth: 0, thunder: 30, water: 0, fire: 0, air: 0})});
+                    spells.push({spell: "Multihit", subtitle: "Last Hit", damage: spellDamage(build, skills, 30, {neutral: 40, earth: 0, thunder: 30, water: 30, fire: 0, air: 0})});
+                    spells.push({spell: "Multihit", subtitle: "Total Damage", primary: true, damage: sum(multiply(spells[1].damage, 10), spells[2].damage)});
+                    // smoke bomb
+                    spells.push({spell: "Smoke Bomb", subtitle: "Total Damage", primary: true, damage: spellDamage(build, skills, 60, {neutral: 50, earth: 25, thunder: 0, water: 0, fire: 0, air: 25})});
+                    spells.push({spell: "Smoke Bomb", subtitle: "Per Second", damage: multiply(spells[4].damage, 5)});
+                    break;
+                case "relik":
+                    // shaman
+                    // totem
+                    spells.push({spell: "Totem", subtitle: "Damage Per Second", primary: true, damage: spellDamage(build, skills, 20, {neutral: 60, earth: 0, thunder: 0, water: 0, fire: 20, air: 20})});
+                    spells.push({spell: "Totem", subtitle: "Heal Per Second", primary: true, heal: [heal(build, 0.04)]});
+                    spells.push({spell: "Totem", subtitle: "Landing Damage", damage: spellDamage(build, skills, 100, {neutral: 100, earth: 0, thunder: 0, water: 0, fire: 0, air: 0})});
+                    // haul
+                    spells.push({spell: "Haul", subtitle: "", primary: true, damage: spellDamage(build, skills, 100, {neutral: 100, earth: 0, thunder: 0, water: 0, fire: 0, air: 0})});
+                    // explosive blender
+                    spells.push({spell: "Aura", subtitle: "Center Damage", primary: true, damage: spellDamage(build, skills, 200, {neutral: 70, earth: 0, thunder: 0, water: 30, fire: 0, air: 0})});
+                    // uproot
+                    spells.push({spell: "Uproot", subtitle: "", primary: true, damage: spellDamage(build, skills, 75, {neutral: 70, earth: 30, thunder: 0, water: 0, fire: 0, air: 0})});
+            }
+            // spells.sort((a,b) => (b.primary||0)-(a.primary||0));
+            let div = $('<div class="spell_damage"></div>');
+            div.append(`<h4 class="item_name center ${build.items[8].info.tier.toLowerCase()}">Melee Damage</h4>`);
+            let {normal, critical} = meleeDamage;
+            let normalAvg = (normal.total[0] + normal.total[1]) / 2;
+            let criticalAvg = (critical.total[0] + critical.total[1]) / 2;
+            let critChance = skillBounsPct[skills[1]];
+            let avg = Math.round(normalAvg * (1 - critChance / 100) + criticalAvg * critChance / 100);
+            div.append(`<span class="center block">DPS: idk</span>`);
+            div.append(`<span class="dps">Average Damage: ${avg}</span>`);
+            let leftDamageBox = $(`<div class="damage_left">Normal Damage<br>Total: ${normal.total[0]} - ${normal.total[1]} (${Math.round(normalAvg)})<br><span class="mctext gold">✤ ${normal.neutral[0]} - ${normal.neutral[1]}</span><br></div>`);
+            let rightDamageBox = $(`<div class="damage_right">Critical Damage<br>Total: ${critical.total[0]} - ${critical.total[1]} (${Math.round(criticalAvg)})<br><span class="mctext gold">✤ ${critical.neutral[0]} - ${critical.neutral[1]}</span><br></div>`);
+            elementList.forEach(elem => {
+                if (normal[elem][1]) {
+                    leftDamageBox.append(`<span class="mctext ${elemColours[elem]}">${elemIcons[elem]} ${normal[elem][0]} - ${normal[elem][1]}</span><br>`);
+                    rightDamageBox.append(`<span class="mctext ${elemColours[elem]}">${elemIcons[elem]} ${critical[elem][0]} - ${critical[elem][1]}</span><br>`);
+                }
+            });
+            div.append(leftDamageBox);
+            div.append(rightDamageBox);
+            damagesBox.append(div);
+            spells.forEach(spell => {
+                if (spell.damage) {
+                    let div = $('<div class="spell_damage"></div>');
+                    div.append(`<h4 class="item_name center ${build.items[8].info.tier.toLowerCase()}">${spell.spell}</h4>`);
+                    let {normal, critical} = spell.damage;
+                    let normalAvg = (normal.total[0] + normal.total[1]) / 2;
+                    let criticalAvg = (critical.total[0] + critical.total[1]) / 2;
+                    let critChance = skillBounsPct[skills[1]];
+                    let avg = Math.round(normalAvg * (1 - critChance / 100) + criticalAvg * critChance / 100);
+                    if (spell.subtitle.length) {
+                        div.append(`<span class="center subtitle">${spell.subtitle}</span>`);
+                    }
+                    div.append(`<span class="dps">Average Damage: ${avg}</span>`);
+                    let leftDamageBox = $(`<div class="damage_left">Normal Damage<br>Total: ${normal.total[0]} - ${normal.total[1]} (${Math.round(normalAvg)})<br><span class="mctext gold">✤ ${normal.neutral[0]} - ${normal.neutral[1]}</span><br></div>`);
+                    let rightDamageBox = $(`<div class="damage_right">Critical Damage<br>Total: ${critical.total[0]} - ${critical.total[1]} (${Math.round(criticalAvg)})<br><span class="mctext gold">✤ ${critical.neutral[0]} - ${critical.neutral[1]}</span><br></div>`);
+                    elementList.forEach(elem => {
+                        if (normal[elem][1]) {
+                            leftDamageBox.append(`<span class="mctext ${elemColours[elem]}">${elemIcons[elem]} ${normal[elem][0]} - ${normal[elem][1]}</span><br>`);
+                            rightDamageBox.append(`<span class="mctext ${elemColours[elem]}">${elemIcons[elem]} ${critical[elem][0]} - ${critical[elem][1]}</span><br>`);
+                        }
+                    });
+                    div.append(leftDamageBox);
+                    div.append(rightDamageBox);
+                    damagesBox.append(div);
+                }
+                if (spell.heal) {
+                    let div = $('<div class="spell_damage"></div>');
+                    let {heal} = spell;
+                    div.append(`<h4 class="item_name center ${build.items[8].info.tier.toLowerCase()}">${spell.spell}</h4>`);
+                    if (spell.subtitle.length) {
+                        div.append(`<span class="center subtitle">${spell.subtitle}</span>`);
+                    }
+                    switch (spell.spell) {
+                        case "Heal":
+                            div.append(`<span class="center block">Total Heal: ${heal[0] + heal[1] + heal[2]}</span>`);
+                            for (let i = 0; i < 3; i++) {
+                                div.append(`<span class="center block">${['1st', '2nd', '3rd'][i]} Pulse: ${heal[i]}</span>`);
+                            }
+                        case "Totem":
+                            div.append(`<span class="center block">Heal: ${heal[0]}</span>`);
+                            break;
+                    }
+                    damagesBox.append(div);
+                }
+            });
+        } else {
+            // no weapon to calculate damages
+            damagesBox.html('No weapon to selected.');
         }
+    }
+
+    function heal(build, ratio) {
+        return Math.floor(build.base.health * ratio * (1 + build.identification.damage.water / 200));
     }
 
     function generateItemBox(item, floatLeft) {
@@ -938,7 +1098,7 @@ $(function () {
                     buildItems[j] = {name: items[j].displayName || items[j].info.name};
                 }
             }
-            combinations.push(calculateBuild(buildItems, [0, 0, 0, 0, 0]));
+            combinations.push(calculateBuild(buildItems));
         }
         let currentOrder = [0, 1, 2, 3, 4, 5, 6, 7];
         currentOrder = currentOrder.filter(i => items[i]); // so that we don"t consider empty slots
@@ -1034,7 +1194,21 @@ $(function () {
             }
             return y;
 
-        })
+        });
+    }
+
+    function multiply(obj, val) {
+        let result = {};
+        for (let i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                if ("object" !== typeof obj[i]) {
+                    result[i] = val * obj[i];
+                } else {
+                    result[i] = multiply(obj[i], val);
+                }
+            }
+        }
+        return result;
     }
 
     function max(left, right) {
@@ -1047,7 +1221,7 @@ $(function () {
             } else {
                 return y;
             }
-        })
+        });
     }
 
     // similar to override(), but adds instead of assigns, and clones the source
