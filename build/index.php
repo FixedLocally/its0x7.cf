@@ -94,16 +94,16 @@ if (isset($_SERVER["QUERY_STRING"])) {
     <meta property="og:image" content="https://its0x7.cf/assets/img/icons/build.png">
     <link rel="stylesheet" href="https://bootswatch.com/3/darkly/bootstrap.css">
     <link href="https://fonts.googleapis.com/css?family=Mukta" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/main.css?1587828591736">
-    <link rel="stylesheet" href="/assets/css/chosen.min.css?1587828591736">
+    <link rel="stylesheet" href="/assets/css/main.css?1587832624321">
+    <link rel="stylesheet" href="/assets/css/chosen.min.css?1587832624321">
     <script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
     <script>window.bugsnagClient = bugsnag('2af5e91dd7b8ce9f4ce76efe9bc657ed')</script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="/assets/js/items_v3.js?1587828591736"></script>
-    <script src="/assets/js/chosen.jquery.min.js?1587828591736"></script>
-    <script src="/assets/js/common.js?1587828591736"></script>
-    <script src="/assets/js/md5.min.js?1587828591736"></script>
+    <script src="/assets/js/items_v3.js?1587832624321"></script>
+    <script src="/assets/js/chosen.jquery.min.js?1587832624321"></script>
+    <script src="/assets/js/common.js?1587832624321"></script>
+    <script src="/assets/js/md5.min.js?1587832624321"></script>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <script>
         // sorry i need to pay for hosting
