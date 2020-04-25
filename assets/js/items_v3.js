@@ -697,9 +697,9 @@ $(function () {
                     // charge
                     spells.push({spell: "Charge", subtitle: "", primary: true, damage: spellDamage(build, skills, 150, {neutral: 60, earth: 0, thunder: 0, water: 0, fire: 40, air: 0})});
                     // uppercut
-                    spells.push({spell: "Uppercut", subtitle: "First Damage", damage: spellDamage(build, skills, 300, {neutral: 85, earth: 15, thunder: 0, water: 0, fire: 40, air: 0})});
-                    spells.push({spell: "Uppercut", subtitle: "Fireworks Damage", damage: spellDamage(build, skills, 50, {neutral: 85, earth: 0, thunder: 15, water: 0, fire: 40, air: 0})});
-                    spells.push({spell: "Uppercut", subtitle: "Comet Damage", damage: spellDamage(build, skills, 50, {neutral: 100, earth: 0, thunder: 0, water: 0, fire: 40, air: 0})});
+                    spells.push({spell: "Uppercut", subtitle: "First Damage", damage: spellDamage(build, skills, 300, {neutral: 85, earth: 15, thunder: 0, water: 0, fire: 0, air: 0})});
+                    spells.push({spell: "Uppercut", subtitle: "Fireworks Damage", damage: spellDamage(build, skills, 50, {neutral: 85, earth: 0, thunder: 15, water: 0, fire: 0, air: 0})});
+                    spells.push({spell: "Uppercut", subtitle: "Comet Damage", damage: spellDamage(build, skills, 50, {neutral: 100, earth: 0, thunder: 0, water: 0, fire: 0, air: 0})});
                     spells.push({spell: "Uppercut", subtitle: "Total Damage", primary: true, damage: sum(sum(spells[4].damage, spells[5].damage), spells[6].damage)});
                     // war scream
                     spells.push({spell: "War Scream", subtitle: "Per Hit", primary: true, damage: spellDamage(build, skills, 50, {neutral: 0, earth: 0, thunder: 0, water: 0, fire: 75, air: 25})});
@@ -754,7 +754,7 @@ $(function () {
                     // uproot
                     spells.push({spell: "Uproot", subtitle: "", primary: true, damage: spellDamage(build, skills, 50, {neutral: 70, earth: 30, thunder: 0, water: 0, fire: 0, air: 0})});
             }
-            // spells.sort((a,b) => (b.primary||0)-(a.primary||0));
+            spells.sort((a,b) => (b.primary||0)-(a.primary||0));
             let div = $('<div class="spell_damage"></div>');
             div.append(`<h4 class="item_name center ${build.items[8].info.tier.toLowerCase()}">Melee Damage</h4>`);
             let {normal, critical} = meleeDamage;
