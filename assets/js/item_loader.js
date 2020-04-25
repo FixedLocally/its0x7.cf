@@ -37,7 +37,7 @@ function convertItem(rawItem) {
         manaSteal, lifeSteal,
         spellCostRaw1, spellCostPct1, spellCostRaw2, spellCostPct2, spellCostRaw3, spellCostPct3, spellCostRaw4, spellCostPct4,
         emeraldStealing, exploding, healthBonus, jumpHeight, lootBonus, lootQuality, poison, reflection, speed, xpBonus, thorns, sprint, sprintRegen, attackSpeedBonus} = rawItem;
-    item.info.name = name;
+    item.info.name = rawItem.displayName || name;
     item.info.type = type;
     item.info.tier = tier;
     item.info.set = set;
