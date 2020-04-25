@@ -189,7 +189,6 @@ $(function () {
                 select.append(`<option value="${name}">${name}</option>`);
             });
             select.change((e, o) => {
-                console.log(e, o);
                 let build = dropdowns.map(dropdown => {
                     let select = $("#" + dropdown[0] + " > select");
                     let name = select.val();
@@ -199,7 +198,6 @@ $(function () {
                 let parentId = e.target.parentElement.id;
                 let type = parentId.replace("_select", "");
                 let index = correctOrder.indexOf(type.replace(/\d/, ""));
-                console.log(index);
                 if (o && !o.deferCalc) {
                     if (type !== "weapon") {
                         currentReq = findStatReq(calculatedBuild.items);
@@ -207,6 +205,7 @@ $(function () {
                     }
                     if (calculatedBuild.items[8]) {
                         // take the skills we have and see what else do we need
+                        console.log("considering wep");
                         let weaponItem = calculatedBuild.items[8];
                         skillList.forEach(skill => {
                             let ownedPoints = currentReq.req[skill] + currentReq.bonus[skill];
@@ -227,11 +226,15 @@ $(function () {
                         realReq.bonus = bonus;
                         realReq.order = currentReq.order;
                     }
+                    skillList.forEach((skill, i) => {
+                        let spInput = $(`.sp_input[data-slot=${i}]`);
+                        spInput.attr("min", realReq.req[skill]);
+                        spInput.val(realReq.req[skill]);
+                    });
                 }
                 let item = calculatedBuild.items[index];
                 let box = $(`#${type}_div`).empty();
                 let powderBox = $(`#${type}_powders`);
-                console.log(item.info.type, item.info.name, item.info.sockets);
                 if (item && item.info.sockets) {
                     box.append(generateItemBox(item, false));
                     powderBox.show();
@@ -275,12 +278,12 @@ $(function () {
                                 $(`.powder_choices:eq(${i})`).find(`.powder_${powders[i][j].toLowerCase()}`).click();
                             }
                         }
-                        console.log($(selects[0]).trigger("change", {deferCalc: 0 < 7}));;
-                        console.log($(selects[1]).trigger("change", {deferCalc: 1 < 7}));;
-                        console.log($(selects[2]).trigger("change", {deferCalc: 2 < 7}));;
-                        console.log($(selects[3]).trigger("change", {deferCalc: 3 < 7}));;
-                        console.log($(selects[7]).trigger("change", {deferCalc: 7 < 7}));;
-                        console.log($(selects[8]).trigger("change", {deferCalc: 8 < 7}));;
+                        console.log($(selects[0]).trigger("change", {deferCalc: true}));
+                        console.log($(selects[1]).trigger("change", {deferCalc: true}));
+                        console.log($(selects[2]).trigger("change", {deferCalc: true}));
+                        console.log($(selects[3]).trigger("change", {deferCalc: true}));
+                        console.log($(selects[7]).trigger("change", {deferCalc: false}));
+                        console.log($(selects[8]).trigger("change", {deferCalc: false}));
 
                         window.selects = selects;
                         $('.reset_button').click();
@@ -1249,13 +1252,7 @@ $(function () {
                 }
             }
         } while (nextPermutation(currentOrder));
-        let result = currentValidMin || currentMin;
-        skillList.forEach((skill, i) => {
-            let spInput = $(`.sp_input[data-slot=${i}]`);
-            spInput.attr("min", result.req[skill]);
-            spInput.val(result.req[skill]);
-        });
-        return result;
+        return currentValidMin || currentMin;
     }
 
     // overrides source with data, overriding an object with a primitive won"t work
