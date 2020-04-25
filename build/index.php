@@ -4,18 +4,18 @@ if (isset($_SERVER['QUERY_STRING'])) {
     if (count($q) == 14) {
         $items = json_decode(file_get_contents('itemdb.json'), true);
         $item_hashes = array_slice($q, 0, 9);
-        $filtered = array_filter($items, function($v) {
+        $filtered = array_filter($items['itemDB'], function($v) {
             global $item_hashes;
-            $hash = $v['hash'];
+            $hash = $v['info']['hash'];
             $idx = array_search($hash, $item_hashes);
             return $idx !== false;
         });
-        $item_count_total = count($items);
+        $item_count_total = count($items['itemDB']);
         $filtered = [];
         for ($i = 0; $i < 9; ++$i) {
             for ($j = 0; $j < $item_count_total; ++$j) {
-                if ($items[$j]['hash'] == $item_hashes[$i]) {
-                    $filtered[] = [$items[$j]['name'], strtolower($items[$j]['type'] ? $items[$j]['type'] : $items[$j]['accessoryType']), $items[$j]['sockets']];
+                if ($items['itemDB'][$j]['info']['hash'] == $item_hashes[$i]) {
+                    $filtered[] = [$items['itemDB'][$j]['info']['name'], strtolower($items['itemDB'][$j]['info']['type'] ? $items['itemDB'][$j]['info']['type'] : $items['itemDB'][$j]['accessoryType']), $items['itemDB'][$j]['info']['sockets']];
                     break;
                 }
             }
@@ -30,10 +30,12 @@ if (isset($_SERVER['QUERY_STRING'])) {
                }
              */
             $powders = str_split($q[9 + $i]);
-            $powder_len = count($q[9 + $i]);
+            $powder_len = count($powders);
             for ($j = 0; $j < $powder_len; ++$j) {
                 $idx = array_search($powders[$j], $powder_codes);
-                $powder_equipped[$i][] = 'ETWFA'[(int)($idx/6)].(1+($idx%6));
+                if ($idx !== false) {
+                    $powder_equipped[$i][] = 'ETWFA'[(int)($idx / 6)] . (1 + ($idx % 6));
+                }
             }
         }
         $types = ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'ring', 'bracelet', 'necklace', 'wand', 'spear', 'bow', 'dagger', 'relik'];

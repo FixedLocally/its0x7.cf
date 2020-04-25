@@ -2,6 +2,7 @@
 $(function () {
     // some globals
     let globalItemDb = {};
+    let globalHashItemDb = {};
     let dropdowns = [
         ["helmet_select", "helmet"],
         ["chestplate_select", "chestplate"],
@@ -54,13 +55,13 @@ $(function () {
             xpBonus: ["%", "XP Bonus"]
         }
     };
-    // min dmg, max dmg, conversion, +def, -def
+    // min dmg, max dmg, conversion, +def, -def, powder code
     let powderStats = {
-        E: [["earth","air"],[3,6,17,2,1],[6,9,21,4,2],[8,14,25,8,3],[11,16,31,14,5],[15,18,38,22,9],[18,22,46,30,13]],
-        T: [["thunder","earth"],[1,8,9,3,1],[1,13,11,5,1],[2,18,14,9,2],[3,24,17,14,4],[3,32,22,20,7],[5,40,28,28,10]],
-        W: [["water","thunder"],[3,4,13,3,1],[4,7,15,6,1],[6,10,17,11,2],[8,12,21,18,4],[11,14,26,28,7],[13,17,32,40,10]],
-        F: [["fire","water"],[2,5,14,3,1],[4,8,16,5,2],[6,10,19,9,3],[9,13,24,16,5],[12,16,30,25,9],[15,19,37,36,13]],
-        A: [["air","fire"],[2,6,11,3,1],[4,9,14,6,2],[7,10,17,10,3],[9,13,22,16,5],[13,18,28,24,9],[16,18,35,34,13]]
+        E: [["earth","air"],[3,6,17,2,1,'0'],[6,9,21,4,2,'1'],[8,14,25,8,3,'2'],[11,16,31,14,5,'3'],[15,18,38,22,9,'4'],[18,22,46,30,13,'5']],
+        T: [["thunder","earth"],[1,8,9,3,1,'6'],[1,13,11,5,1,'7'],[2,18,14,9,2,'8'],[3,24,17,14,4,'9'],[3,32,22,20,7,'A'],[5,40,28,28,10,'B']],
+        W: [["water","thunder"],[3,4,13,3,1,'C'],[4,7,15,6,1,'D'],[6,10,17,11,2,'E'],[8,12,21,18,4,'F'],[11,14,26,28,7,'G'],[13,17,32,40,10,'H']],
+        F: [["fire","water"],[2,5,14,3,1,'J'],[4,8,16,5,2,'K'],[6,10,19,9,3,'L'],[9,13,24,16,5,'M'],[12,16,30,25,9,'N'],[15,19,37,36,13,'P']],
+        A: [["air","fire"],[2,6,11,3,1,'Q'],[4,9,14,6,2,'R'],[7,10,17,10,3,'S'],[9,13,22,16,5,'T'],[13,18,28,24,9,'U'],[16,18,35,34,13,'W']]
     };
     let skillBounsPct = [
          0.0, 1.0, 2.0, 2.9, 3.9, 4.9, 5.8, 6.7, 7.7, 8.6,
@@ -135,17 +136,19 @@ $(function () {
     // load item db
     loadItemDb().then(itemDb => {
         itemDb.forEach(item => globalItemDb[item.displayName || item.info.name] = item);
+        itemDb.forEach(item => globalHashItemDb[item.info.hash] = item);
         // console.log(globalItemDb);
 
         // load into dropdown menus
+        let readySelects = 0;
         dropdowns.forEach((dropdown) => {
             let select = $("#" + dropdown[0] + " > select");
             itemDb.filter((x) => (x.info.type || x.accessoryType).toLowerCase() === dropdown[1] || x.category.toLowerCase() === dropdown[1])
                 .map((x) => x.displayName || x.info.name).sort().forEach(name => {
                 select.append(`<option value="${name}">${name}</option>`);
             });
-            select.chosen({width: "100%"}).addClass("col-md-3 col-sm-4");
             select.change((e, o) => {
+                console.log(e, o);
                 let build = dropdowns.map(dropdown => {
                     let select = $("#" + dropdown[0] + " > select");
                     let name = select.val();
@@ -155,47 +158,95 @@ $(function () {
                 let parentId = e.target.parentElement.id;
                 let type = parentId.replace("_select", "");
                 let index = correctOrder.indexOf(type.replace(/\d/, ""));
-                if (type !== "weapon") {
-                    currentReq = findStatReq(calculatedBuild.items);
-                    realReq = JSON.parse(JSON.stringify(currentReq));
-                }
-                if (calculatedBuild.items[8]) {
-                    // take the skills we have and see what else do we need
-                    let weaponItem = calculatedBuild.items[8];
-                    skillList.forEach(skill => {
-                        let ownedPoints = currentReq.req[skill] + currentReq.bonus[skill];
-                        let diff;
-                        if (!weaponItem.req[skill]) {
-                            diff = 0;
-                        } else if (weaponItem.req[skill] > ownedPoints) {
-                            diff = weaponItem.req[skill] - ownedPoints;
-                        } else {
-                            diff = 0;
-                        }
-                        realReq.req[skill] = currentReq.req[skill] + diff;
-                    });
-                    let bonus = {};
-                    skillList.forEach(skill => {
-                        bonus[skill] = currentReq.bonus[skill] + weaponItem.base.skill[skill];
-                    });
-                    realReq.bonus = bonus;
-                    realReq.order = currentReq.order;
+                console.log(index);
+                if (o && !o.deferCalc) {
+                    if (type !== "weapon") {
+                        currentReq = findStatReq(calculatedBuild.items);
+                        realReq = JSON.parse(JSON.stringify(currentReq));
+                    }
+                    if (calculatedBuild.items[8]) {
+                        // take the skills we have and see what else do we need
+                        let weaponItem = calculatedBuild.items[8];
+                        skillList.forEach(skill => {
+                            let ownedPoints = currentReq.req[skill] + currentReq.bonus[skill];
+                            let diff;
+                            if (!weaponItem.req[skill]) {
+                                diff = 0;
+                            } else if (weaponItem.req[skill] > ownedPoints) {
+                                diff = weaponItem.req[skill] - ownedPoints;
+                            } else {
+                                diff = 0;
+                            }
+                            realReq.req[skill] = currentReq.req[skill] + diff;
+                        });
+                        let bonus = {};
+                        skillList.forEach(skill => {
+                            bonus[skill] = currentReq.bonus[skill] + weaponItem.base.skill[skill];
+                        });
+                        realReq.bonus = bonus;
+                        realReq.order = currentReq.order;
+                    }
                 }
                 let item = calculatedBuild.items[index];
                 let box = $(`#${type}_div`).empty();
                 let powderBox = $(`#${type}_powders`);
+                console.log(item.info.type, item.info.name, item.info.sockets);
                 if (item && item.info.sockets) {
                     box.append(generateItemBox(item, false));
                     powderBox.show();
                     powderBox.find("div > p.large").text(item.displayName || item.info.name).attr("class", "large item_name " + item.info.tier.toLowerCase());
                     let powderListBox = powderBox.find("div > div.powder_list");
-                    renderSockets(powderListBox, type, realReq);
+                    renderSockets(powderListBox, type);
                 } else {
                     powderBox.hide();
-                    renderBuild(calculatedBuild, realReq);
+                    renderBuild(calculatedBuild);
                 }
                 // $(`#${type}_div`).empty();
             });
+            select.on("chosen:ready", () => {
+                ++readySelects;
+                if (readySelects == 9) {
+                    let query = document.location.search.substr(1);
+                    if (query.split('-').length === 14) {
+                        let _s = query.split('-');
+                        let itemNames = _s.slice(0, 9).map(h => (globalHashItemDb[h] || {info: {name: ""}}).info.name);
+                        let powders = [];
+                        let selects = $('.item_select > select');
+                        for (let i = 0; i < 5; ++i) {
+                            let _pows = _s[9 + i];
+                            let pows = [];
+                            for (let j = 0; j < _pows.length; ++j) {
+                                let idx = '0123456789ABCDEFGHJKLMNPQRSTUW'.indexOf(_pows[j]);
+                                pows.push('ETWFA'[Math.floor(idx/6)]+(1+(idx%6)));
+                            }
+                            powders.push(pows);
+                        }
+                        for (let i = 0; i < 9; ++i) {
+                            $(selects[i]).val(itemNames[i]).trigger('chosen:updated');
+                        }
+                        powderList.helmet = powders[0];
+                        powderList.chestplate = powders[1];
+                        powderList.leggings = powders[2];
+                        powderList.boots = powders[3];
+                        powderList.weapon = powders[4];
+                        for (let i = 0; i < 5; ++i) {
+                            for (let j = 0; j < powders[i].length; ++j) {
+                                $(`.powder_choices:eq(${i})`).find(`.powder_${powders[i][j].toLowerCase()}`).click();
+                            }
+                        }
+                        console.log($(selects[0]).trigger("change", {deferCalc: 0 < 7}));;
+                        console.log($(selects[1]).trigger("change", {deferCalc: 1 < 7}));;
+                        console.log($(selects[2]).trigger("change", {deferCalc: 2 < 7}));;
+                        console.log($(selects[3]).trigger("change", {deferCalc: 3 < 7}));;
+                        console.log($(selects[7]).trigger("change", {deferCalc: 7 < 7}));;
+                        console.log($(selects[8]).trigger("change", {deferCalc: 8 < 7}));;
+
+                        window.selects = selects;
+                        $('.reset_button').click();
+                    }
+                }
+            });
+            select.chosen({width: "100%"}).addClass("col-md-3 col-sm-4");
         });
         // add powder button handlers
         $("span.powder").click(e => {
@@ -226,11 +277,17 @@ $(function () {
             });
             let total = $('.sp_input').map((i, v) => 1*v.value).toArray().reduce((a, b) => a + b);
             $('#sp_remaining').html(`Assign Skill Points (${200 - total} remaining):`);
-            renderBuild(calculateBuild(build), realReq);
+            renderBuild(calculateBuild(build));
         });
         $('.reset_button').click(() => {
             $('.sp_input').map((i, v) => v.value = v.getAttribute("min"));
             $('.sp_input[data-slot=0]').change();
+        });
+        $('#copy_btn').click(function (e) {
+            let copyText = $('#link_box');
+            copyText.select();
+            document.execCommand("copy");
+            $(e.target).html('Copied!');
         });
         $(window).resize(resetPos);
     });
@@ -284,7 +341,7 @@ $(function () {
         return {normal, critical, args};
     }
 
-    function renderSockets(powderListBox, type, realReq) {
+    function renderSockets(powderListBox, type) {
         let box = $(`#${type}_div`).empty();
         let powderBox = $(`#${type}_powders`);
         let index = correctOrder.indexOf(type);
@@ -311,7 +368,7 @@ $(function () {
                     powderBox = $(`<div class="powder powder_${powderList[type][i].toLowerCase()}" data-index="${i}" data-slot="${type}"></div>`);
                     powderBox.click(() => {
                         powderList[type][i] = undefined;
-                        renderSockets(powderListBox, type, realReq);
+                        renderSockets(powderListBox, type);
                     });
                 }
                 powderListBox.append(powderBox);
@@ -319,7 +376,7 @@ $(function () {
         } else {
             powderBox.hide();
         }
-        renderBuild(calculatedBuild, realReq);
+        renderBuild(calculatedBuild);
     }
 
     async function loadItemDb() {
@@ -460,11 +517,30 @@ $(function () {
         };
     }
 
-    function renderBuild(build, realReq) {
+    function renderBuild(build) {
         if (!build.items.filter(x => x).length) {
             // empty build
             return;
         }
+        let buildCode = build.items.map(x => x ? x.info.hash : "");
+        [["helmet", 0], ["chestplate", 1], ["leggings", 2], ["boots", 3], ["weapon", 8]].forEach(v => {
+            let type = v[0];
+            let index = v[1];
+            let item = build.items[index];
+            if (item) {
+                let powderCode = "";
+                let sockets = Math.min(powderList[type].length, item.info.sockets);
+                for (let i = 0; i < sockets; i++) {
+                    let powder = powderList[type][i];
+                    powderCode += powderStats[powder[0]][powder[1]][5];
+                }
+                buildCode.push(powderCode);
+            } else {
+                buildCode.push("");
+            }
+        });
+        $("#link_box").val(`${location.protocol}//${location.host}${location.pathname}?${buildCode.join("-")}`);
+        history.replaceState({}, "", "?" + buildCode.join("-"));
         itemListBox.empty();
         build.items.forEach(item => {
             if (item !== null) {
