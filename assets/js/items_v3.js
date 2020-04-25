@@ -205,7 +205,6 @@ $(function () {
                     }
                     if (calculatedBuild.items[8]) {
                         // take the skills we have and see what else do we need
-                        console.log("considering wep");
                         let weaponItem = calculatedBuild.items[8];
                         skillList.forEach(skill => {
                             let ownedPoints = currentReq.req[skill] + currentReq.bonus[skill];
@@ -278,12 +277,12 @@ $(function () {
                                 $(`.powder_choices:eq(${i})`).find(`.powder_${powders[i][j].toLowerCase()}`).click();
                             }
                         }
-                        console.log($(selects[0]).trigger("change", {deferCalc: true}));
-                        console.log($(selects[1]).trigger("change", {deferCalc: true}));
-                        console.log($(selects[2]).trigger("change", {deferCalc: true}));
-                        console.log($(selects[3]).trigger("change", {deferCalc: true}));
-                        console.log($(selects[7]).trigger("change", {deferCalc: false}));
-                        console.log($(selects[8]).trigger("change", {deferCalc: false}));
+                        $(selects[0]).trigger("change", {deferCalc: true});
+                        $(selects[1]).trigger("change", {deferCalc: true});
+                        $(selects[2]).trigger("change", {deferCalc: true});
+                        $(selects[3]).trigger("change", {deferCalc: true});
+                        $(selects[7]).trigger("change", {deferCalc: false});
+                        $(selects[8]).trigger("change", {deferCalc: false});
 
                         window.selects = selects;
                         $('.reset_button').click();
