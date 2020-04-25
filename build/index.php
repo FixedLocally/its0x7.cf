@@ -1,100 +1,79 @@
 <?php
-if (isset($_SERVER['QUERY_STRING'])) {
-    $q = explode('-', $_SERVER['QUERY_STRING']);
+if (isset($_SERVER["QUERY_STRING"])) {
+    $q = explode('-', $_SERVER["QUERY_STRING"]);
     if (count($q) == 14) {
-        $items = json_decode(file_get_contents('itemdb.json'), true);
-        $item_hashes = array_slice($q, 0, 9);
-        $filtered = array_filter($items['itemDB'], function($v) {
-            global $item_hashes;
-            $hash = $v['info']['hash'];
-            $idx = array_search($hash, $item_hashes);
-            return $idx !== false;
-        });
-        $item_count_total = count($items['itemDB']);
-        $filtered = [];
+        $itemDB = json_decode(file_get_contents("itemdb.json"), true);
+        $hashedItems = [];
+        foreach ($itemDB["itemDB"] as $item) {
+            $hashedItems[$item["info"]["hash"]] = $item;
+        }
+        $itemHashes = array_slice($q, 0, 9);
+        $powders = array_slice($q, 9, 5);
+        $items = array_map(function($hash) {
+            global $hashedItems;
+            return $hashedItems[$hash];
+        }, $itemHashes);
+        $itemNames = array_map(function($item) {
+            return $item["info"]["name"];
+        }, $items);
+        $socketCounts = array_map(function($item) {
+            return $item["info"]["sockets"];
+        }, $items);
+        $powderCodes = str_split("0123456789ABCDEFGHJKLMNPQRSTUW");
+        $powders = array_map(function($powderStr) {
+            $powderChars = array_filter(str_split($powderStr), function($char) {
+                global $powderCodes;
+                return array_search($char, $powderCodes) !== false;
+            });
+            return array_map(function($powderChar) {
+                global $powderCodes;
+                $index = array_search($powderChar, $powderCodes);
+                return ["E","T","W","F","A"][intdiv($index, 6)] . ($index % 6 + 1);
+            }, $powderChars);
+        }, $powders);
+        $desc = "";
+        $types = ["helmet", "chestplate", "leggings", "boots", "ring", "ring", "bracelet", "necklace"];
         for ($i = 0; $i < 9; ++$i) {
-            for ($j = 0; $j < $item_count_total; ++$j) {
-                if ($items['itemDB'][$j]['info']['hash'] == $item_hashes[$i]) {
-                    $filtered[] = [$items['itemDB'][$j]['info']['name'], strtolower($items['itemDB'][$j]['info']['type'] ? $items['itemDB'][$j]['info']['type'] : $items['itemDB'][$j]['accessoryType']), $items['itemDB'][$j]['info']['sockets']];
-                    break;
-                }
-            }
-        }
-        $powder_codes = str_split('0123456789ABCDEFGHJKLMNPQRSTUW');
-        $powder_equipped = [[], [], [], [], []];
-        for ($i = 0; $i < 5; ++$i) {
-            /*
-             * for (let j = 0; j < _pows.length; ++j) {
-                   let idx = '0123456789ABCDEFGHJKLMNPQRSTUW'.indexOf(_pows[j]);
-                   pows.push('ETWFA'[Math.floor(idx/6)]+(1+(idx%6)));
-               }
-             */
-            $powders = str_split($q[9 + $i]);
-            $powder_len = count($powders);
-            for ($j = 0; $j < $powder_len; ++$j) {
-                $idx = array_search($powders[$j], $powder_codes);
-                if ($idx !== false) {
-                    $powder_equipped[$i][] = 'ETWFA'[(int)($idx / 6)] . (1 + ($idx % 6));
-                }
-            }
-        }
-        $types = ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'ring', 'bracelet', 'necklace', 'wand', 'spear', 'bow', 'dagger', 'relik'];
-        usort($filtered, function ($a, $b) {
-            global $types;
-            $a_idx = array_search($a[1], $types);
-            $b_idx = array_search($b[1], $types);
-            return $a_idx - $b_idx;
-        });
-        $item_count = count($filtered);
-        $k = 0;
-        for ($i = 0; $i < $item_count; ++$i) {
-            $break = true;
-            for ($j = $k; $j < 11; ++$j) {
-                if ($filtered[$i][1] == $types[$j]) {
-                    $k = $j + 1;
-                    switch ($j) {
-                        case 0:
-                            $filtered[$i][0] .= ' [';
-                            $filtered[$i][0] .= implode('-', array_slice($powder_equipped[0], 0, $filtered[$i][2]));
-                            $filtered[$i][0] .= ']';
-                            break;
-                        case 1:
-                            $filtered[$i][0] .= ' [';
-                            $filtered[$i][0] .= implode('-', array_slice($powder_equipped[1], 0, $filtered[$i][2]));
-                            $filtered[$i][0] .= ']';
-                            break;
-                        case 2:
-                            $filtered[$i][0] .= ' [';
-                            $filtered[$i][0] .= implode('-', array_slice($powder_equipped[2], 0, $filtered[$i][2]));
-                            $filtered[$i][0] .= ']';
-                            break;
-                        case 3:
-                            $filtered[$i][0] .= ' [';
-                            $filtered[$i][0] .= implode('-', array_slice($powder_equipped[3], 0, $filtered[$i][2]));
-                            $filtered[$i][0] .= ']';
-                            break;
-                        case 8:
-                        case 9:
-                        case 10:
-                        case 11:
-                            $filtered[$i][0] .= ' [';
-                            $filtered[$i][0] .= implode('-', array_slice($powder_equipped[4], 0, $filtered[$i][2]));
-                            $filtered[$i][0] .= ']';
-                            break;
+            $type = strtolower($items[$i]["info"]["type"]);
+            if ($i != 8) {
+                if ($type == $types[$i]) {
+                    $desc .= $itemNames[$i];
+                    if ($i < 4) {
+                        if (count($powders[$i]) > 0 && $socketCounts[$i] > 0) {
+                            $desc .= " [";
+                            foreach ($powders[$i] as $key => $value) {
+                                if ($key == $socketCounts[$i]) {
+                                    break;
+                                }
+                                $desc .= $value . "-";
+                            }
+                            $desc[strlen($desc) - 1] = "]";
+                        }
                     }
-                    $break = false;
-                    break;
+                }
+                $desc .= "\n";
+            } else {
+                switch ($type) {
+                    case "spear":
+                    case "bow":
+                    case "wand":
+                    case "dagger":
+                    case "relik":
+                        $desc .= $itemNames[8];
+                        if (count($powders[4]) > 0 && $socketCounts[8] > 0) {
+                            $desc .= " [";
+                            foreach ($powders[4] as $key => $value) {
+                                if ($key == $socketCounts[8]) {
+                                    break;
+                                }
+                                $desc .= $value . "-";
+                            }
+                            $desc[strlen($desc) - 1] = "]";
+                        }
+                        break;
                 }
             }
-            if ($break) {
-                $filtered = null;
-                break;
-            }
         }
-        $filtered = array_map(function ($v) {
-            return $v[0];
-        }, $filtered);
-        $desc = implode("\n", $filtered);
     }
 }
 ?>
