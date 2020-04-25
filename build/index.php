@@ -122,6 +122,7 @@ if (isset($_SERVER['QUERY_STRING'])) {
     <script src="/assets/js/items_v3.js?1587753862445"></script>
     <script src="/assets/js/chosen.jquery.min.js?1587753862445"></script>
     <script src="/assets/js/common.js?1587753862445"></script>
+    <script src="/assets/js/md5.min.js?1587753862445"></script>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <script>
         // sorry i need to pay for hosting

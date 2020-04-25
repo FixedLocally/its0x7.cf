@@ -43,6 +43,7 @@ function convertItem(rawItem) {
     item.info.set = set;
     item.info.lore = addedLore;
     item.info.sockets = sockets;
+    item.info.hash = btoa(md5(name, null, true)).substr(0, 4);
 
     item.req.strength = strength;
     item.req.dexterity = dexterity;
@@ -173,19 +174,3 @@ async function loadItemDb() {
             .then(json => json.items.map(convertItem))
     }))).flat();
 }
-
-let item = {
-    name: "Cryoseism",
-    powder: ["W6", "W6", "W6"],
-    override: {
-        damage: {
-            water: 33
-        },
-        regen: {
-            mana: 2
-        },
-        others: {
-            walkSpeed: -8
-        }
-    }
-};
