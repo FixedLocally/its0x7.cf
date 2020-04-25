@@ -766,7 +766,7 @@ $(function () {
             let hitsPerSec = [0.51, 0.83, 1.5, 2.05, 2.5, 3.4, 4.3];
             let speedTier = Math.min(6, Math.max(0, attackSpeeds.indexOf(build.items[8].base.attackSpeed) + build.identification.others.attackSpeedBonus));
             div.append(`<span class="center block">${capitalize(attackSpeeds[speedTier])} Attack Speed</span>`);
-            div.append(`<span class="center block">DPS: ${Math.floor(avg * hitsPerSec[speedTier] + build.identification.others.poison * skillBounsPct[skills[0]] / 3)}</span>`);
+            div.append(`<span class="center block">DPS: ${Math.floor(avg * hitsPerSec[speedTier] + build.identification.others.poison * (1 + skillBounsPct[skills[0]] / 100) / 3)}</span>`);
             div.append(`<span class="dps">Average Damage: ${avg}</span>`);
             let leftDamageBox = $(`<div class="damage_left">Normal Damage<br>Total: ${normal.total[0]} - ${normal.total[1]} (${Math.round(normalAvg)})<br><span class="mctext gold">✤ ${normal.neutral[0]} - ${normal.neutral[1]}</span><br></div>`);
             let rightDamageBox = $(`<div class="damage_right">Critical Damage<br>Total: ${critical.total[0]} - ${critical.total[1]} (${Math.round(criticalAvg)})<br><span class="mctext gold">✤ ${critical.neutral[0]} - ${critical.neutral[1]}</span><br></div>`);
