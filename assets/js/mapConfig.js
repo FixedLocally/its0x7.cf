@@ -23,8 +23,8 @@ let overviewerConfig = {
             "defaultZoom": 4, 
             "world": "Wynncraft", 
             "maxZoom": 9, 
-            "path": "https://map.wynncraft.com/normalrender", 
-            "showlocationmarker": true
+            "path": "https://cdn.wynncraft.com/renders/", 
+            "showlocationmarker": false
         }
     ], 
     "CONST": {
