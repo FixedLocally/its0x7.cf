@@ -163,7 +163,7 @@ function terrCountRow(guild, count, color) {
 }
 
 function drawTerrs() {
-	fetch("https://api.wynncraft.com/public_api.php?action=territoryList").then(resp => resp.json()).then(function(resp) {
+	fetch("https://api-legacy.wynncraft.com/public_api.php?action=territoryList").then(resp => resp.json()).then(function(resp) {
 		let terrs = resp.territories;
 		terrCounts = {};
 		for (let key in terrs) {
