@@ -180,7 +180,7 @@ function drawTerrs() {
 			acquiredDate.setMinutes(acquiredInUglyForm.substr(14, 2));
 			acquiredDate.setSeconds(acquiredInUglyForm.substr(17, 2));
 			acquiredDate.setMilliseconds(0);
-			let acquired = 1*acquiredDate + 14400000 - acquiredDate.getTimezoneOffset() * 60000;
+			let acquired = 1*acquiredDate /*+ 14400000*/ - acquiredDate.getTimezoneOffset() * 60000;
 			let heldTime = 1*new Date - acquired;
 			wasRed[name] = heldTime < 180000;
 			if (!terrLabels[name] || terrLabels[name].guild !== terr.guild) {
