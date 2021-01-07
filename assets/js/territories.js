@@ -343,11 +343,17 @@ function initialLoad() {
 	}
 }
 
-$(function() {
-	setTimeout(function() {
+function initZoomEnd() {
+	try {
 		overviewer.map.on('zoomend', zoomend);
 		zoomend();
-	}, 500);
+	} catch (e) {
+		setTimeout(initZoomEnd, 250);
+	}
+}
+
+$(function() {
+	setTimeout(initZoomEnd, 500);
 	window.addEventListener("beforeunload", function() {
 		localStorage['hiddenGuilds'] = JSON.stringify(hiddenGuilds);
 	});
