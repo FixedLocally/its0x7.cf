@@ -29,6 +29,7 @@ let guildColours = {
 	'ShadowFall': '440066', // updated
 	'Phantom Hearts': 'ac4648', // updated
 	'Lux Nova': 'a049b8', // updated
+	'The Simple Ones': '0fcad6', // updated
 };
 
 let nameLabels = {};
