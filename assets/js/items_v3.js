@@ -534,7 +534,9 @@ $(function () {
                 let sockets = Math.min(powderList[type].length, item.info.sockets);
                 for (let i = 0; i < sockets; i++) {
                     let powder = powderList[type][i];
-                    powderCode += powderStats[powder[0]][powder[1]][5];
+                    if (powder && powder.length === 2) { // do not process empty slots
+                        powderCode += powderStats[powder[0]][powder[1]][5];
+                    }
                 }
                 buildCode.push(powderCode);
             } else {
