@@ -1,48 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="975b7c78-6de5-48ad-9875-cac857684398" name="Default Changelist" comment="Initial commit with map">
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/untitled.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/css/chosen-sprite.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/css/chosen-sprite@2x.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/css/chosen.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/css/leaflet.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/css/main.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/css/newOverviewer.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/css/worldmap.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/_compass_upper-left.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/compass_upper-left.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/icons/build.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/icons/map.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/marker_location.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/powders/air0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/powders/air1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/powders/earth0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/powders/earth1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/powders/empty.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/powders/fire0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/powders/fire1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/powders/thunder0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/powders/thunder1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/powders/water0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/img/powders/water1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/js/global_territories.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/js/leaflet.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/js/map.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/js/mapConfig.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/js/md5.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/js/overviewer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/js/overviewer_cfg.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/js/player_location.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/js/territories.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/map/index.html" afterDir="false" />
+    <list default="true" id="975b7c78-6de5-48ad-9875-cac857684398" name="Default Changelist" comment="Use official coords">
+      <change beforePath="$PROJECT_DIR$/assets/js/territories.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/territories.js" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,19 +13,6 @@
     <execution>
       <executable />
     </execution>
-  </component>
-  <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/index.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" column="26" lean-forward="true" selection-start-line="1" selection-start-column="26" selection-end-line="1" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -87,6 +35,7 @@
     <option name="width" value="1440" />
     <option name="height" value="822" />
   </component>
+  <component name="ProjectId" id="1ngQ13uWBAjZmQCXv2eRWPuljAo" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -118,30 +67,24 @@
       <pane id="Scope" />
     </panes>
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -153,7 +96,16 @@
       <option name="presentableId" value="Default" />
       <updated>1587297249918</updated>
       <workItem from="1587297251248" duration="559000" />
+      <workItem from="1611809039401" duration="632000" />
     </task>
+    <task id="LOCAL-00001" summary="Use official coords">
+      <created>1611809165238</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1611809165238</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -187,11 +139,23 @@
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit with map" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial commit with map" />
+    <MESSAGE value="Use official coords" />
+    <option name="LAST_COMMIT_MESSAGE" value="Use official coords" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/map/index.html">

@@ -189,7 +189,7 @@ function drawTerrs() {
 			if (!terrLabels[name] || terrLabels[name].guild !== terr.guild) {
 				console.log(name, ':', (terrLabels[name] || {}).guild, '->', terr.guild);
 				if (!globalTerritories[name]) continue;
-				let polygon = constructPolygon(name, terr.guild, color, acquired, terr.location.startX, terr.location.startY, terr.location.endX, terr.location.endY);
+				let polygon = constructPolygon(name, terr.guild, color, acquired);
 				terrLabels[name] && terrLabels[name].remove();
 				terrLabels[name] = polygon;
 
@@ -248,13 +248,13 @@ function drawTerrs() {
 	setTimeout(drawTerrs, 30000);
 }
 
-function constructPolygon(name, guild, color, acquired, startX, startZ, endX, endZ) {
+function constructPolygon(name, guild, color, acquired) {
 	let paths = [];
 	let heldTime = 1*new Date - acquired;
-	paths.push(getLatLng(startX, startZ));
-	paths.push(getLatLng(endX, startZ));
-	paths.push(getLatLng(endX, endZ));
-	paths.push(getLatLng(startX, endZ));
+	paths.push(getLatLng(globalTerritories[name].startX, globalTerritories[name].startZ));
+	paths.push(getLatLng(globalTerritories[name].endX, globalTerritories[name].startZ));
+	paths.push(getLatLng(globalTerritories[name].endX, globalTerritories[name].endZ));
+	paths.push(getLatLng(globalTerritories[name].startX, globalTerritories[name].endZ));
 	let polygon = L.polygon(paths, {
 		color: color,
 		fillOpacity: 0.25,
