@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="975b7c78-6de5-48ad-9875-cac857684398" name="Default Changelist" comment="Fixed global territories">
-      <change beforePath="$PROJECT_DIR$/assets/js/territories.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/territories.js" afterDir="false" />
+    <list default="true" id="975b7c78-6de5-48ad-9875-cac857684398" name="Default Changelist" comment="Fixed output rendering">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +16,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -96,7 +104,7 @@
       <option name="presentableId" value="Default" />
       <updated>1587297249918</updated>
       <workItem from="1587297251248" duration="559000" />
-      <workItem from="1611809039401" duration="2541000" />
+      <workItem from="1611809039401" duration="4080000" />
     </task>
     <task id="LOCAL-00001" summary="Use official coords">
       <created>1611809165238</created>
@@ -126,7 +134,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611817977300</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Fixed output rendering">
+      <created>1611818087674</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1611818087674</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -179,7 +194,8 @@
     <MESSAGE value="Updated global territories" />
     <MESSAGE value="Show territory output" />
     <MESSAGE value="Fixed global territories" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed global territories" />
+    <MESSAGE value="Fixed output rendering" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed output rendering" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/map/index.html">
