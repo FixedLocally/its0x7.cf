@@ -305,10 +305,10 @@ function updateTooltips() {
 			});
 			label.redraw();
 		}
-		let output = "";
+		let output = "Output:<br>";
 		for (let i in globalTerritories[label.terr].output) {
 			if (globalTerritories[label.terr].output.hasOwnProperty(i))
-				output += `${globalTerritories[label.terr].output[i]} ${i.substring(0, 1).toUpperCase()}${i.substring(1)}s`;
+				output += `${globalTerritories[label.terr].output[i]} ${i.substring(0, 1).toUpperCase()}${i.substring(1)}<br>`;
 		}
 		if (heldTime >= 86400000) {
             label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldDays} days, ${heldHours} hours, ${heldMinutes} minutes and ${heldSeconds} seconds<br><br>${output}`);
