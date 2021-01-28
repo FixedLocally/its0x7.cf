@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="975b7c78-6de5-48ad-9875-cac857684398" name="Default Changelist" comment="Use official coords">
+    <list default="true" id="975b7c78-6de5-48ad-9875-cac857684398" name="Default Changelist" comment="Updated global territories">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/global_territories.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/global_territories.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/js/territories.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/territories.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -96,7 +98,7 @@
       <option name="presentableId" value="Default" />
       <updated>1587297249918</updated>
       <workItem from="1587297251248" duration="559000" />
-      <workItem from="1611809039401" duration="632000" />
+      <workItem from="1611809039401" duration="2232000" />
     </task>
     <task id="LOCAL-00001" summary="Use official coords">
       <created>1611809165238</created>
@@ -105,7 +107,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611809165238</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Updated global territories">
+      <created>1611809947521</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1611809947521</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -155,7 +164,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit with map" />
     <MESSAGE value="Use official coords" />
-    <option name="LAST_COMMIT_MESSAGE" value="Use official coords" />
+    <MESSAGE value="Updated global territories" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated global territories" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/map/index.html">

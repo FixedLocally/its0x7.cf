@@ -305,14 +305,19 @@ function updateTooltips() {
 			});
 			label.redraw();
 		}
+		let output = "";
+		for (let i in globalTerritories[label.terr].output) {
+			if (globalTerritories[label.terr].output.hasOwnProperty(i))
+				output += `${globalTerritories[label.terr].output[i]} ${i.substring(0, 1).toUpperCase()}${i.substring(1)}s`;
+		}
 		if (heldTime >= 86400000) {
-            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldDays} days, ${heldHours} hours, ${heldMinutes} minutes and ${heldSeconds} seconds`);
+            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldDays} days, ${heldHours} hours, ${heldMinutes} minutes and ${heldSeconds} seconds<br><br>${output}`);
         } else if (heldTime >= 3600000) {
-            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldHours} hours, ${heldMinutes} minutes and ${heldSeconds} seconds`);
+            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldHours} hours, ${heldMinutes} minutes and ${heldSeconds} seconds<br><br>${output}`);
         } else if (heldTime >= 60000) {
-            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldMinutes} minutes and ${heldSeconds} seconds`);
+            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldMinutes} minutes and ${heldSeconds} seconds<br><br>${output}`);
         } else {
-            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldSeconds} seconds`);
+            label.bindPopup(`${label.terr}<br>Controlled by ${label.guild}<br>For ${heldSeconds} seconds<br><br>${output}`);
         }
 		wasRed[i] = red;
 	}
