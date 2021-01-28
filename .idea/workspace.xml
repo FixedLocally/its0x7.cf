@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="975b7c78-6de5-48ad-9875-cac857684398" name="Default Changelist" comment="Fixed output rendering">
+    <list default="true" id="975b7c78-6de5-48ad-9875-cac857684398" name="Default Changelist" comment="Fixed global territories missing output data">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/territories.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/territories.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +105,7 @@
       <option name="presentableId" value="Default" />
       <updated>1587297249918</updated>
       <workItem from="1587297251248" duration="559000" />
-      <workItem from="1611809039401" duration="4080000" />
+      <workItem from="1611809039401" duration="4878000" />
     </task>
     <task id="LOCAL-00001" summary="Use official coords">
       <created>1611809165238</created>
@@ -141,7 +142,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611818087674</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Fixed global territories missing output data">
+      <created>1611821772097</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1611821772097</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -195,7 +203,8 @@
     <MESSAGE value="Show territory output" />
     <MESSAGE value="Fixed global territories" />
     <MESSAGE value="Fixed output rendering" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed output rendering" />
+    <MESSAGE value="Fixed global territories missing output data" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed global territories missing output data" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/map/index.html">

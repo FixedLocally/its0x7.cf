@@ -224,6 +224,12 @@ function drawTerrs() {
 			}
 		}
 		let _terrCounts = [];
+		let k = 0;
+		for (let i in globalTerritories) {
+			if (globalTerritories.hasOwnProperty(i)) {
+				++k;
+			}
+		}
 		for (let i in terrCounts) {
 			_terrCounts.push({guild: i, count: terrCounts[i]});
 		}
@@ -236,7 +242,7 @@ function drawTerrs() {
 		terrCountRow('Show/Hide all', -1, '#000000');
 		hiddenGuilds.sort();
 		hiddenGuilds = hiddenGuilds.filter((v, i, arr) => arr[i-1] !== v);
-		$('#terrs_ocupied').html(409 - (_terrCounts['Nobody'] || 0));
+		$('#terrs_ocupied').html(k - (_terrCounts['Nobody'] || 0));
 		let count = 0;
 		for (let i in _terrCounts) {
 			if (_terrCounts[i].guild !== 'Nobody') {
