@@ -2,8 +2,121 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="975b7c78-6de5-48ad-9875-cac857684398" name="Default Changelist" comment="Fixed global territories missing output data">
+      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/js/custom_map.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/cache/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-1,-9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-13.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-14.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-2,-9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-13.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-3,-9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-4,-10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-4,-11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-4,-12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-4,-3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-4,-4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-4,-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-4,-6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-4,-7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-4,-8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-4,-9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-5,-10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-5,-11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-5,-12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-5,-4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-5,-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-5,-6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-5,-7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-5,-8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/-5,-9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/0,-9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/1,-9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/2,-9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/3,-9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tiles/day/empty.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map2/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map2/tile.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/untitled.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/untitled.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/js/territories.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/territories.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -11,9 +124,14 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ComposerSettings">
-    <execution>
-      <executable />
-    </execution>
+    <execution />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -39,6 +157,10 @@
       </list>
     </option>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1440" />
@@ -81,16 +203,25 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/assets/tiles" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/tiles" />
+      <recent name="$PROJECT_DIR$/map2" />
       <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/tiles/day" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -106,6 +237,12 @@
       <updated>1587297249918</updated>
       <workItem from="1587297251248" duration="559000" />
       <workItem from="1611809039401" duration="4878000" />
+      <workItem from="1638978310315" duration="5305000" />
+      <workItem from="1639122862572" duration="10000" />
+      <workItem from="1639122921849" duration="548000" />
+      <workItem from="1639123662058" duration="1500000" />
+      <workItem from="1639125242900" duration="1375000" />
+      <workItem from="1639126709191" duration="1195000" />
     </task>
     <task id="LOCAL-00001" summary="Use official coords">
       <created>1611809165238</created>

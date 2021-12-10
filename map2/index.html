@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>It's 0x7cf! :: World Map</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="theme-color" content="#0277bd">
+		<meta property="og:type" content="website">
+		<meta property="og:title" content="It's 0x7cf! :: World Map">
+		<meta property="og:url" content="https://its0x7.cf/map/">
+		<meta property="og:description" content="Wynncraft World Map by 0x7cf, with territory highlighting and auto updating.">
+		<meta property="og:type" content="website">
+		<meta property="og:site_name" content="It's 0x7cf!">
+		<meta property="og:image" content="https://its0x7.cf/assets/img/icons/map.png">
+        <script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
+        <script>window.bugsnagClient = bugsnag('2af5e91dd7b8ce9f4ce76efe9bc657ed')</script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+		<script src="/assets/js/leaflet.js?1553623048675"></script>
+		<script src="/assets/js/custom_map.js?1553623048675"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="/assets/css/leaflet.css?1553623048675">
+		<link rel="stylesheet" href="/assets/css/main.css?1553623048675">
+		<link rel="stylesheet" href="/assets/css/newOverviewer.css?1553623048675" type="text/css">
+		<link rel="stylesheet" href="https://bootswatch.com/3/darkly/bootstrap.css">
+	</head>
+	<body class="worldmap" onload="load_map()">
+		<nav class="navbar navbar-custom navbar-fixed-top">
+			<div class="container">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span></button>
+				<div class="navbar-header">
+					<a class="navbar-brand navbar-customtext" href="/">It's 0x7cf!</a>
+				</div>
+				<ul class="nav navbar-nav navbar-collapse collapse">
+					<li class="active"><a class="navbar-customtext" href="/map/" id="a0">Territory Map</a></li>
+					<li class="active"><a class="navbar-customtext" href="/map2/" id="a1">2D Territory Map</a></li>
+					<li class="active"><a class="navbar-customtext" href="/build/" id="a2">Builder</a></li>
+				</ul>
+			</div>
+		</nav>
+		<div id="terr_box">
+		    <h3 style="text-align: center; margin-bottom: 0;">Territory Distribution</h3>
+		    <p style="text-align: center; margin-top: 0;">Territories: <span id="terrs_ocupied">0</span>, Guilds: <span id="guilds_with_terrs">0</span></p>
+		    <div id="terr_counts">
+		    </div>
+		</div>
+		<div id="mcmap" style="margin-top: 50px;">
+
+		</div>
+	</body>
+</html>
