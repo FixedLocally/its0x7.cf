@@ -11,6 +11,7 @@ $z = @$_GET["z"];
 $cache_file = CACHE_DIR . sprintf("x%sy%sz%s.png", $x, $y, $z);
 if (is_file($cache_file)) {
     header('Content-type: image/png');
+    header("Cache-Control: max-age=604800");
     readfile($cache_file);
     die();
 }
