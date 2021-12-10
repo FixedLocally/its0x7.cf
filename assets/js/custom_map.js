@@ -1,16 +1,37 @@
 function load_map() {
-    let map = L.map("mcmap", {
+    let Position = L.Control.extend({
+        _container: null,
+        options: {
+            position: 'bottomleft'
+        },
+
+        onAdd: function (map) {
+            let latlng = L.DomUtil.create('div', 'leaflet-control leaflet-control-attribution');
+            this._latlng = latlng;
+            return latlng;
+        },
+
+        updateHTML: function(lat, lng) {
+            this._latlng.innerHTML = `X: ${Math.floor(lat)} Y: ${Math.floor(lng)}`;
+        }
+    });
+
+    window.map = L.map("mcmap", {
         center: [0, 0],
         zoom: 7
     })
     L.tileLayer('tile.php?z={z}&x={x}&y={y}', {
         minZoom: 7, maxZoom: 14,
-        attribution: 'My Tile Server'
+        attribution: 'Wynncraft'
     }).addTo(map);
-    // log coords on right click
-    map.on("contextmenu", function (event) {
+    // position
+    let position = new Position();
+    map.addControl(position);
+    map.on("mousemove", function (event) {
         console.log(event.latlng);
-        console.log(latLngToCoords(event.latlng));
+        let coords = latLngToCoords(event.latlng);
+        console.log(coords);
+        position.updateHTML(coords[0], coords[1])
     });
     // draw test territory
     createPolygon({"startX":-1212,"startY":-2576,"endX":-1001,"endY":-2342});
