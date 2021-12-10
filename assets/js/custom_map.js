@@ -52,8 +52,8 @@ function load_map() {
     let map = L.map("mcmap", {
         center: [0, 0],
         zoom: 7
-    })
-    L.tileLayer('tile.php?z={z}&x={x}&y={y}', {
+    });
+    L.tileLayer('/assets/tiles/2d/{z}/{x}/{y}.png', {
         minZoom: 7, maxZoom: 14,
         attribution: 'Wynncraft'
     }).addTo(map);
