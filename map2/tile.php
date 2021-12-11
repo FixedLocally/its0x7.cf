@@ -34,10 +34,12 @@ $offset_y = $y - $tile_y * 512;
 
 // bounds
 if ($x < -3000 || $x > 2000) {
+    header('Content-type: image/png');
     readfile(TILES_DIR . "empty.png");
     die();
 }
 if ($y < -7000 || $y > 0) {
+    header('Content-type: image/png');
     readfile(TILES_DIR . "empty.png");
     die();
 }

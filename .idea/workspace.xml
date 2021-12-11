@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="975b7c78-6de5-48ad-9875-cac857684398" name="Default Changelist" comment="Fixed missing chunks">
+    <list default="true" id="975b7c78-6de5-48ad-9875-cac857684398" name="Default Changelist" comment="Added coordinates">
+      <change beforePath="$PROJECT_DIR$/.idea/webServers.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/js/custom_map.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/custom_map.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map2/tile.php" beforeDir="false" afterPath="$PROJECT_DIR$/map2/tile.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +31,14 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/assets/css/newOverviewer.css" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/assets/js/custom_map.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/map2/tile.php" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/assets/js/territories.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/map2/index.html" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/assets/js/global_territories.js" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -98,7 +107,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="settings.phing" />
+    <property name="settings.editor.selected.configurable" value="web.server" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -132,7 +141,7 @@
       <workItem from="1639125242900" duration="1375000" />
       <workItem from="1639126709191" duration="5461000" />
       <workItem from="1639136772477" duration="773000" />
-      <workItem from="1639137580519" duration="265000" />
+      <workItem from="1639137580519" duration="1576000" />
     </task>
     <task id="LOCAL-00001" summary="Use official coords">
       <created>1611809165238</created>
@@ -218,7 +227,14 @@
       <option name="project" value="LOCAL" />
       <updated>1639136577767</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Added coordinates">
+      <created>1639138064777</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1639138064777</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -277,7 +293,8 @@
     <MESSAGE value="Added cache header" />
     <MESSAGE value="Test polygon" />
     <MESSAGE value="Fixed missing chunks" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed missing chunks" />
+    <MESSAGE value="Added coordinates" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added coordinates" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/map/index.html">
