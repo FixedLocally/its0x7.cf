@@ -21,9 +21,11 @@ let guildColours = {
     'Achte Shadow': '80181d',
     'The Aquarium': '0098ff',
     'Nerfuria': 'cb70ff',
+    'Show/Hide all': '000000', // special
 };
 
 function load_map() {
+    const showHideAll = "Show/Hide all";
     let Position = L.Control.extend({
         _container: null,
         options: {
@@ -43,6 +45,8 @@ function load_map() {
     let terrGuilds = {};
     let polygons = {};
     let cdTerrs = {};
+    let hiddenGuilds = [];
+    let trackingMode = 0; // -1: hide all; 0: show all; (text): stalking
 
     let map = L.map("mcmap", {
         center: [0, 0],
@@ -88,7 +92,9 @@ function load_map() {
                         if (polygons[i]) polygons[i].remove();
                         let polygon = createPolygon(terrs[i]);
                         polygon.territory = terrs[i];
-                        polygon.addTo(map);
+                        if (shouldShowGuild(guild)) {
+                            polygon.addTo(map);
+                        }
                         polygons[i] = polygon;
                         terrGuilds[i] = guild;
                     }
@@ -100,17 +106,117 @@ function load_map() {
                 $("#terrs_occupied").html(terrCount);
                 $("#guilds_with_terrs").html(guildCount);
                 let terrCountDiv = $("#terr_counts");
+                let terrRows = [];
                 terrCountDiv.empty();
                 for (let i in guildTerrCount) {
                     if (!guildTerrCount.hasOwnProperty(i)) {
                         continue;
                     }
-                    let html = `<p class="terr_row"><span class="dot" style="background-color: #${guildColours[i]}; border: 2px solid #${guildColours[i]}" data-guild=${i}></span> ${i}: ${guildTerrCount[i]}</p>`;
-                    $(html).appendTo(terrCountDiv);
+                    terrRows.push([i, guildTerrCount[i]]);
                 }
+                terrRows.sort((a, b) => b[1] - a[1]);
+                for (let i in terrRows) {
+                    let guild = terrRows[i][0];
+                    let count = terrRows[i][1];
+                    appendTerrCountRow(guild, count, guildColours[guild], terrCountDiv);
+                }
+                appendTerrCountRow(showHideAll, -1, "000000", terrCountDiv);
+                $(".terr_row").click(function (e) {
+                    let guild = e.target.attributes["data-guild"].value;
+                    if (guild.indexOf("/") > -1) {
+                        if (trackingMode !== 0 || hiddenGuilds.length) {
+                            hiddenGuilds = [];
+                            setTrackingMode(0);
+                        } else {
+                            setTrackingMode(-1)
+                        }
+                    } else {
+                        if (trackingMode === -1) {
+                            setTrackingMode(guild);
+                            return;
+                        }
+                        if (trackingMode === 0) {
+                            if (hiddenGuilds.indexOf(guild) < 0) {
+                                hiddenGuilds.push(guild);
+                                for (let i in polygons) {
+                                    if (polygons[i].territory.guild === guild) {
+                                        polygons[i].remove();
+                                    }
+                                }
+                            } else {
+                                hiddenGuilds = hiddenGuilds.filter(x => x !== guild);
+                                for (let i in polygons) {
+                                    if (polygons[i].territory.guild === guild) {
+                                        polygons[i].addTo(map);
+                                    }
+                                }
+                            }
+                            updateTerrRows();
+                            return;
+                        }
+                        if ("string" === typeof trackingMode) {
+                            let guilds = $(".terr_row").map((i, v) => $(v).attr("data-guild")).toArray();
+                            let toRemove = [trackingMode, guild, showHideAll];
+                            hiddenGuilds = guilds.filter(x => toRemove.indexOf(x) < 0);
+                            setTrackingMode(0);
+                        }
+                    }
+                });
                 if (init) updatePopups();
                 setTimeout(updateMap, 30000);
             });
+    }
+
+    function setTrackingMode(newMode) {
+        trackingMode = newMode;
+        console.log(trackingMode, hiddenGuilds);
+        for (let i in polygons) {
+            polygons[i].remove();
+        }
+        for (let i in polygons) {
+            if (shouldShowGuild(polygons[i].territory.guild)) {
+                polygons[i].addTo(map);
+            }
+        }
+        if ("string" === typeof trackingMode) {
+            for (let i in polygons) {
+                if (polygons[i].territory.guild === trackingMode) {
+                    polygons[i].addTo(map);
+                }
+            }
+        }
+        updateTerrRows();
+    }
+
+    function updateTerrRows() {
+        let terrRows = $('.terr_row');
+        terrRows.map((i, v) => {
+            let guild =  v.attributes["data-guild"].value;
+            if (shouldShowGuild(guild)) {
+                $(v).find("span.dot").css("background-color", `#${guildColours[guild]}`);
+            } else {
+                $(v).find("span.dot").css("background-color", "white");
+            }
+        });
+    }
+
+    function appendTerrCountRow(guild, count, colour, div) {
+        let html = `<p class="terr_row"><span class="dot" style="background-color: #${colour}; border: 2px solid #${colour}"></span> ${guild}: ${count}</p>`;
+        if (count <= 0) {
+            html = html.replace(/: [\-0-9]+</, '<');
+        }
+        let row = $(html);
+        row.attr("data-guild", guild);
+        if (!shouldShowGuild(guild)) {
+            row.find("span.dot").css("background-color", "white")
+        }
+        row.appendTo(div);
+    }
+
+    function shouldShowGuild(guild) {
+        if (trackingMode === 0) return hiddenGuilds.indexOf(guild) < 0 && (guild !== showHideAll || hiddenGuilds.length === 0);
+        if (trackingMode === -1) return false;
+        return guild === trackingMode;
     }
 
     function updatePopups() {
