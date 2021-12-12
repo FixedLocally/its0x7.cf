@@ -35,7 +35,7 @@ function load_map() {
             position: 'bottomleft'
         },
 
-        onAdd: function (map) {
+        onAdd: function () {
             let latlng = L.DomUtil.create('div', 'leaflet-control leaflet-control-attribution');
             this._latlng = latlng;
             return latlng;
@@ -51,10 +51,10 @@ function load_map() {
 
     let map = L.map("mcmap", {
         center: [0, 0],
-        zoom: 7
+        zoom: 6
     });
     L.tileLayer('/assets/tiles/2d/{z}/{x}/{y}.png', {
-        minZoom: 7, maxZoom: 14,
+        minZoom: 5, maxZoom: 14,
         attribution: 'Wynncraft'
     }).addTo(map);
     // position
@@ -186,16 +186,6 @@ function load_map() {
         });
         polygon.acquired = acquired;
         return polygon;
-    }
-
-    function labelHtml(title, fontsize, color) {
-        let t = '<div style="text-align:center; z-index:203; position: absolute; left: -50px; top:-10px;">';
-        t += '<span style="position: relative;';
-        t += 'white-space: nowrap; font-weight: bold;';
-        t += 'font-family: sans-serif; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black, 3px 3px 3px #000;';
-        t += 'text-align: center; color:' + color + ';font-size:' + fontsize + 'px;"';
-        t += '>' + title + '</span></div>';
-        return t;
     }
 
     function generateColor(guild) {

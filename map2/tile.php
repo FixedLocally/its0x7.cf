@@ -33,12 +33,12 @@ $offset_x = $x - $tile_x * 512;
 $offset_y = $y - $tile_y * 512;
 
 // bounds
-if ($x < -3000 || $x > 2000) {
+if ($x < -4400 || $x > 3000) {
     header('Content-type: image/png');
     readfile(TILES_DIR . "empty.png");
     die();
 }
-if ($y < -7000 || $y > 0) {
+if ($y < -8000 || $y > 1000) {
     header('Content-type: image/png');
     readfile(TILES_DIR . "empty.png");
     die();
@@ -46,18 +46,36 @@ if ($y < -7000 || $y > 0) {
 
 // read and crop the tile
 $crop = imagecreatetruecolor(256, 256);
-//imagealphablending($crop, false);
 imagesavealpha($crop, true);
 $bg = imagecolorallocate($crop, 0, 0, 26);
 imagealphablending($crop, true);
 imagecolortransparent($crop, $bg);
-if (is_file(TILES_DIR . $file)) {
-    $tile = imagecreatefrompng(TILES_DIR . $file);
-    $userImage = imagecopyresampled($crop, $tile,
-        0,
-        0,
-        $offset_x, $offset_y, 256, 256,
-        $width, $width);
+if ($z >= 0) {
+    // single tile
+    if (is_file(TILES_DIR . $file)) {
+        $tile = imagecreatefrompng(TILES_DIR . $file);
+        imagecopyresampled($crop, $tile,
+            0,
+            0,
+            $offset_x, $offset_y, 256, 256,
+            $width, $width);
+    }
+} else {
+    $dim = pow(2, -$z);
+    $scale_to = 256 / $dim;
+    for ($i = 0; $i < $dim; ++$i) {
+        for ($j = 0; $j < $dim; ++$j) {
+            $file = sprintf("%s,%s.png", $tile_x + $i, $tile_y + $j);
+            if (is_file(TILES_DIR . $file)) {
+                $tile = imagecreatefrompng(TILES_DIR . $file);
+                imagecopyresampled($crop, $tile,
+                    $scale_to * $i,
+                    $scale_to * $j,
+                    0, 0, $scale_to, $scale_to,
+                    512, 512);
+            }
+        }
+    }
 }
 
 // debug text
