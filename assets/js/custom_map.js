@@ -1,31 +1,26 @@
 let guildColours = {
     'DiamondDeities': '00ffff', // updated
     'Sins of Seedia': '540a0a', // updated
-    'Fantasy': '21c8ec', // updated
     'IceBlue Team': '71368a',
     'TheNoLifes': '1f8b4c',
-    'BuildCraftia': '6ae468',
     'Blacklisted': '2186f0', // updated
     'HackForums': 'ba1afb', // updated
     'Titans Valor': 'edac3d',
-    'Achte Shadow': 'e2f4aa', // updated
-    'Beyond the Scene': '784ca5', // updated
     'Wrath Of Poseidon': '11f024', // updated
-    'FinalFront': '0c298e', // updated
     'Spectral Cabbage': 'cccccc', // updated
     'Imperial': 'ff0000', // updated
-    'Mystica': '2c007a', // updated
-    'Fake News': 'ffd700', // updated
-    'VietCong': '5eac3d', // updated
     'Avicia': '1010fe', // updated
     'Kingdom Foxes': 'ff8800', // updated
     'Empire of Sindria': '98ff98', // updated
-    'Angels of Eternal': '006600', // updated
     'ShadowFall': '440066', // updated
     'Phantom Hearts': 'ac4648', // updated
     'Lux Nova': 'a049b8', // updated
     'The Simple Ones': '0fcad6', // updated
-    'Emorians': 'ffffdd',
+    'Emorians': '1b5ff1',
+    'Paladins United': 'c7b3f0',
+    'Achte Shadow': '80181d',
+    'The Aquarium': '0098ff',
+    'Nerfuria': 'cb70ff',
 };
 
 function load_map() {
@@ -51,12 +46,14 @@ function load_map() {
 
     let map = L.map("mcmap", {
         center: [0, 0],
-        zoom: 6
+        zoom: 6,
+        zoomControl: false,
     });
     L.tileLayer('/assets/tiles/2d/{z}/{x}/{y}.png', {
         minZoom: 5, maxZoom: 14,
         attribution: 'Wynncraft'
     }).addTo(map);
+    new L.Control.Zoom({ position: 'topright' }).addTo(map);
     // position
     let position = new Position();
     map.addControl(position);
@@ -75,19 +72,41 @@ function load_map() {
             .then(r => r.json())
             .then(function (res) {
                 let terrs = res.territories;
+                let guildTerrCount = {};
+                let terrCount = 0;
+                let guildCount = 0;
                 for (let i in terrs) {
-                    if (terrs.hasOwnProperty(i)) {
-                        let guild = terrs[i].guild;
-                        if (guild !== terrGuilds[i]) {
-                            if (!init) console.log(`${i}: ${terrGuilds[i]} -> ${guild}`);
-                            if (polygons[i]) polygons[i].remove();
-                            let polygon = createPolygon(terrs[i]);
-                            polygon.territory = terrs[i];
-                            polygon.addTo(map);
-                            polygons[i] = polygon;
-                            terrGuilds[i] = guild;
-                        }
+                    if (!terrs.hasOwnProperty(i)) {
+                        continue;
                     }
+                    if (!terrs[i].guild) {
+                        terrs[i].guild = "none";
+                    }
+                    let guild = terrs[i].guild;
+                    if (guild !== terrGuilds[i]) {
+                        if (!init) console.log(`${i}: ${terrGuilds[i]} -> ${guild}`);
+                        if (polygons[i]) polygons[i].remove();
+                        let polygon = createPolygon(terrs[i]);
+                        polygon.territory = terrs[i];
+                        polygon.addTo(map);
+                        polygons[i] = polygon;
+                        terrGuilds[i] = guild;
+                    }
+                    guildTerrCount[guild] = guildTerrCount[guild] || (++guildCount, 0);
+                    ++guildTerrCount[guild];
+                    ++terrCount;
+                }
+                // terr distribution
+                $("#terrs_occupied").html(terrCount);
+                $("#guilds_with_terrs").html(guildCount);
+                let terrCountDiv = $("#terr_counts");
+                terrCountDiv.empty();
+                for (let i in guildTerrCount) {
+                    if (!guildTerrCount.hasOwnProperty(i)) {
+                        continue;
+                    }
+                    let html = `<p class="terr_row"><span class="dot" style="background-color: #${guildColours[i]}; border: 2px solid #${guildColours[i]}" data-guild=${i}></span> ${i}: ${guildTerrCount[i]}</p>`;
+                    $(html).appendTo(terrCountDiv);
                 }
                 if (init) updatePopups();
                 setTimeout(updateMap, 30000);
@@ -101,11 +120,11 @@ function load_map() {
             let heldFor = 1*new Date - polygon.acquired;
             let isCd = heldFor < 600000;
             cdTerrs[polygon.territory.territory] = isCd;
-            polygon.bindPopup(`Controlled by ${polygon.territory.guild}<br>For ${formatDuration(heldFor)}`);
+            polygon.bindPopup(`${polygon.territory.territory}<br>Controlled by ${polygon.territory.guild}<br>For ${formatDuration(heldFor)}`);
             if (isCd !== wasCd) {
                 let guild = polygon.territory.guild;
                 let baseStyle = {
-                    color: `#${guildColours[guild] || generateColor(guild)}`,
+                    color: `#${guildColours[guild]}`,
                     fillOpacity: 0.25,
                     strokeOpacity: 0.8,
                     stroke: true,
@@ -172,10 +191,11 @@ function load_map() {
         let acquiredDate = new Date(territory.acquired);
         let acquired = 1*acquiredDate - acquiredDate.getTimezoneOffset() * 60000;
         let heldTime = 1*new Date - acquired;
+        let colour = guildColours[guild] || (guildColours[guild] = generateColor(guild));
         let polygon = L.polygon(paths, {
-            color: `#${guildColours[guild] || generateColor(guild)}`,
+            color: `#${colour}`,
             fillOpacity: 0.25,
-            fillColor: heldTime < 600000 ? "#ff8080" : `#${guildColours[guild] || generateColor(guild)}`,
+            fillColor: heldTime < 600000 ? "#ff8080" : `#${colour}`,
             dashArray: heldTime < 600000 ? 7 : null,
             strokeOpacity: 0.8,
             stroke: true,

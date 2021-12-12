@@ -20,11 +20,15 @@ body {
 	background-color: white;
 	z-index: 1999;
 	top: 50%;
-	transform: translateY(-50%) translateY(25px);
+	transform: translateY(-50%) translateY(30px);
 	position: absolute;
 	font-size: 16px;
 	padding: 4px;
 	color: #1f1f1f;
+}
+#terr_counts {
+	max-height: calc(80vh - 80px);
+	overflow: scroll;
 }
 .leaflet-container .coordbox {
 	box-shadow: none;
