@@ -1,6 +1,5 @@
 const CACHE_NAME = 'my_cache';
 const urlsToCache = [
-    '/map/',
     '/build/',
     '/build/itemdb.json',
     '/assets/js/common.js?1587832624321',
@@ -40,6 +39,14 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('fetch', function(event) {
     console.log('fetch', event.request);
+    // remove map caches
+    caches.keys.then((names) => {
+        for (let name of names) {
+            if (name.url.indexOf("/map") > -1) {
+                caches.delete(name);
+            }
+        }
+    });
     event.respondWith(
         caches.match(event.request)
             .then(function(response) {
