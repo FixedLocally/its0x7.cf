@@ -7,4 +7,4 @@ Options -Indexes
 RedirectMatch 404 /\.git
 
 RewriteEngine on
-RewriteRule ^assets/tiles/2d/([0-9]+)/([0-9]+)/([0-9]+)\.png$ /map2/tile.php?x=$2&y=$3&z=$1
+RewriteRule ^assets/tiles/2d/([0-9]+)/([0-9]+)/([0-9]+)\.png$ /map/tile.php?x=$2&y=$3&z=$1

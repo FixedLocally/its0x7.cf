@@ -15,19 +15,15 @@
         <script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
         <script>window.bugsnagClient = bugsnag('2af5e91dd7b8ce9f4ce76efe9bc657ed')</script>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-		<script src="/assets/js/overviewer_cfg.js?1553623048675"></script>
-		<script src="/assets/js/overviewer.js?1553623048675"></script> 
 		<script src="/assets/js/leaflet.js?1553623048675"></script>
-		<script src="/assets/js/global_territories.js?1553623048675"></script>
-		<script src="/assets/js/territories.js?1553623048675"></script>
-		<!--<script src="/assets/js/player_location.js?1553623048675"></script>-->
+		<script src="/assets/js/custom_map.js?1553623048675"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" href="/assets/css/leaflet.css?1553623048675">
 		<link rel="stylesheet" href="/assets/css/main.css?1553623048675">
 		<link rel="stylesheet" href="/assets/css/newOverviewer.css?1553623048675" type="text/css">
 		<link rel="stylesheet" href="https://bootswatch.com/3/darkly/bootstrap.css">
 	</head>
-	<body onload="overviewer.util.initialize()" class="worldmap">
+	<body class="worldmap" onload="load_map()">
 		<nav class="navbar navbar-custom navbar-fixed-top">
 			<div class="container">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="icon-bar"></span>
@@ -44,15 +40,12 @@
 		</nav>
 		<div id="terr_box">
 		    <h3 style="text-align: center; margin-bottom: 0;">Territory Distribution</h3>
-		    <p style="text-align: center; margin-top: 0;">Territories: <span id="terrs_ocupied">0</span>, Guilds: <span id="guilds_with_terrs">0</span></p>
+		    <p style="text-align: center; margin-top: 0;">Territories: <span id="terrs_occupied">0</span>, Guilds: <span id="guilds_with_terrs">0</span></p>
 		    <div id="terr_counts">
 		    </div>
 		</div>
 		<div id="mcmap" style="margin-top: 50px;">
-			<div id="NoJSWarning" style="color:white; background-color:black">
-				<p>If you can see this message, there is likely a problem loading the Overviewer javascript components.</p>
-				<p>Check the javascript console for error messages.</p>
-			</div>
+
 		</div>
 	</body>
 </html>
