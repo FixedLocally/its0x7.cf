@@ -281,7 +281,7 @@ function load_map() {
             let guild = polygon.territory.guild;
             cdTerrs[polygon.territory.territory] = isCd;
             polygon.bindPopup(`${polygon.territory.territory}<br>Controlled by ${guild}<br>For ${formatDuration(heldFor)}`);
-            updateTooltip(polygon.territory.territory, `${guildTags[guild]}<br>${getSecondLine(polygon.territory.territory)}`);
+            updateTooltip(polygon.territory.territory, `${getGuildTag(guild)}<br>${getSecondLine(polygon.territory.territory)}`);
             if (isCd !== wasCd) {
                 let guild = polygon.territory.guild;
                 let baseStyle = {
@@ -364,7 +364,7 @@ function load_map() {
             map: map,
             name: territory.territory,
         });
-        polygon.bindTooltip(`${guildTags[guild]}<br>${getSecondLine(territory.territory)}`, {
+        polygon.bindTooltip(`${getGuildTag(guild)}<br>${getSecondLine(territory.territory)}`, {
             direction: "center",
             opacity: map.getZoom() - 6,
             permanent: true,
@@ -395,10 +395,10 @@ function load_map() {
         // }
     }
 
-    function getConnLine(t1, t2) {
-        return connLines[t1] && connLines[t1][t2];
+    // function getConnLine(t1, t2) {
+    //     return connLines[t1] && connLines[t1][t2];
         // return (connLines[t1] && connLines[t1][t2]) || (connLines[t2] && connLines[t2][t1])
-    }
+    // }
 
     function hideRoutes() {
         if (!routesShown) return;
@@ -448,7 +448,7 @@ function load_map() {
             tooltipContents[terr] = content.toString();
             let guild = terrResponse[terr].guild;
             polygons[terr].unbindTooltip();
-            polygons[terr].bindTooltip(`${guildTags[guild]}<br>${getSecondLine(terr)}`, {
+            polygons[terr].bindTooltip(`${getGuildTag(guild)}<br>${getSecondLine(terr)}`, {
                 direction: "center",
                 opacity: map.getZoom() - 6,
                 permanent: true,
@@ -470,5 +470,20 @@ function load_map() {
             case "cooldown":
                 return cooldown(terr);
         }
+    }
+
+    function getGuildTag(guild) {
+        if (guildTags[guild] !== undefined) {
+            return guildTags[guild];
+        }
+        fetch(`https://api.wynncraft.com/public_api.php?action=guildStats&command=${guild}`)
+            .then(r => r.json())
+            .then(function (res) {
+                if (res.prefix) {
+                    guildTags[guild] = res.prefix;
+                }
+            });
+        guildTags[guild] = guild;
+        return guild;
     }
 }
