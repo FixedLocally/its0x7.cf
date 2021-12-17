@@ -68,7 +68,9 @@ p.terr_row {
 	box-shadow: none;
 	color: white;
 	text-shadow: 1px 1px black;
-	font-size: 1.25em;
+	font-size: 1.1em;
+	line-height: 1.2em;
+	text-align: center;
 }
 @media screen and (max-width: 400px) {
 	#terr_box {
