@@ -275,12 +275,28 @@ function load_map() {
     function updatePopups() {
         for (let name in polygons) {
             let polygon = polygons[name];
+            /** Whether a territory was on cooldown */
             let wasCd = cdTerrs[polygon.territory.territory] || false;
+            /** The amount of time the territory was held for in milliseconds */
             let heldFor = 1*new Date - polygon.acquired;
+            /** Whether the territory is currently on cooldown (has been taken in the last 10 minutes by a guild) */
             let isCd = heldFor < 600000;
+            /** The territories treasury */
+            let treasury = "very low"
+            if (heldFor >= 3600000 && heldFor < 24 * 3600000) {
+                treasury = "low"
+            } else if (heldFor >= 24 * 3600000 && heldFor < 72 * 3600000) {
+                treasury = "medium"
+            } else if (heldFor >= 72 * 3600000 && heldFor < 240 * 3600000) {
+                treasury = "high"
+            } else if (heldFor >= 240 * 3600000) {
+                treasury = "very high"
+            } else {
+                treasury = "very low"
+            }
             let guild = polygon.territory.guild;
             cdTerrs[polygon.territory.territory] = isCd;
-            polygon.bindPopup(`${polygon.territory.territory}<br>Controlled by ${guild}<br>For ${formatDuration(heldFor)}`);
+            polygon.bindPopup(`${polygon.territory.territory}<br>Controlled by ${guild}<br>For ${formatDuration(heldFor)}<br>Treasury: ${treasury}`);
             updateTooltip(polygon.territory.territory, `${getGuildTag(guild)}<br>${getSecondLine(polygon.territory.territory)}`);
             if (isCd !== wasCd) {
                 let guild = polygon.territory.guild;
@@ -307,7 +323,16 @@ function load_map() {
         }
         setTimeout(updatePopups, 1000);
     }
-
+    /**
+     * Formats a given number of milliseconds to a readable string duration,
+     * @param {number} millis The amount of milliseconds of the duration.
+     * @returns A readable string of the date.
+     * @example Example Output:
+     * "27 seconds"
+     * "2 minutes and 27 seconds"
+     * "1 hour, 2 minutes and 27 seconds"
+     * "33 days, 1 hour, 2 minutes and 27 seconds"
+     */
     function formatDuration(millis) {
         let days = Math.floor(millis / 86400000);
         let hours = Math.floor(millis / 3600000) % 24;
@@ -326,14 +351,24 @@ function load_map() {
         s += `${seconds} second${seconds !== 1 ? "s" : ""}`;
         return s;
     }
-
+    /**
+     * Transforms latitude and longditude to a x and y coordinate
+     * @param {any} latLng The latitude / longditude.
+     * @returns {number[]} The x and y coordinate mapped from the latitude and londitude.
+     * @reverseOperation The reverse operation is `coordsToLatLng()`
+     */
     function latLngToCoords(latLng) {
         let lat=latLng.lat;
         let lng=latLng.lng;
         let proj = map.project([lat, lng], 7)
         return [proj.x, proj.y].map(x => x-16384).map(x => x*2).map((x, i) => x+[0,-3072][i]);
     }
-
+    /**
+     * Transforms x and y coordinate to a latitude and a longditude.
+     * @param {number[]} coords The x and y coordinate.
+     * @returns {any} The latitude / longditude.
+     * @reverseOperation The reverse operation is `latLngToCoords()`
+     */
     function coordsToLatLng(coords) {
         return map.unproject(coords.map((x, i) => x-[0, -3072][i]).map(x => x/2).map(x => x+16384), 7)
     }
