@@ -144,7 +144,7 @@ function load_map() {
                     // load from localStorage
                     hiddenGuilds = JSON.parse(localStorage["hiddenGuilds"] || "[]");
                     $(`input[name=map_mode][value=${localStorage["map_mode"]}]`).click();
-                    if (localStorage["show_routes"] !== "1") {
+                    if (localStorage["show_routes"] === "0") {
                         $(`input[name=show_routes]`).click();
                     }
                 }
