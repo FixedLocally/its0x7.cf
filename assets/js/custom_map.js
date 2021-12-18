@@ -74,7 +74,7 @@ function load_map() {
         position.updateHTML(coords[0], coords[1])
     });
     map.on("zoomend", function () {
-        if (map.getZoom() > 5) {
+        if (map.getZoom() > 5 && routesShown) {
             showRoutes();
         } else {
             hideRoutes();
@@ -109,24 +109,6 @@ function load_map() {
                 let guildTerrCount = {};
                 terrResponse = terrs;
                 if (init) {
-                    // conns
-                    for (let i in terrs) {
-                        if (!terrs.hasOwnProperty(i)) continue;
-                        for (let j of terrData[i].routes) {
-                            if (!terrs.hasOwnProperty(j)) continue;
-                            // if (i <= j) continue;
-                            let sx = (terrs[i]["location"]["startX"] + terrs[i]["location"]["endX"]) / 2;
-                            let sy = (terrs[i]["location"]["startY"] + terrs[i]["location"]["endY"]) / 2;
-                            let ex = (terrs[j]["location"]["startX"] + terrs[j]["location"]["endX"]) / 2;
-                            let ey = (terrs[j]["location"]["startY"] + terrs[j]["location"]["endY"]) / 2;
-                            let line = L.polyline([[sx, sy], [ex, ey]].map(coordsToLatLng), {
-                                color: "white",
-                                zIndexOffset: -204,
-                            });
-                            setConnLine(i, j, line);
-                            line.addTo(map);
-                        }
-                    }
                     $("input[type=radio][name=map_mode]").change(function () {
                         mapMode = this.value;
                         updatePopups(true);
@@ -146,6 +128,26 @@ function load_map() {
                     $(`input[name=map_mode][value=${localStorage["map_mode"]}]`).click();
                     if (localStorage["show_routes"] === "0") {
                         $(`input[name=show_routes]`).click();
+                    }
+                    // conns
+                    for (let i in terrs) {
+                        if (!terrs.hasOwnProperty(i)) continue;
+                        for (let j of terrData[i].routes) {
+                            if (!terrs.hasOwnProperty(j)) continue;
+                            // if (i <= j) continue;
+                            let sx = (terrs[i]["location"]["startX"] + terrs[i]["location"]["endX"]) / 2;
+                            let sy = (terrs[i]["location"]["startY"] + terrs[i]["location"]["endY"]) / 2;
+                            let ex = (terrs[j]["location"]["startX"] + terrs[j]["location"]["endX"]) / 2;
+                            let ey = (terrs[j]["location"]["startY"] + terrs[j]["location"]["endY"]) / 2;
+                            let line = L.polyline([[sx, sy], [ex, ey]].map(coordsToLatLng), {
+                                color: "white",
+                                zIndexOffset: -204,
+                            });
+                            setConnLine(i, j, line);
+                            if (routesShown) {
+                                line.addTo(map);
+                            }
+                        }
                     }
                 }
                 for (let i in terrs) {
