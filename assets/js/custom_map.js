@@ -282,22 +282,28 @@ function load_map() {
             /** Whether the territory is currently on cooldown (has been taken in the last 10 minutes by a guild) */
             let isCd = heldFor < 600000;
             /** The territories treasury */
-            let treasury = "very low"
+            let treasury = "Very Low"
+            /** Territory name **/
+            let territory = polygon.territory.territory;
             if (heldFor >= 3600000 && heldFor < 24 * 3600000) {
-                treasury = "low"
+                treasury = "Low"
             } else if (heldFor >= 24 * 3600000 && heldFor < 72 * 3600000) {
-                treasury = "medium"
+                treasury = "Medium"
             } else if (heldFor >= 72 * 3600000 && heldFor < 240 * 3600000) {
-                treasury = "high"
+                treasury = "High"
             } else if (heldFor >= 240 * 3600000) {
-                treasury = "very high"
-            } else {
-                treasury = "very low"
+                treasury = "Very High"
             }
             let guild = polygon.territory.guild;
-            cdTerrs[polygon.territory.territory] = isCd;
-            polygon.bindPopup(`${polygon.territory.territory}<br>Controlled by ${guild}<br>For ${formatDuration(heldFor)}<br>Treasury: ${treasury}`);
-            updateTooltip(polygon.territory.territory, `${getGuildTag(guild)}<br>${getSecondLine(polygon.territory.territory)}`);
+            cdTerrs[territory] = isCd;
+            let popup = `${territory}<br>Controlled by ${guild}<br>For ${formatDuration(heldFor)}<br>Treasury: ${treasury}`;
+            popup += "<br><br>Production:";
+            for (let i in terrData[territory]) {
+                if (i === "routes") continue;
+                popup += `<br>${terrData[territory][i]} ${i}`
+            }
+            polygon.bindPopup(popup);
+            updateTooltip(territory, `${getGuildTag(guild)}<br>${getSecondLine(territory)}`);
             if (isCd !== wasCd) {
                 let guild = polygon.territory.guild;
                 let baseStyle = {
@@ -308,7 +314,7 @@ function load_map() {
                     fill: true,
                     interactive: true,
                     map: map,
-                    name: polygon.territory.territory,
+                    name: territory,
                 };
                 if (isCd) {
                     baseStyle.fillColor = "#ff8080";
