@@ -30,7 +30,7 @@ body {
 	overflow: hidden;
 }
 #terr_counts {
-	height: calc(50vh - 60px);
+	height: calc(50vh - 90px);
 	overflow: scroll;
 }
 #sidebar_settings {
