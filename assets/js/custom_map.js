@@ -519,7 +519,8 @@ function load_map() {
     }
 
     function parseAcquiredDate(acquired) {
-        let acquiredDate = new Date(acquired);
+        // split by -, space and : for date params, then decrement date due to date specs
+        let acquiredDate = new Date(...acquired.split(/[\- :]/).map((x, i) => parseInt(x) - (i === 1)));
         return 1*acquiredDate - acquiredDate.getTimezoneOffset() * 60000;
     }
 
