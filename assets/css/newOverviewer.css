@@ -15,20 +15,26 @@ body {
 	left: 0;
 	right: 0;
 }
-#terr_box {
-	margin: auto;
-	background-color: white;
+#sidebar {
 	z-index: 1999;
-	top: 50%;
-	transform: translateY(-50%) translateY(30px);
+	top: 60px;
 	position: absolute;
 	font-size: 16px;
-	padding: 4px;
-	color: #1f1f1f;
+	color: #f0f0f0;
+	background: #3336;
+	text-shadow: 1px 1px 2px #00002A;
+	padding: 4px 4px 4px 8px;
+}
+#terr_box {
+	height: calc(50vh - 30px);
+	overflow: hidden;
 }
 #terr_counts {
-	max-height: calc(80vh - 80px);
+	height: calc(50vh - 60px);
 	overflow: scroll;
+}
+#sidebar_settings {
+	padding-top: 16px;
 }
 .leaflet-container .coordbox {
 	box-shadow: none;

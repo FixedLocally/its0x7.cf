@@ -38,11 +38,34 @@
 				</ul>
 			</div>
 		</nav>
-		<div id="terr_box">
-		    <h3 style="text-align: center; margin-bottom: 0;">Territory Distribution</h3>
-		    <p style="text-align: center; margin-top: 0;">Territories: <span id="terrs_occupied">0</span>, Guilds: <span id="guilds_with_terrs">0</span></p>
-		    <div id="terr_counts">
-		    </div>
+		<div id="sidebar">
+			<div id="terr_box">
+				<h4 style="text-align: center;">Territory Leaderboard</h4>
+				<div id="terr_counts">
+				</div>
+			</div>
+			<div id="sidebar_settings">
+				<h4>Options</h4>
+				<label>
+					<input type="checkbox" name="show_routes" value="1" checked autocomplete="off">
+					Show trading routes
+				</label>
+				<h4>Map mode</h4>
+				<label>
+					<input type="radio" name="map_mode" value="resource" autocomplete="off">
+					Resources
+				</label>
+				<br>
+				<label>
+					<input type="radio" name="map_mode" value="cooldown" autocomplete="off" checked>
+					CD times
+				</label>
+				<br>
+				<label>
+					<input type="radio" name="map_mode" value="none" autocomplete="off">
+					None
+				</label>
+			</div>
 		</div>
 		<div id="mcmap" style="margin-top: 50px;">
 
