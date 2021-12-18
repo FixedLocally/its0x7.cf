@@ -40,7 +40,7 @@ self.addEventListener('install', function(event) {
 self.addEventListener('fetch', function(event) {
     console.log('fetch', event.request);
     // remove map caches
-    caches.keys.then((names) => {
+    caches.keys().then((names) => {
         for (let name of names) {
             if (name.url.indexOf("/map") > -1) {
                 caches.delete(name);
