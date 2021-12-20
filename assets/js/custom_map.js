@@ -5779,10 +5779,11 @@ function load_map() {
 		}
 	}
 
-	function parseAcquiredDate(acquired) {
-		let acquiredDate = new Date(acquired);
-		return 1 * acquiredDate - acquiredDate.getTimezoneOffset() * 60000;
-	}
+    function parseAcquiredDate(acquired) {
+        // split by -, space and : for date params, then decrement date due to date specs
+        let acquiredDate = new Date(...acquired.split(/[\- :]/).map((x, i) => parseInt(x) - (i === 1)));
+        return 1*acquiredDate - acquiredDate.getTimezoneOffset() * 60000;
+    }
 
 	function getSecondLine(terr) {
 		switch (mapMode) {
@@ -5795,20 +5796,18 @@ function load_map() {
 		}
 	}
 
-	function getGuildTag(guild) {
-		if (guildTags[guild] !== undefined) {
-			return guildTags[guild];
-		}
-		fetch(
-			`https://api.wynncraft.com/public_api.php?action=guildStats&command=${guild}`
-		)
-			.then((r) => r.json())
-			.then(function (res) {
-				if (res.prefix) {
-					guildTags[guild] = res.prefix;
-				}
-			});
-		guildTags[guild] = guild;
-		return guild;
-	}
+    function getGuildTag(guild) {
+        if (guildTags[guild] !== undefined) {
+            return guildTags[guild];
+        }
+        fetch(`https://api.wynncraft.com/public_api.php?action=guildStats&command=${guild}`)
+            .then(r => r.json())
+            .then(function (res) {
+                if (res.prefix) {
+                    guildTags[guild] = res.prefix;
+                }
+            });
+        guildTags[guild] = guild;
+        return guild;
+    }
 }
