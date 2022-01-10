@@ -67,6 +67,7 @@ function load_map() {
     let connLines = {};
     let terrResponse;
     let routesShown = true;
+    let prefShowRoutes = true;
     let mapMode = "cooldown";
     let tooltipContents = {};
 
@@ -89,7 +90,7 @@ function load_map() {
         position.updateHTML(coords[0], coords[1]);
     });
     map.on("zoomend", function () {
-        if (map.getZoom() > 5 && routesShown) {
+        if (map.getZoom() > 5 && prefShowRoutes) {
             showRoutes();
         } else {
             hideRoutes();
@@ -133,13 +134,14 @@ function load_map() {
                     $("input[name=show_routes]").change(function () {
                         if (this.checked) showRoutes();
                         else hideRoutes();
+                        prefShowRoutes = this.checked;
                     });
                     $(window).on("beforeunload", function () {
                         // save to localStorage
                         localStorage["hiddenGuilds"] =
                             JSON.stringify(hiddenGuilds);
                         localStorage["map_mode"] = mapMode;
-                        localStorage["show_routes"] = routesShown ? "1" : "0";
+                        localStorage["show_routes"] = prefShowRoutes ? "1" : "0";
                     });
                     // load from localStorage
                     hiddenGuilds = JSON.parse(
@@ -381,7 +383,7 @@ function load_map() {
             )}<br>Treasury: ${treasury}`;
             popup += "<br><br>Production:";
             for (let i in terrData[territory].production) {
-                if (terrData[territory].production[i] == 0) {
+                if (terrData[territory].production[i] === 0) {
                     continue
                 }
                 popup += `<br>${terrData[territory].production[i]} ${i}`;
