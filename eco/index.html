@@ -16,7 +16,7 @@
 		<script>window.bugsnagClient = bugsnag('2af5e91dd7b8ce9f4ce76efe9bc657ed')</script>
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 		<script src="/assets/js/leaflet.js?1639834521689"></script>
-		<script src="/assets/js/custom_map.js?1639834521689"></script>
+		<script src="/assets/js/eco_map.js?1639834521689"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" href="/assets/css/leaflet.css?1639834521689`">
 		<link rel="stylesheet" href="/assets/css/main.css?1639834521689`">
@@ -38,7 +38,7 @@
 				</ul>
 			</div>
 		</nav>
-		<div id="sidebar">
+		<div id="sidebar" class="sidebar">
 			<div id="eco_summary">
 				<h4 style="text-align: center;">Eco Summary</h4>
 				<p>Emeralds: <span id="em_count">0 / 0 (No Output)</span></p>
@@ -54,6 +54,10 @@
 					Show trading routes
 				</label>
 			</div>
+		</div>
+		<div id="right_sidebar" class="sidebar">
+			<p id="terr_name"></p>
+			<div id="eco_dropdowns"></div>
 		</div>
 		<div id="mcmap" style="margin-top: 50px;">
 
