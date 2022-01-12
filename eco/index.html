@@ -40,7 +40,7 @@
 		</nav>
 		<div id="sidebar" class="sidebar">
 			<div id="eco_summary">
-				<h4 style="text-align: center;">Eco Summary</h4>
+				<h4>Eco Summary</h4>
 				<span>Emeralds: <span id="em_count">0 / 0 (No Output)</span></span><br>
 				<span>Ores: <span id="ore_count">0 / 0 (No Output)</span></span><br>
 				<span>Wood: <span id="wood_count">0 / 0 (No Output)</span></span><br>
@@ -48,10 +48,30 @@
 				<span>Crops: <span id="crop_count">0 / 0 (No Output)</span></span>
 			</div>
 			<div id="sidebar_settings">
-				<h4>Options</h4>
+				<h4>Treasury</h4>
 				<label>
-					<input type="checkbox" name="show_routes" value="1" checked autocomplete="off">
-					Show trading routes
+					<input type="radio" name="treasury" value="vlow" autocomplete="off" checked>
+					Very Low (0 hours)
+				</label>
+				<br>
+				<label>
+					<input type="radio" name="treasury" value="low" autocomplete="off">
+					Low (1 hour)
+				</label>
+				<br>
+				<label>
+					<input type="radio" name="treasury" value="med" autocomplete="off">
+					Medium (1 day)
+				</label>
+				<br>
+				<label>
+					<input type="radio" name="treasury" value="high" autocomplete="off">
+					High (3 days)
+				</label>
+				<br>
+				<label>
+					<input type="radio" name="treasury" value="vhigh" autocomplete="off">
+					Very High (10 days)
 				</label>
 			</div>
 			<div id="terr_stats">
@@ -67,6 +87,11 @@
 				Fish: <span id="terr_stats_fish">0 / 0 - 0</span><br>
 				Crops: <span id="terr_stats_crop">0 / 0 - 0</span><br>
 			</div>
+			<h4>Options</h4>
+			<label>
+				<input type="checkbox" name="show_routes" value="1" checked autocomplete="off">
+				Show trading routes
+			</label>
 		</div>
 		<div id="right_sidebar" class="sidebar">
 			<p id="terr_name"></p>

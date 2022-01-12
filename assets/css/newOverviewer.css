@@ -24,11 +24,11 @@ body {
 	background: #3339;
 	text-shadow: 1px 1px 2px #00002A;
 	padding: 4px 4px 4px 8px;
+	overflow: scroll;
+	max-height: calc(100vh - 80px);
 }
 
 #right_sidebar {
-	overflow: scroll;
-	max-height: calc(100vh - 80px);
 	right: 0;
 	width: 240px;
 	display: none;

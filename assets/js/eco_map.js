@@ -251,6 +251,16 @@ function load_map() {
                         }
                         updateEco();
                     });
+                    $("input[type=radio][name=treasury]").change(function () {
+                        switch (this.value) {
+                            case "vlow": treasury = 0; break;
+                            case "low": treasury = 0.1; break;
+                            case "med": treasury = 0.2; break;
+                            case "high": treasury = 0.25; break;
+                            case "vhigh": treasury = 0.3; break;
+                        }
+                        updateEco();
+                    });
                     let dropdownDiv = $("#eco_dropdowns");
                     for (let i in upgradeData) {
                         let id = `select_${i}`;
@@ -296,11 +306,12 @@ function load_map() {
             let territory = polygon.territory.territory;
             let guild = polygon.territory.guild;
             let popup = `${territory}<br><br>Production:`;
-            for (let i in terrData[territory].production) {
-                if (terrData[territory].production[i] === 0) {
-                    continue
+            let stats = calcTerr(terrData[territory], polygons[territory].territory.upgrades, hq === territory);
+            for (let i in stats.production) {
+                if (stats.production[i] === 0) {
+                    continue;
                 }
-                popup += `<br>${terrData[territory].production[i]} ${i}`;
+                popup += `<br>${Math.round(stats.production[i])} ${i}`;
             }
             polygon.bindPopup(popup);
             updateTooltip(
@@ -600,6 +611,7 @@ function load_map() {
         $("#ore_count").html(`${Math.round(usage.ore)} / ${Math.round(prod.ore)} ${FORMATTER_PERCENT_2DP(usage.ore / prod.ore)}`);
         $("#fish_count").html(`${Math.round(usage.fish)} / ${Math.round(prod.fish)} ${FORMATTER_PERCENT_2DP(usage.fish / prod.fish)}`);
         updateHash();
+        updatePopups();
     }
 
     function updateTerrStats(stats) {
