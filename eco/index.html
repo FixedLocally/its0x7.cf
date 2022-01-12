@@ -6,21 +6,21 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="theme-color" content="#0277bd">
 		<meta property="og:type" content="website">
-		<meta property="og:title" content="It's 0x7cf! :: World Map">
+		<meta property="og:title" content="It's 0x7cf! :: Eco Map">
 		<meta property="og:url" content="https://its0x7.cf/map/">
-		<meta property="og:description" content="Wynncraft World Map by 0x7cf, with territory highlighting and auto updating.">
+		<meta property="og:description" content="Wynncraft World Map by 0x7cf, with territory eco simulation.">
 		<meta property="og:type" content="website">
 		<meta property="og:site_name" content="It's 0x7cf!">
 		<meta property="og:image" content="https://its0x7.cf/assets/img/icons/map.png">
 		<script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
 		<script>window.bugsnagClient = bugsnag('2af5e91dd7b8ce9f4ce76efe9bc657ed')</script>
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-		<script src="/assets/js/leaflet.js?1639834521689"></script>
-		<script src="/assets/js/eco_map.js?1639834521689"></script>
+		<script src="/assets/js/leaflet.js?1641964624831"></script>
+		<script src="/assets/js/eco_map.js?1641964624831"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="/assets/css/leaflet.css?1639834521689`">
-		<link rel="stylesheet" href="/assets/css/main.css?1639834521689`">
-		<link rel="stylesheet" href="/assets/css/newOverviewer.css?1639834521689`" type="text/css">
+		<link rel="stylesheet" href="/assets/css/leaflet.css?1641964624831`">
+		<link rel="stylesheet" href="/assets/css/main.css?1641964624831`">
+		<link rel="stylesheet" href="/assets/css/newOverviewer.css?1641964624831`" type="text/css">
 		<link rel="stylesheet" href="https://bootswatch.com/3/darkly/bootstrap.css">
 	</head>
 	<body class="worldmap" onload="load_map()">
@@ -40,20 +40,58 @@
 		</nav>
 		<div id="sidebar" class="sidebar">
 			<div id="eco_summary">
-				<h4 style="text-align: center;">Eco Summary</h4>
-				<p>Emeralds: <span id="em_count">0 / 0 (No Output)</span></p>
-				<p>Crops: <span id="crop_count">0 / 0 (No Output)</span></p>
-				<p>Ores: <span id="ore_count">0 / 0 (No Output)</span></p>
-				<p>Wood: <span id="wood_count">0 / 0 (No Output)</span></p>
-				<p>Fish: <span id="fish_count">0 / 0 (No Output)</span></p>
+				<h4>Eco Summary</h4>
+				<span>Emeralds: <span id="em_count">0 / 0 (No Output)</span></span><br>
+				<span>Ores: <span id="ore_count">0 / 0 (No Output)</span></span><br>
+				<span>Wood: <span id="wood_count">0 / 0 (No Output)</span></span><br>
+				<span>Fish: <span id="fish_count">0 / 0 (No Output)</span></span><br>
+				<span>Crops: <span id="crop_count">0 / 0 (No Output)</span></span>
 			</div>
 			<div id="sidebar_settings">
-				<h4>Options</h4>
+				<h4>Treasury</h4>
 				<label>
-					<input type="checkbox" name="show_routes" value="1" checked autocomplete="off">
-					Show trading routes
+					<input type="radio" name="treasury" value="vlow" autocomplete="off" checked>
+					Very Low (0 hours)
+				</label>
+				<br>
+				<label>
+					<input type="radio" name="treasury" value="low" autocomplete="off">
+					Low (1 hour)
+				</label>
+				<br>
+				<label>
+					<input type="radio" name="treasury" value="med" autocomplete="off">
+					Medium (1 day)
+				</label>
+				<br>
+				<label>
+					<input type="radio" name="treasury" value="high" autocomplete="off">
+					High (3 days)
+				</label>
+				<br>
+				<label>
+					<input type="radio" name="treasury" value="vhigh" autocomplete="off">
+					Very High (10 days)
 				</label>
 			</div>
+			<div id="terr_stats">
+				<h4 id="terr_stats_name">Fruma Entrance</h4>
+				Damage: <span id="terr_stats_dmg">1000-1500</span><br>
+				Attack: <span id="terr_stats_atk">0.5x</span><br>
+				Health: <span id="terr_stats_hp">300,000 (Effective: 333,333)</span><br>
+				Defense: <span id="terr_stats_def">10%</span><br>
+				Resources (Usage / Production - Storage)<br>
+				Emerald: <span id="terr_stats_em">0 / 0 - 0</span><br>
+				Ores: <span id="terr_stats_ore">0 / 0 - 0</span><br>
+				Wood: <span id="terr_stats_wood">0 / 0 - 0</span><br>
+				Fish: <span id="terr_stats_fish">0 / 0 - 0</span><br>
+				Crops: <span id="terr_stats_crop">0 / 0 - 0</span><br>
+			</div>
+			<h4>Options</h4>
+			<label>
+				<input type="checkbox" name="show_routes" value="1" checked autocomplete="off">
+				Show trading routes
+			</label>
 		</div>
 		<div id="right_sidebar" class="sidebar">
 			<p id="terr_name"></p>
