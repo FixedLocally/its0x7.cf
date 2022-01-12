@@ -87,6 +87,7 @@ function load_map() {
     let prefShowRoutes = true;
     let mapMode = "cooldown";
     let tooltipContents = {};
+    let treasury = 0;
     let selectedTerr;
     let hq;
 
@@ -509,6 +510,7 @@ function load_map() {
         let fishProd = terr.production.fish;
         let woodProd = terr.production.wood;
         let emeraldProd = terr.production.emerald;
+        let treasuryMulti = Math.min(1, Math.max(1.3 - terr.distance * 0.15, 0.4));
 
         // tower
         let statMulti = 1;
@@ -550,6 +552,9 @@ function load_map() {
         emeraldUsage += upgradeData.res_rate.cost[upgrades.res_rate || 0][0];
         emMulti *= (4 / upgradeData.em_rate.cost[upgrades.em_rate || 0][1]);
         cropUsage += upgradeData.em_rate.cost[upgrades.em_rate || 0][0];
+        // treasury
+        emMulti *= (1 + treasury * treasuryMulti);
+        resMulti *= (1 + treasury * treasuryMulti);
         woodProd *= resMulti;
         oreProd *= resMulti;
         fishProd *= resMulti;
@@ -589,11 +594,11 @@ function load_map() {
                 usage[j] += stats.usage[j];
             }
         }
-        $("#em_count").html(`${usage.emerald} / ${prod.emerald} ${FORMATTER_PERCENT_2DP(usage.emerald / prod.emerald)}`);
-        $("#wood_count").html(`${usage.wood} / ${prod.wood} ${FORMATTER_PERCENT_2DP(usage.wood / prod.wood)}`);
-        $("#crop_count").html(`${usage.crop} / ${prod.crop} ${FORMATTER_PERCENT_2DP(usage.crop / prod.crop)}`);
-        $("#ore_count").html(`${usage.ore} / ${prod.ore} ${FORMATTER_PERCENT_2DP(usage.ore / prod.ore)}`);
-        $("#fish_count").html(`${usage.fish} / ${prod.fish} ${FORMATTER_PERCENT_2DP(usage.fish / prod.fish)}`);
+        $("#em_count").html(`${Math.round(usage.emerald)} / ${Math.round(prod.emerald)} ${FORMATTER_PERCENT_2DP(usage.emerald / prod.emerald)}`);
+        $("#wood_count").html(`${Math.round(usage.wood)} / ${Math.round(prod.wood)} ${FORMATTER_PERCENT_2DP(usage.wood / prod.wood)}`);
+        $("#crop_count").html(`${Math.round(usage.crop)} / ${Math.round(prod.crop)} ${FORMATTER_PERCENT_2DP(usage.crop / prod.crop)}`);
+        $("#ore_count").html(`${Math.round(usage.ore)} / ${Math.round(prod.ore)} ${FORMATTER_PERCENT_2DP(usage.ore / prod.ore)}`);
+        $("#fish_count").html(`${Math.round(usage.fish)} / ${Math.round(prod.fish)} ${FORMATTER_PERCENT_2DP(usage.fish / prod.fish)}`);
         updateHash();
     }
 
@@ -603,11 +608,11 @@ function load_map() {
         $("#terr_stats_atk").html(`${Math.round(stats.stats.attack * 100) / 100}`);
         $("#terr_stats_hp").html(`${Math.round(stats.stats.health)} (Effective: ${Math.round(stats.stats.health / (1 - stats.stats.defense))})`);
         $("#terr_stats_def").html(`${Math.round(stats.stats.defense * 1000) / 10}%`);
-        $("#terr_stats_em").html(`${stats.usage.emerald} / ${stats.production.emerald} - ${stats.storage.emStorage}`);
-        $("#terr_stats_ore").html(`${stats.usage.ore} / ${stats.production.ore} - ${stats.storage.resStorage}`);
-        $("#terr_stats_wood").html(`${stats.usage.wood} / ${stats.production.wood} - ${stats.storage.resStorage}`);
-        $("#terr_stats_fish").html(`${stats.usage.fish} / ${stats.production.fish} - ${stats.storage.resStorage}`);
-        $("#terr_stats_crop").html(`${stats.usage.crop} / ${stats.production.crop} - ${stats.storage.resStorage}`);
+        $("#terr_stats_em").html(`${Math.round(stats.usage.emerald)} / ${Math.round(stats.production.emerald)} - ${Math.round(stats.storage.emStorage)}`);
+        $("#terr_stats_ore").html(`${Math.round(stats.usage.ore)} / ${Math.round(stats.production.ore)} - ${Math.round(stats.storage.resStorage)}`);
+        $("#terr_stats_wood").html(`${Math.round(stats.usage.wood)} / ${Math.round(stats.production.wood)} - ${Math.round(stats.storage.resStorage)}`);
+        $("#terr_stats_fish").html(`${Math.round(stats.usage.fish)} / ${Math.round(stats.production.fish)} - ${Math.round(stats.storage.resStorage)}`);
+        $("#terr_stats_crop").html(`${Math.round(stats.usage.crop)} / ${Math.round(stats.production.crop)} - ${Math.round(stats.storage.resStorage)}`);
         $("#terr_stats").show();
     }
 
