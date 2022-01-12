@@ -119,6 +119,7 @@ function load_map() {
     });
     map.on("click", function () {
         $("#right_sidebar").hide();
+        $("#terr_stats").hide();
         selectedTerr = void 0;
     });
     // draw test territory
@@ -150,6 +151,7 @@ function load_map() {
                 updatePopups();
                 if (init) {
                     $("#right_sidebar").hide();
+                    $("#terr_stats").hide();
                     for (let i in terrs) {
                         if (!terrs.hasOwnProperty(i)) continue;
                         for (let j of terrData[i].routes) {
@@ -374,6 +376,14 @@ function load_map() {
             $("#eco_include").prop("checked", polygon.include);
             $("#eco_hq").prop("checked", terr === hq);
             selectedTerr = terr;
+            if (polygon.include) {
+                let stats = calcTerr(terrData[terr], polygon.territory.upgrades, terr === hq);
+                $("#terr_stats_dmg").html(`${Math.round(stats.stats.damage)}-${Math.round(1.5 * stats.stats.damage)}`)
+                $("#terr_stats_atk").html(`${Math.round(stats.stats.attack * 100) / 100}`);
+                $("#terr_stats_hp").html(`${Math.round(stats.stats.health)} (Effective: ${Math.round(stats.stats.health / (1 - stats.stats.defense))})`);
+                $("#terr_stats_def").html(`${Math.round(stats.stats.defense * 1000) / 10}%`);
+                $("#terr_stats").show();
+            }
         })
         polygons[territory["territory"]] = polygon;
         return polygon;
