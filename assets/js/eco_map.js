@@ -496,7 +496,18 @@ function load_map() {
 
         // tower
         let statMulti = 1;
-        statMulti += hq ? 0.5 : 0;
+        // conns
+        statMulti += 0.3 * terr.routes.filter(x => polygons[x].include).length;
+        // hq conns
+        if (hq) {
+            let hqMulti = 1.25;
+            for (let i in terrData) {
+                if (terrData[i].distance <= 2 && polygons[i].include) { // includes the hq itself
+                    hqMulti += 0.25;
+                }
+            }
+            statMulti *= hqMulti;
+        }
         damage *= (1 + upgradeData.damage.cost[upgrades.damage || 0][1]) * statMulti;
         oreUsage += upgradeData.damage.cost[upgrades.damage || 0][0];
         attack *= (1 + upgradeData.attack.cost[upgrades.attack || 0][1]);
@@ -546,7 +557,7 @@ function load_map() {
             },
             storage: {
                 resStorage, emStorage
-            }, upgrades};
+            }, upgrades, statMulti};
     }
 
     function updateEco() {
