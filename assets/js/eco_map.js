@@ -183,7 +183,7 @@ function load_map() {
                                     [ex, ey],
                                 ].map(coordsToLatLng),
                                 {
-                                    color: "white",
+                                    color: "#fff7",
                                     zIndexOffset: -204,
                                 }
                             );
@@ -630,7 +630,7 @@ function load_map() {
 
     function updateHash() {
         console.log("update hash");
-        let hash = "1_";
+        let hash = "";
         if (hq) {
             let idx = terrNames.indexOf(hq);
             if (idx >= 0) {
@@ -650,9 +650,13 @@ function load_map() {
                 }
             }
         }
-        document.location.hash = hash;
+        document.location.hash = "2_" + LZString.compressToEncodedURIComponent(hash);
     }
 
+    /**
+     * hash v1: stat-relevant upgrades, uncompressed
+     * hash v2: stat-relevant upgrades, compressed
+     */
     function parseHash() {
         let hash = document.location.hash.replace("#", "");
         console.log("parse hash", hash);
@@ -662,34 +666,41 @@ function load_map() {
         let payload = segments[1];
         switch (v) {
             case "1":
-                if ((payload.length & 0xf) !== 2) throw new Error("invalid length");
-                let hqIdx = payload.substr(0, 2);
-                for (let i = 2; i < payload.length; i += 16) {
-                    let s = payload.substr(i, 16);
-                    let terr = terrNames[parseInt(s.substr(0, 2), 36)];
-                    if (!terr) throw new Error("invalid terr index");
-                    let upgrades = polygons[terr].territory.upgrades;
-                    polygons[terr].include = true;
-                    for (let j = 0; j < 14; ++j) {
-                        upgrades[PROPS[j]] = parseInt(s[j + 2], 36);
-                    }
-                    polygons[terr].setStyle({
-                        fillColor: "#00ff00",
-                        color: "#00ff00",
-                    });
-                }
-                if (hqIdx !== "--") {
-                    hq = terrNames[parseInt(hqIdx, 36)];
-                    if (!hq) throw new Error("invalid hq");
-                    polygons[hq].setStyle({
-                        fillColor: "#cccc00",
-                        color: "#cccc00",
-                    });
-                }
-                if (hq) calcDistances();
-                updateEco();
+                parseDecompressedHashV1(payload);
+                break;
+            case "2":
+                parseDecompressedHashV1(LZString.decompressFromEncodedURIComponent(payload));
                 break;
         }
+    }
+
+    function parseDecompressedHashV1(payload) {
+        if ((payload.length & 0xf) !== 2) throw new Error("invalid length");
+        let hqIdx = payload.substr(0, 2);
+        for (let i = 2; i < payload.length; i += 16) {
+            let s = payload.substr(i, 16);
+            let terr = terrNames[parseInt(s.substr(0, 2), 36)];
+            if (!terr) throw new Error("invalid terr index");
+            let upgrades = polygons[terr].territory.upgrades;
+            polygons[terr].include = true;
+            for (let j = 0; j < 14; ++j) {
+                upgrades[PROPS[j]] = parseInt(s[j + 2], 36);
+            }
+            polygons[terr].setStyle({
+                fillColor: "#00ff00",
+                color: "#00ff00",
+            });
+        }
+        if (hqIdx !== "--") {
+            hq = terrNames[parseInt(hqIdx, 36)];
+            if (!hq) throw new Error("invalid hq");
+            polygons[hq].setStyle({
+                fillColor: "#cccc00",
+                color: "#cccc00",
+            });
+        }
+        if (hq) calcDistances();
+        updateEco();
     }
 
     function calcDistances() {
