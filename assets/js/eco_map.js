@@ -545,14 +545,6 @@ function load_map() {
         let woodUsage = 0;
         let emeraldUsage = 0;
 
-        let gather_xp = upgradeData.gather_xp.base[0];
-        let mob_xp = upgradeData.mob_xp.base[0];
-        let mob_damage = upgradeData.mob_damage.base[0]
-        let pvp_damage = upgradeData.pvp_damage.base[0]
-        let xp_seeking = upgradeData.xp_seeking.base[0]
-        let tome_seeking = upgradeData.tome_seeking.base[0]
-        let eme_seeking = upgradeData.eme_seeking.base[0]
-
         let oreProd = terr.production.ore;
         let cropProd = terr.production.crop;
         let fishProd = terr.production.fish;
@@ -590,19 +582,12 @@ function load_map() {
         woodUsage += upgradeData.em_storage.cost[upgrades.em_storage || 0][0];
 
         //bonuses
-        gather_xp *= (1 + upgradeData.gather_xp.cost[upgrades.gather_xp || 0][1]);
         woodUsage += upgradeData.gather_xp.cost[upgrades.gather_xp || 0][0];
-        mob_xp *= (1 + upgradeData.mob_xp.cost[upgrades.mob_xp || 0][1]);
         fishUsage += upgradeData.mob_xp.cost[upgrades.mob_xp || 0][0];
-        mob_damage *= (1 + upgradeData.mob_damage.cost[upgrades.mob_damage || 0][1])
         cropUsage += upgradeData.mob_damage.cost[upgrades.mob_damage || 0][0]
-        pvp_damage *= (1 + upgradeData.pvp_damage.cost[upgrades.pvp_damage || 0][1])
         oreUsage += upgradeData.pvp_damage.cost[upgrades.pvp_damage || 0][0]
-        xp_seeking *= (1 + upgradeData.xp_seeking.cost[upgrades.xp_seeking || 0][1])
         emeraldUsage += upgradeData.xp_seeking.cost[upgrades.xp_seeking || 0][0]
-        tome_seeking *= (1 + upgradeData.tome_seeking.cost[upgrades.tome_seeking || 0][1])
         fishUsage += upgradeData.tome_seeking.cost[upgrades.tome_seeking || 0][0]
-        eme_seeking *= (1 + upgradeData.eme_seeking.cost[upgrades.eme_seeking || 0][1])
         fishUsage += upgradeData.eme_seeking.cost[upgrades.eme_seeking || 0][0]
 
 
@@ -720,58 +705,34 @@ function load_map() {
         let payload = segments[1];
         switch (v) {
             case "1":
-                parseDecompressedHashV1(payload);
+                parseDecompressedHashV2(payload, 2);
                 break;
             case "2":
-                parseDecompressedHashV1(LZString.decompressFromEncodedURIComponent(payload));
+                parseDecompressedHashV2(LZString.decompressFromEncodedURIComponent(payload), 2);
                 break;
             case "3":
-                parseDecompressedHashV2(LZString.decompressFromEncodedURIComponent(payload));
+                parseDecompressedHashV2(LZString.decompressFromEncodedURIComponent(payload), 3);
                 break;
         }
     }
 
-    function parseDecompressedHashV1(payload) {
+    function parseDecompressedHashV2(payload, ver) {
+        let len;
+        switch (ver) {
+            case 2: len = 16; break;
+            case 3: len = 23; break;
+            default: throw new Error("invalid ver");
+        }
         // if ((payload.length & 0xf) !== 2) throw new Error("invalid length");
-        if (payload.length % 16 !== 2) throw new Error("invalid length");
+        if (payload.length % len !== 2) throw new Error("invalid length");
         let hqIdx = payload.substr(0, 2);
-        for (let i = 2; i < payload.length; i += 16) {
-            let s = payload.substr(i, 16);
+        for (let i = 2; i < payload.length; i += len) {
+            let s = payload.substr(i, len);
             let terr = terrNames[parseInt(s.substr(0, 2), 36)];
             if (!terr) throw new Error("invalid terr index");
             let upgrades = polygons[terr].territory.upgrades;
             polygons[terr].include = true;
-            for (let j = 0; j < 14; ++j) {
-                upgrades[PROPS[j]] = parseInt(s[j + 2], 36);
-            }
-            polygons[terr].setStyle({
-                fillColor: "#00ff00",
-                color: "#00ff00",
-            });
-        }
-        if (hqIdx !== "--") {
-            hq = terrNames[parseInt(hqIdx, 36)];
-            if (!hq) throw new Error("invalid hq");
-            polygons[hq].setStyle({
-                fillColor: "#cccc00",
-                color: "#cccc00",
-            });
-        }
-        if (hq) calcDistances();
-        updateEco();
-    }
-
-    function parseDecompressedHashV2(payload) {
-        // if ((payload.length & 0xf) !== 2) throw new Error("invalid length");
-        if (payload.length % 23 !== 2) throw new Error("invalid length");
-        let hqIdx = payload.substr(0, 2);
-        for (let i = 2; i < payload.length; i += 23) {
-            let s = payload.substr(i, 23);
-            let terr = terrNames[parseInt(s.substr(0, 2), 36)];
-            if (!terr) throw new Error("invalid terr index");
-            let upgrades = polygons[terr].territory.upgrades;
-            polygons[terr].include = true;
-            for (let j = 0; j < 16; ++j) {
+            for (let j = 0; j < len - 2; ++j) {
                 upgrades[PROPS[j]] = parseInt(s[j + 2], 36);
             }
             polygons[terr].setStyle({
