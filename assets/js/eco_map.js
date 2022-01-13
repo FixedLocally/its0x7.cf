@@ -816,12 +816,13 @@ function load_map() {
             let td = $(`<td></td>`);
             let max = upgradeData[i].cost.length - 1;
             let input = $(`<input class="spreadsheet_input" type="number" min="0" max="${max}">`);
-            input.val(polygons[terr].territory.upgrades[i]);
+            let lvl = polygons[terr].territory.upgrades[i];
+            input.val(lvl > 0 ? lvl : "");
             input.keyup(function () {
                 if (this.value > max) this.value = max;
-                if (this.value < 0) this.value = 0;
+                if (this.value <= 0) this.value = "";
                 console.log(terr, i, this.value);
-                polygons[terr].territory.upgrades[i] = parseInt(this.value);
+                polygons[terr].territory.upgrades[i] = this.value === "" ? 0 : parseInt(this.value);
                 updateEco();
             });
             input.appendTo(td);
