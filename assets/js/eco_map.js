@@ -87,6 +87,7 @@ function load_map() {
     let prefShowRoutes = true;
     let mapMode = "cooldown";
     let tooltipContents = {};
+    let spreadsheetShown = false;
     let treasury = 0;
     let selectedTerr;
     let hq;
@@ -183,7 +184,7 @@ function load_map() {
                                     [ex, ey],
                                 ].map(coordsToLatLng),
                                 {
-                                    color: "white",
+                                    color: "#fff7",
                                     zIndexOffset: -204,
                                 }
                             );
@@ -295,6 +296,7 @@ function load_map() {
                     } catch (e) {
                         console.error(e);
                     }
+                    $("#btn-spreadsheet").click(toggleSpreadsheetMode);
                 }
             });
     }
@@ -303,21 +305,25 @@ function load_map() {
         for (let name in polygons) {
             let polygon = polygons[name];
             /** Territory name **/
-            let territory = polygon.territory.territory;
-            let guild = polygon.territory.guild;
-            let popup = `${territory}<br><br>Production:`;
-            let stats = calcTerr(terrData[territory], polygons[territory].territory.upgrades, hq === territory);
-            for (let i in stats.production) {
-                if (stats.production[i] === 0) {
-                    continue;
+            if (spreadsheetShown) {
+                polygon.unbindPopup();
+            } else {
+                let territory = polygon.territory.territory;
+                let guild = polygon.territory.guild;
+                let popup = `${territory}<br><br>Production:`;
+                let stats = calcTerr(terrData[territory], polygons[territory].territory.upgrades, hq === territory);
+                for (let i in stats.production) {
+                    if (stats.production[i] === 0) {
+                        continue;
+                    }
+                    popup += `<br>${Math.round(stats.production[i])} ${i}`;
                 }
-                popup += `<br>${Math.round(stats.production[i])} ${i}`;
+                polygon.bindPopup(popup);
+                updateTooltip(
+                    territory,
+                    `${getGuildTag(guild)}<br>${getSecondLine(territory)}`
+                );
             }
-            polygon.bindPopup(popup);
-            updateTooltip(
-                territory,
-                `${getGuildTag(guild)}<br>${getSecondLine(territory)}`
-            );
         }
     }
 
@@ -387,6 +393,7 @@ function load_map() {
         polygon.territory.upgrades = {};
         polygon.include = false;
         polygon.on("click", function(e) {
+            if (spreadsheetShown) return;
             let polygon = e.target;
             let terr = polygon.territory.territory;
             $("#right_sidebar").show();
@@ -630,7 +637,7 @@ function load_map() {
 
     function updateHash() {
         console.log("update hash");
-        let hash = "1_";
+        let hash = "";
         if (hq) {
             let idx = terrNames.indexOf(hq);
             if (idx >= 0) {
@@ -650,9 +657,13 @@ function load_map() {
                 }
             }
         }
-        document.location.hash = hash;
+        document.location.hash = "2_" + LZString.compressToEncodedURIComponent(hash);
     }
 
+    /**
+     * hash v1: stat-relevant upgrades, uncompressed
+     * hash v2: stat-relevant upgrades, compressed
+     */
     function parseHash() {
         let hash = document.location.hash.replace("#", "");
         console.log("parse hash", hash);
@@ -662,34 +673,41 @@ function load_map() {
         let payload = segments[1];
         switch (v) {
             case "1":
-                if ((payload.length & 0xf) !== 2) throw new Error("invalid length");
-                let hqIdx = payload.substr(0, 2);
-                for (let i = 2; i < payload.length; i += 16) {
-                    let s = payload.substr(i, 16);
-                    let terr = terrNames[parseInt(s.substr(0, 2), 36)];
-                    if (!terr) throw new Error("invalid terr index");
-                    let upgrades = polygons[terr].territory.upgrades;
-                    polygons[terr].include = true;
-                    for (let j = 0; j < 14; ++j) {
-                        upgrades[PROPS[j]] = parseInt(s[j + 2], 36);
-                    }
-                    polygons[terr].setStyle({
-                        fillColor: "#00ff00",
-                        color: "#00ff00",
-                    });
-                }
-                if (hqIdx !== "--") {
-                    hq = terrNames[parseInt(hqIdx, 36)];
-                    if (!hq) throw new Error("invalid hq");
-                    polygons[hq].setStyle({
-                        fillColor: "#cccc00",
-                        color: "#cccc00",
-                    });
-                }
-                if (hq) calcDistances();
-                updateEco();
+                parseDecompressedHashV1(payload);
+                break;
+            case "2":
+                parseDecompressedHashV1(LZString.decompressFromEncodedURIComponent(payload));
                 break;
         }
+    }
+
+    function parseDecompressedHashV1(payload) {
+        if ((payload.length & 0xf) !== 2) throw new Error("invalid length");
+        let hqIdx = payload.substr(0, 2);
+        for (let i = 2; i < payload.length; i += 16) {
+            let s = payload.substr(i, 16);
+            let terr = terrNames[parseInt(s.substr(0, 2), 36)];
+            if (!terr) throw new Error("invalid terr index");
+            let upgrades = polygons[terr].territory.upgrades;
+            polygons[terr].include = true;
+            for (let j = 0; j < 14; ++j) {
+                upgrades[PROPS[j]] = parseInt(s[j + 2], 36);
+            }
+            polygons[terr].setStyle({
+                fillColor: "#00ff00",
+                color: "#00ff00",
+            });
+        }
+        if (hqIdx !== "--") {
+            hq = terrNames[parseInt(hqIdx, 36)];
+            if (!hq) throw new Error("invalid hq");
+            polygons[hq].setStyle({
+                fillColor: "#cccc00",
+                color: "#cccc00",
+            });
+        }
+        if (hq) calcDistances();
+        updateEco();
     }
 
     function calcDistances() {
@@ -723,5 +741,50 @@ function load_map() {
         for (let i in terrData) {
             terrData[i].distance = 99999;
         }
+    }
+
+    function toggleSpreadsheetMode() {
+        // sync current upgrades to the sheet and show it
+        let div = $("#spreadsheet_mode");
+        let table = $("#spreadsheet");
+        if (spreadsheetShown) {
+            div.hide();
+            $("#btn-spreadsheet").html("Open Spreadsheet");
+        } else {
+            map.closePopup();
+            selectedTerr = void 0;
+            $("#right_sidebar").hide();
+            table.find("tr").slice(1).remove();
+            // hq
+            if (hq) insertSpreadsheetRow(table, hq);
+            for (let terr of terrNames) {
+                if (polygons[terr].include && terr !== hq) insertSpreadsheetRow(table, terr);
+            }
+            div.show();
+            $("#btn-spreadsheet").html("Close Spreadsheet");
+        }
+        spreadsheetShown = !spreadsheetShown;
+        updatePopups();
+    }
+
+    function insertSpreadsheetRow(table, terr) {
+        let tr = $("<tr>");
+        $(`<td>${terr}</td>`).appendTo(tr);
+        for (let i of PROPS) {
+            let td = $(`<td></td>`);
+            let max = upgradeData[i].cost.length - 1;
+            let input = $(`<input class="spreadsheet_input" type="number" min="0" max="${max}">`);
+            input.val(polygons[terr].territory.upgrades[i]);
+            input.keyup(function () {
+                if (this.value > max) this.value = max;
+                if (this.value < 0) this.value = 0;
+                console.log(terr, i, this.value);
+                polygons[terr].territory.upgrades[i] = parseInt(this.value);
+                updateEco();
+            });
+            input.appendTo(td);
+            td.appendTo(tr);
+        }
+        tr.appendTo(table);
     }
 }
