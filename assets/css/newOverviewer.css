@@ -91,6 +91,34 @@ p.terr_row {
 	line-height: 1.2em;
 	text-align: center;
 }
+#spreadsheet_mode {
+	background: #3339;
+	position: absolute;
+	right: 0;
+	top: 60px;
+	z-index: 1999;
+	max-width: calc(100vw - 360px);
+	max-height: calc(100vh - 60px);
+	padding: 8px;
+}
+#spreadsheet {
+	overflow: scroll;
+}
+#spreadsheet > tbody > tr > th {
+	min-width: 70px;
+	max-width: 70px;
+	text-align: center;
+}
+#btn-spreadsheet {
+	border-radius: 4px;
+}
+.spreadsheet_input {
+	min-width: 50px;
+	max-width: 50px;
+	margin: 0 10px;
+	border-radius: 4px;
+	text-align: center;
+}
 @media screen and (max-width: 400px) {
 	#terr_box {
 		margin: auto;

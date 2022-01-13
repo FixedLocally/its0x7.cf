@@ -87,6 +87,7 @@ function load_map() {
     let prefShowRoutes = true;
     let mapMode = "cooldown";
     let tooltipContents = {};
+    let spreadsheetShown = false;
     let treasury = 0;
     let selectedTerr;
     let hq;
@@ -295,6 +296,7 @@ function load_map() {
                     } catch (e) {
                         console.error(e);
                     }
+                    $("#btn-spreadsheet").click(toggleSpreadsheetMode);
                 }
             });
     }
@@ -303,21 +305,25 @@ function load_map() {
         for (let name in polygons) {
             let polygon = polygons[name];
             /** Territory name **/
-            let territory = polygon.territory.territory;
-            let guild = polygon.territory.guild;
-            let popup = `${territory}<br><br>Production:`;
-            let stats = calcTerr(terrData[territory], polygons[territory].territory.upgrades, hq === territory);
-            for (let i in stats.production) {
-                if (stats.production[i] === 0) {
-                    continue;
+            if (spreadsheetShown) {
+                polygon.unbindPopup();
+            } else {
+                let territory = polygon.territory.territory;
+                let guild = polygon.territory.guild;
+                let popup = `${territory}<br><br>Production:`;
+                let stats = calcTerr(terrData[territory], polygons[territory].territory.upgrades, hq === territory);
+                for (let i in stats.production) {
+                    if (stats.production[i] === 0) {
+                        continue;
+                    }
+                    popup += `<br>${Math.round(stats.production[i])} ${i}`;
                 }
-                popup += `<br>${Math.round(stats.production[i])} ${i}`;
+                polygon.bindPopup(popup);
+                updateTooltip(
+                    territory,
+                    `${getGuildTag(guild)}<br>${getSecondLine(territory)}`
+                );
             }
-            polygon.bindPopup(popup);
-            updateTooltip(
-                territory,
-                `${getGuildTag(guild)}<br>${getSecondLine(territory)}`
-            );
         }
     }
 
@@ -387,6 +393,7 @@ function load_map() {
         polygon.territory.upgrades = {};
         polygon.include = false;
         polygon.on("click", function(e) {
+            if (spreadsheetShown) return;
             let polygon = e.target;
             let terr = polygon.territory.territory;
             $("#right_sidebar").show();
@@ -734,5 +741,50 @@ function load_map() {
         for (let i in terrData) {
             terrData[i].distance = 99999;
         }
+    }
+
+    function toggleSpreadsheetMode() {
+        // sync current upgrades to the sheet and show it
+        let div = $("#spreadsheet_mode");
+        let table = $("#spreadsheet");
+        if (spreadsheetShown) {
+            div.hide();
+            $("#btn-spreadsheet").html("Open Spreadsheet");
+        } else {
+            map.closePopup();
+            selectedTerr = void 0;
+            $("#right_sidebar").hide();
+            table.find("tr").slice(1).remove();
+            // hq
+            if (hq) insertSpreadsheetRow(table, hq);
+            for (let terr of terrNames) {
+                if (polygons[terr].include && terr !== hq) insertSpreadsheetRow(table, terr);
+            }
+            div.show();
+            $("#btn-spreadsheet").html("Close Spreadsheet");
+        }
+        spreadsheetShown = !spreadsheetShown;
+        updatePopups();
+    }
+
+    function insertSpreadsheetRow(table, terr) {
+        let tr = $("<tr>");
+        $(`<td>${terr}</td>`).appendTo(tr);
+        for (let i of PROPS) {
+            let td = $(`<td></td>`);
+            let max = upgradeData[i].cost.length - 1;
+            let input = $(`<input class="spreadsheet_input" type="number" min="0" max="${max}">`);
+            input.val(polygons[terr].territory.upgrades[i]);
+            input.keyup(function () {
+                if (this.value > max) this.value = max;
+                if (this.value < 0) this.value = 0;
+                console.log(terr, i, this.value);
+                polygons[terr].territory.upgrades[i] = parseInt(this.value);
+                updateEco();
+            });
+            input.appendTo(td);
+            td.appendTo(tr);
+        }
+        tr.appendTo(table);
     }
 }
