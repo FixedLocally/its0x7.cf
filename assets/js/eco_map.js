@@ -725,10 +725,43 @@ function load_map() {
             case "2":
                 parseDecompressedHashV1(LZString.decompressFromEncodedURIComponent(payload));
                 break;
+            case "3":
+                parseDecompressedHashV2(LZString.decompressFromEncodedURIComponent(payload));
+                break;
         }
     }
 
     function parseDecompressedHashV1(payload) {
+        // if ((payload.length & 0xf) !== 2) throw new Error("invalid length");
+        if (payload.length % 16 !== 2) throw new Error("invalid length");
+        let hqIdx = payload.substr(0, 2);
+        for (let i = 2; i < payload.length; i += 16) {
+            let s = payload.substr(i, 16);
+            let terr = terrNames[parseInt(s.substr(0, 2), 36)];
+            if (!terr) throw new Error("invalid terr index");
+            let upgrades = polygons[terr].territory.upgrades;
+            polygons[terr].include = true;
+            for (let j = 0; j < 14; ++j) {
+                upgrades[PROPS[j]] = parseInt(s[j + 2], 36);
+            }
+            polygons[terr].setStyle({
+                fillColor: "#00ff00",
+                color: "#00ff00",
+            });
+        }
+        if (hqIdx !== "--") {
+            hq = terrNames[parseInt(hqIdx, 36)];
+            if (!hq) throw new Error("invalid hq");
+            polygons[hq].setStyle({
+                fillColor: "#cccc00",
+                color: "#cccc00",
+            });
+        }
+        if (hq) calcDistances();
+        updateEco();
+    }
+
+    function parseDecompressedHashV2(payload) {
         // if ((payload.length & 0xf) !== 2) throw new Error("invalid length");
         if (payload.length % 23 !== 2) throw new Error("invalid length");
         let hqIdx = payload.substr(0, 2);
@@ -738,7 +771,7 @@ function load_map() {
             if (!terr) throw new Error("invalid terr index");
             let upgrades = polygons[terr].territory.upgrades;
             polygons[terr].include = true;
-            for (let j = 0; j < 21; ++j) {
+            for (let j = 0; j < 16; ++j) {
                 upgrades[PROPS[j]] = parseInt(s[j + 2], 36);
             }
             polygons[terr].setStyle({
