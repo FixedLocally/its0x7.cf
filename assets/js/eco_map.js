@@ -655,9 +655,11 @@ function load_map() {
 
     function updateTerrStats(stats) {
         $("#terr_stats_name").html(selectedTerr);
-        $("#terr_stats_dmg").html(`${Math.round(stats.stats.damage)}-${Math.round(1.5 * stats.stats.damage)}<br>(avg Dps: ${((Math.round(stats.stats.damage) + Math.round(1.5 * stats.stats.damage)) / 2) * Math.round(stats.stats.attack * 100) / 100})`)
+        $("#terr_stats_dmg").html(`${Math.round(stats.stats.damage)}-${Math.round(1.5 * stats.stats.damage)}`)
+        $("#terr_stats_dps").html(`${Math.round(stats.stats.damage * 1.25 * stats.stats.attack)}`)
         $("#terr_stats_atk").html(`${Math.round(stats.stats.attack * 100) / 100}`);
-        $("#terr_stats_hp").html(`${Math.round(stats.stats.health)} (Effective: ${Math.round(stats.stats.health / (1 - stats.stats.defense))})`);
+        $("#terr_stats_hp").html(`${Math.round(stats.stats.health)}`);
+        $("#terr_stats_ehp").html(`${Math.round(stats.stats.health / (1 - stats.stats.defense))}`);
         $("#terr_stats_def").html(`${Math.round(stats.stats.defense * 1000) / 10}%`);
         $("#terr_stats_em").html(`${Math.round(stats.usage.emerald)} / ${Math.round(stats.production.emerald)} - ${Math.round(stats.storage.emStorage)}`);
         $("#terr_stats_ore").html(`${Math.round(stats.usage.ore)} / ${Math.round(stats.production.ore)} - ${Math.round(stats.storage.resStorage)}`);
