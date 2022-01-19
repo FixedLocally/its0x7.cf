@@ -28,7 +28,7 @@ let terrData = {"Air Temple Upper":{"routes":["Air Temple Lower"],"production":{
 
 let resSymbols = {
     emerald: "💰",
-    crops: "🌾",
+    crop: "🌾",
     ore: "⛏️",
     wood: "🪓",
     fish: "🐟",
