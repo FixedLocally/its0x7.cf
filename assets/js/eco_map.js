@@ -558,9 +558,10 @@ function load_map() {
         statMulti += 0.3 * terr.routes.filter(x => polygons[x].include).length;
         // hq conns
         if (hq) {
+            // conns, secondary conns, tertiary conns, but we include the hq itself here, thus +25%
             let hqMulti = 1.25;
             for (let i in terrData) {
-                if (terrData[i].distance <= 2 && polygons[i].include) { // includes the hq itself
+                if (terrData[i].distance <= 3 && polygons[i].include) { // includes the hq itself
                     hqMulti += 0.25;
                 }
             }
