@@ -55,7 +55,7 @@ let upgradeData = {
     "pvp_damage": {"name": "PvP Damage", "base": [0, 0], "cost": [[0, 0], [600, 0.05], [1200, 0.1], [2000, 0.15], [2400, 0.2], [3000, 0.25], [5000, 0.4], [10000, 0.65], [20000, 0.8]], "type": "ore", formatter: FORMATTER_PERCENT},
     "xp_seeking": {"name": "Experience Seeking", "base": [0, 0], "cost": [[0, 0], [100, 36000], [200, 66000], [400, 120000], [800, 228000], [1600, 456000], [3200, 900000], [6400, 1740000], [9600, 2580000], [12800, 3360000]], "type": "emerald", formatter: FORMATTER_HOURS},
     "tome_seeking": {"name": "Tome Seeking", "base": [0, 0], "cost": [[0, 0], [400, 0.15], [3200, 1.2], [6400, 2.4]], "type": "fish", formatter: FORMATTER_PERCENT_HOUR},
-    "eme_seeking": {"name": "Emerald Seeking", "base": [0, 0], "cost": [[0, 0], [200, 0.3], [800, 3], [1600, 6], [3200, 12], [6400, 24]], "type": "fish", formatter: FORMATTER_PERCENT_HOUR},
+    "eme_seeking": {"name": "Emerald Seeking", "base": [0, 0], "cost": [[0, 0], [200, 0.3], [800, 3], [1600, 6], [3200, 12], [6400, 24]], "type": "wood", formatter: FORMATTER_PERCENT_HOUR},
 
     // resource bonuses
     "res_storage": {"name": "Resource Storage", "base": [300, 1500], "cost": [[0,0], [400,1], [800,3], [2000,7], [5000,14], [16000,33], [48000,79],], "type": "emerald", formatter: FORMATTER_PERCENT},
